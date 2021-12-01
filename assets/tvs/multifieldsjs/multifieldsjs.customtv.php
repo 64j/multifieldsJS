@@ -1,6 +1,6 @@
 <?php
 /**
- * custom tv multifields
+ * custom tv multifieldsJS
  * @author 64j
  */
 
