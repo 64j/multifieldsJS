@@ -1,3 +1,6 @@
+/**
+ * @version 1.0
+ */
 .mfjs { position: relative; display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 1rem; }
 .evo-popup-body .mfjs { padding: 1rem .15rem 0; }
 .mfjs .mfjs-items { display: flex; flex-wrap: wrap; align-items: start; margin: 0; padding: .25rem; }

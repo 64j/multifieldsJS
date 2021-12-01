@@ -1,3 +1,6 @@
+/**
+ * @version 1.0
+ */
 !function(t) {
   'use strict';
   window.MfJs = t();

@@ -1,3 +1,6 @@
+/**
+ * @version 1.0
+ */
 MfJs.add('thumb:image', {
   popup: null,
   parent: null,

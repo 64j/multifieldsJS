@@ -1,3 +1,6 @@
+/**
+ * @version 1.0
+ */
 .mfjs .mfjs-row { min-height: 2.125rem; }
 .mfjs .mfjs-row.mfjs-group { padding-bottom: .5rem; }
 .mfjs .mfjs-actions-resize-offset, .mfjs .mfjs-actions-resize-col { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; height: auto; cursor: col-resize; opacity: 0; }

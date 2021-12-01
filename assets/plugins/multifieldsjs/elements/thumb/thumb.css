@@ -1,3 +1,6 @@
+/**
+ * @version 1.0
+ */
 .mfjs .mfjs-thumb { position: relative; flex: 0 0 7rem; width: 7rem; max-width: 7rem; height: 7rem; background: center center no-repeat; background-size: 0; }
 .mfjs .mfjs-thumb::before { position: absolute; content: ""; left: .125rem; top: .125rem; right: .125rem; bottom: .125rem; background: inherit; background-size: contain; }
 .mfjs .mfjs-thumb[data-mfjs-hide]::before { opacity: .5; }

@@ -1,3 +1,6 @@
+/**
+ * @version 1.0
+ */
 MfJs.add('row', {
 
   actions: ['move', 'add', 'hide', 'expand', 'resize', 'del'],

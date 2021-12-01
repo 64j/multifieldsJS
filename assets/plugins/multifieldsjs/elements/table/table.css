@@ -1,3 +1,6 @@
+/**
+ * @version 1.0
+ */
 .mfjs [data-type="table"] > .mfjs-items { margin: 0 1px 1px 0; padding: 0; }
 .mfjs [data-type="table"] > .mfjs-items > .col { margin-bottom: -1px; padding: 0; min-height: auto; }
 .mfjs [data-type="table"] > .mfjs-items > .col > .mfjs-actions { left: 0; top: 0; right: -1px; bottom: 0; }

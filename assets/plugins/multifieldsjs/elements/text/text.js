@@ -1,3 +1,6 @@
+/**
+ * @version 1.0
+ */
 MfJs.add('text', {
   template: '' +
       '<div id="mfjs[+id+]" class="col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
