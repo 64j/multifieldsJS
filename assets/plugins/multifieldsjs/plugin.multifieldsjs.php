@@ -18,9 +18,8 @@ switch ($e->name) {
             foreach ($elements as $path) {
                 if ($elements_elements = glob($path . '/*.css')) {
                     foreach ($elements_elements as $element) {
-                        $filemtime = filemtime($element);
                         preg_match('/@version\s+(.*?)[\r]/is', file_get_contents($element, false, null, 0, 100), $matches);
-                        $version = $matches[1] ?? $filemtime;
+                        $version = $matches[1] ?? filemtime($element);
                         $element = str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $element);
                         $out[] = '<link rel="stylesheet" type="text/css" href="' . $element . '?v=' . $version . '"/>';
                     }
@@ -28,9 +27,8 @@ switch ($e->name) {
 
                 if ($elements_elements = glob($path . '/*.js')) {
                     foreach ($elements_elements as $element) {
-                        $filemtime = filemtime($element);
                         preg_match('/@version\s+(.*?)[\r]/is', file_get_contents($element, false, null, 0, 100), $matches);
-                        $version = $matches[1] ?? $filemtime;
+                        $version = $matches[1] ?? filemtime($element);
                         $element = str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $element);
                         $out[] = '<script src="' . $element . '?v=' . $version . '"></script>';
                     }
