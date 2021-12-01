@@ -1,0 +1,2 @@
+.mfjs [data-type="thumb:image"] > .mfjs-actions .mfjs-actions-edit::before { content: "\f03e"; margin: 0; }
+.mfjs [data-type="thumb:image"][data-multi] > .mfjs-actions .mfjs-actions-edit::before { content: "\f302"; }

@@ -1,0 +1,21 @@
+.mfjs [data-type="table"] > .mfjs-items { margin: 0 1px 1px 0; padding: 0; }
+.mfjs [data-type="table"] > .mfjs-items > .col { margin-bottom: -1px; padding: 0; min-height: auto; }
+.mfjs [data-type="table"] > .mfjs-items > .col > .mfjs-actions { left: 0; top: 0; right: -1px; bottom: 0; }
+.mfjs [data-type="table"] > .mfjs-items .mfjs-items { padding: 0; align-items: stretch; background: #fff; }
+.mfjs [data-type="table"] > .mfjs-items .mfjs-items > .col { margin-right: -1px; padding: 0; border: 1px solid #d4d4d4; }
+.mfjs [data-type="table"] > .mfjs-items .mfjs-items > .col.mfjs-thumb { flex-basis: 0; flex-grow: 1; max-width: 100%; height: auto; }
+.mfjs [data-type="table"] > .mfjs-items .mfjs-items > .col > .mfjs-actions, .mfjs [data-type="table"] > .mfjs-items .mfjs-actions-resize-offset, .mfjs [data-type="table"] > .mfjs-items .mfjs-actions-resize-col { display: none; }
+.mfjs [data-type="table"] > .mfjs-items .mfjs-items > .col.mfjs-thumb > .mfjs-actions { display: block; top: 0; right: 0; bottom: 0; left: 0; }
+.mfjs [data-type="table"] > .mfjs-items .mfjs-items > .col.mfjs-thumb > .mfjs-actions::before { display: none }
+.mfjs [data-type="table"] > .mfjs-items .mfjs-items > .col.mfjs-thumb > .mfjs-actions > .mfjs-actions-edit { transform: none; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: auto; background: none !important }
+.mfjs [data-type="table"] > .mfjs-items .mfjs-items > .col.mfjs-thumb[style*="background-image"]:not([style="background-image: url(../);"]) > .mfjs-actions > .mfjs-actions-edit::before { content: ""; }
+.mfjs [data-type="table"] > .mfjs-items .mfjs-items > .col input:not([type="checkbox"]):not([type="radio"]) { border: 0; background: none; }
+.mfjs [data-type="table"] .mfjs-table-columns { margin: 0 1px -1px 0; padding: 0; }
+.mfjs [data-type="table"] .mfjs-table-columns > .col { padding: 0; margin-right: -1px; }
+.mfjs [data-type="table"] .mfjs-table-columns input { background: transparent }
+.mfjs [data-type="table"] .mfjs-column-menu { top: 100%; right: 4px; min-width: 10rem; }
+.mfjs [data-type="table"] .mfjs-column-menu .fa { margin-right: .25rem; font-size: .75rem; }
+.mfjs [data-type="table"] .mfjs-column-menu-toggle { position: absolute; z-index: 5; top: 0; right: 0; padding: .5rem; cursor: pointer; }
+/* darkness */
+.darkness .mfjs [data-type="table"] > .mfjs-items .mfjs-items { background: #282c34 }
+.darkness .mfjs [data-type="table"] > .mfjs-items .mfjs-items > .col { border-color: #3e4249; }

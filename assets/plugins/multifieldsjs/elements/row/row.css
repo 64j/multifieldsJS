@@ -1,0 +1,8 @@
+.mfjs .mfjs-row { min-height: 2.125rem; }
+.mfjs .mfjs-row.mfjs-group { padding-bottom: .5rem; }
+.mfjs .mfjs-actions-resize-offset, .mfjs .mfjs-actions-resize-col { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; height: auto; cursor: col-resize; opacity: 0; }
+.mfjs .mfjs-actions-resize-col { left: auto; right: 0; }
+.mfjs .mfjs-row > .mfjs-helper { position: absolute; opacity: 0; visibility: hidden; z-index: 1; top: .5rem; left: 50%; transform: translateX(-50%); margin: -.25rem .25rem; padding: .5rem; background-color: rgba(0, 0, 0, .2); color: #222; font-size: 1.2rem; white-space: nowrap; transition: .5s; }
+.mfjs .mfjs-row > .mfjs-helper.show { opacity: 1; visibility: visible; }
+/* darkness */
+.darkness .mfjs .mfjs-row > .mfjs-helper { background: rgba(255, 255, 255, 2); }
