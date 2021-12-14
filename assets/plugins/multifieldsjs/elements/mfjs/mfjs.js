@@ -93,10 +93,10 @@
                   MfJs.itemRender([data], config, el, 2);
                 } else {
                   let d = document.createElement('div');
-                  d.innerHTML = el.cloneNode(true).outerHTML.replace(new RegExp(el.id.replace('mfjs', ''), 'g'), MfJs.qid());
+                  d.innerHTML = el.cloneNode(true).outerHTML.replace(new RegExp(el.id.replace('mfjs', ''), 'g'), MfJs.qid(null));
                   [d.firstElementChild].map(function(item) {
                     [...item.querySelectorAll('[id][data-type][data-name]')].map(function(el) {
-                      let id = MfJs.qid();
+                      let id = MfJs.qid(null);
                       item.innerHTML = item.innerHTML.replace(new RegExp(el.id.replace('mfjs', ''), 'g'), id);
                       [...item.querySelectorAll('input')].map(function(input) {
                         input.value = '';
@@ -109,7 +109,7 @@
                     if (el.parentElement.querySelectorAll('[data-name="' + el.dataset.name + '"]').length >= el.dataset.limit) {
                       return MfJs.alert(MfJs.template(MfJs.messages.limit, {
                         limit: el.dataset.limit,
-                      }));
+                      }, null, null));
                     }
                     el.insertAdjacentElement('afterend', item);
                     if (item.dataset && item.dataset.type && item.id) {
@@ -239,7 +239,7 @@
       initElementsInit: function() {
         for (let k in MfJs.initElements) {
           if (MfJs.initElements.hasOwnProperty(k)) {
-            if (MfJs.chekMethod(MfJs.initElements[k], 'initElement')) {
+            if (MfJs.checkMethod(MfJs.initElements[k], 'initElement')) {
               MfJs.method(MfJs.initElements[k], 'initElement', k);
             }
             [...document.querySelectorAll('#' + k + ' > .mfjs-items')].map(function(el) {
@@ -250,8 +250,8 @@
                 ghostClass: 'mfjs-active',
                 selectedClass: 'mfjs-selected',
                 handle: '.mfjs-actions-move',
-                onEnd: function(e) {
-                  if (MfJs.chekMethod('id', 'initElementAfterMove')) {
+                onEnd: function() {
+                  if (MfJs.checkMethod('id', 'initElementAfterMove')) {
                     MfJs.method('id', 'initElementAfterMove', k);
                   }
                 },
@@ -302,7 +302,7 @@
           if (data.hasOwnProperty(k) && k === key) {
             if (parents.length) {
               if (data[k]['items']) {
-                if (MfJs.chekMethod(data[k]['type'], 'getConfigChildren')) {
+                if (MfJs.checkMethod(data[k]['type'], 'getConfigChildren')) {
                   data[k]['items'] = MfJs.method(data[k]['type'], 'getConfigChildren', data[k]['items']);
                 }
                 a = MfJs.getConfigChildren(data[k]['items'], parents);
@@ -492,7 +492,7 @@
         Object.entries(data).map(function([key, item]) {
           let items;
           item.name = item.name || key;
-          item.id = MfJs.qid();
+          item.id = MfJs.qid(null);
           item = MfJs.itemConfig(item, config[item.name] || {});
           item = MfJs.itemElements(item);
           item.actions = MfJs.setActions(item);
@@ -506,21 +506,21 @@
             item.items = '';
           }
           let _config = item._config || {};
-          item = MfJs.template(MfJs.elements[item.type]['template'], item, true);
+          item = MfJs.template(MfJs.elements[item.type]['template'], item, true, null);
           if (replace === 1) {
             parent.parentElement.replaceChild(item, parent);
           } else if (replace === 2) {
             if (parent.parentElement.querySelectorAll('[data-name="' + item.dataset.name + '"]').length >= item.dataset.limit) {
               return MfJs.alert(MfJs.template(MfJs.messages.limit, {
                 limit: item.dataset.limit,
-              }));
+              }, null, null));
             }
             parent.insertAdjacentElement('afterend', item);
           } else {
             if (parent.querySelectorAll('[data-name="' + item.dataset.name + '"]').length >= item.dataset.limit) {
               return MfJs.alert(MfJs.template(MfJs.messages.limit, {
                 limit: item.dataset.limit,
-              }));
+              }, null, null));
             }
             parent.appendChild(item);
           }
@@ -538,7 +538,7 @@
       itemElements: function(data) {
         data['input'] = '';
 
-        if (MfJs.chekMethod(data.type, 'itemElements')) {
+        if (MfJs.checkMethod(data.type, 'itemElements')) {
           data = MfJs.method(data.type, 'itemElements', data);
         } else {
           if (data['elements'] && MfJs.elements[data['type']]['input']) {
@@ -559,7 +559,7 @@
                     title: typeof item[1] !== 'undefined' ? item[1] : item[0],
                     selected: ~values.indexOf(item[0]) ? 'selected' : '',
                     checked: ~values.indexOf(item[0]) ? 'checked' : '',
-                  });
+                  }, null, null);
                 });
                 break;
             }
@@ -636,7 +636,7 @@
           // }
         }
 
-        if (MfJs.chekMethod(data.type, 'itemConfig')) {
+        if (MfJs.checkMethod(data.type, 'itemConfig')) {
           data = MfJs.method(data.type, 'itemConfig', data, config);
         }
 
@@ -687,7 +687,7 @@
         return '<div class="mfjs-actions" data-actions="mfjs' + data.id + '">' + actions.filter(function(n) {
           return ~data.actions.indexOf(n);
         }).map(function(action) {
-          if (MfJs.chekMethod(data.type, 'setAction')) {
+          if (MfJs.checkMethod(data.type, 'setAction')) {
             return MfJs.method(data.type, 'setAction', action, data);
           }
           return '<i onclick="MfJs.elements[\'' + data.type + '\'].actions' + (action[0].toUpperCase() + action.slice(1)) + '(this);" class="mfjs-actions-' + action + ' fa far"></i>';
@@ -779,7 +779,7 @@
           let items = el.querySelectorAll(':scope > .mfjs-items > [data-type]');
           if (items.length) {
             item.items = MfJs.saveValues(items);
-            if (MfJs.chekMethod(item.type, 'saveValues')) {
+            if (MfJs.checkMethod(item.type, 'saveValues')) {
               item = MfJs.method(item.type, 'saveValues', item, el, i);
             }
           }
@@ -826,7 +826,7 @@
         for (let k in data) {
           if (data.hasOwnProperty(k)) {
             let item = Object.assign({}, data[k], MfJs.config[MfJs.container.dataset['mfjs']]['templates'][data[k].name] || {});
-            el.push(MfJs.template(MfJs.elements[item.type]['template'], item), true);
+            el.push(MfJs.template(MfJs.elements[item.type]['template'], item, null, null), true);
           }
         }
 
@@ -844,11 +844,11 @@
         // Element.matches() polyfill
         if (!Element.prototype.matches) {
           Element.prototype.matches =
-              Element.prototype.matchesSelector ||
-              Element.prototype.mozMatchesSelector ||
-              Element.prototype.msMatchesSelector ||
-              Element.prototype.oMatchesSelector ||
-              Element.prototype.webkitMatchesSelector ||
+              Element.prototype['matchesSelector'] ||
+              Element.prototype['mozMatchesSelector'] ||
+              Element.prototype['msMatchesSelector'] ||
+              Element.prototype['oMatchesSelector'] ||
+              Element.prototype['webkitMatchesSelector'] ||
               function(s) {
                 let matches = (this.document || this.ownerDocument).querySelectorAll(s),
                     i = matches.length;
@@ -920,7 +920,7 @@
        * @param method
        * @returns {boolean}
        */
-      chekMethod: function(type, method) {
+      checkMethod: function(type, method) {
         return MfJs.elements[type] && typeof MfJs.elements[type][method] === 'function';
       },
 
@@ -1023,7 +1023,7 @@
        * @param data
        * @param isDom
        * @param cleanKeys
-       * @returns {Element|*}
+       * @returns {Element|*|obj}
        */
       template: function(html, data, isDom, cleanKeys) {
         data = data || {};

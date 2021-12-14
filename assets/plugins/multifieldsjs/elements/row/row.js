@@ -89,7 +89,7 @@ MfJs.add('row', {
         parent.removeAttribute('data-mfjs-offset' + breakpoint);
       }
       [...parent.attributes].map(function(attr) {
-        if (attr.name.substr(0, 17) === 'data-mfjs-offset-' && typeof MfJs.config[MfJs.container.dataset['mfjs']].settings.toolbar.breakpoints[attr.name.substr(17)] === 'undefined') {
+        if (attr.name.substr(0, 17) === 'data-mfjs-offset-' && typeof MfJs.config[MfJs.container.dataset['mfjs']].settings?.toolbar.breakpoints[attr.name.substr(17)] === 'undefined') {
           parent.removeAttribute(attr.name);
         }
       });
@@ -148,7 +148,7 @@ MfJs.add('row', {
     document.onmouseup = function(e) {
       parent.className = className.replace(/col-[\d|auto]+/g, '').replace('mfjs-active', '').trim() + (col ? ' col-' + col : ' col');
       parent.setAttribute('data-mfjs-col' + breakpoint, col || '');
-      for (let k in MfJs.config[MfJs.container.dataset['mfjs']].settings.toolbar.breakpoints) {
+      for (let k in MfJs.config[MfJs.container.dataset['mfjs']].settings?.toolbar.breakpoints) {
         if (MfJs.config[MfJs.container.dataset['mfjs']].settings.toolbar.breakpoints.hasOwnProperty(k)) {
           if (parent.getAttribute('data-mfjs-col' + (k && '-' + k || '')) === null) {
             parent.setAttribute('data-mfjs-col' + (k && '-' + k || ''), '12');
@@ -156,7 +156,7 @@ MfJs.add('row', {
         }
       }
       [...parent.attributes].map(function(attr) {
-        if (attr.name.substr(0, 14) === 'data-mfjs-col-' && typeof MfJs.config[MfJs.container.dataset['mfjs']].settings.toolbar.breakpoints[attr.name.substr(14)] === 'undefined') {
+        if (attr.name.substr(0, 14) === 'data-mfjs-col-' && typeof MfJs.config[MfJs.container.dataset['mfjs']].settings?.toolbar.breakpoints[attr.name.substr(14)] === 'undefined') {
           parent.removeAttribute(attr.name);
         }
       });
