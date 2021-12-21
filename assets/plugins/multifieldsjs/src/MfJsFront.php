@@ -25,6 +25,6 @@ class MfJsFront
      */
     public function render(array $params): string
     {
-
+        return '';
     }
 }
