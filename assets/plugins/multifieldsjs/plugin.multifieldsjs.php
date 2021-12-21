@@ -43,31 +43,23 @@ if (!function_exists('mfJsParseDocBlock')) {
 if ($evo->event->name == 'OnManagerMainFrameHeaderHTMLBlock') {
     if (in_array($evo->getManagerApi()->action, [3, 4, 17, 27, 72])) {
         $out = [];
-
         $elements = array_unique(array_merge([__DIR__ . '/elements/mfjs'], glob(__DIR__ . '/elements/*', GLOB_ONLYDIR)));
 
         foreach ($elements as $path) {
-            if ($elements_elements = glob($path . '/*.css')) {
+            if ($elements_elements = glob($path . '/*.{css,js}', GLOB_BRACE)) {
                 foreach ($elements_elements as $element) {
                     $docBlock = mfJsParseDocBlock($element);
                     if (!empty($docBlock['disabled'])) {
                         continue;
                     }
                     $version = $docBlock['version'] ?? filemtime($element);
+                    $ext = pathinfo($element, PATHINFO_EXTENSION);
                     $element = str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $element);
-                    $out[] = '<link rel="stylesheet" type="text/css" href="..' . $element . '?v=' . $version . '"/>';
-                }
-            }
-
-            if ($elements_elements = glob($path . '/*.js')) {
-                foreach ($elements_elements as $element) {
-                    $docBlock = mfJsParseDocBlock($element);
-                    if (!empty($docBlock['disabled'])) {
-                        continue;
+                    if ($ext == 'css') {
+                        $out[] = '<link rel="stylesheet" type="text/css" href="..' . $element . '?v=' . $version . '"/>';
+                    } elseif ($ext == 'js') {
+                        $out[] = '<script src="..' . $element . '?v=' . $version . '"></script>';
                     }
-                    $version = $docBlock['version'] ?? filemtime($element);
-                    $element = str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $element);
-                    $out[] = '<script src="..' . $element . '?v=' . $version . '"></script>';
                 }
             }
         }
