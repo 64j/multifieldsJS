@@ -717,7 +717,7 @@
        * @param els
        */
       saveValues: function(els) {
-        let data = {},
+        let data = [],
             counters = {};
         [...els].map(function(el, i) {
           let item = Object.assign({}, el.dataset),
@@ -794,22 +794,24 @@
             }
           }
 
-          if (!data[item.name] && !data[item.name + '#1']) {
-            data[item.name] = item;
-          } else {
-            if (data[item.name]) {
-              let _data = {};
-              for (let i in data) {
-                if (i !== item.name) {
-                  _data[i] = data[i];
-                } else {
-                  _data[item.name + '#1'] = data[item.name];
-                }
-              }
-              data = _data;
-            }
-            data[item.name + (counters[item.name] && '#' + counters[item.name] || '')] = item;
-          }
+          data.push(item);
+
+          // if (!data[item.name] && !data[item.name + '#1']) {
+          //   data[item.name] = item;
+          // } else {
+          //   if (data[item.name]) {
+          //     let _data = {};
+          //     for (let i in data) {
+          //       if (i !== item.name) {
+          //         _data[i] = data[i];
+          //       } else {
+          //         _data[item.name + '#1'] = data[item.name];
+          //       }
+          //     }
+          //     data = _data;
+          //   }
+          //   data[item.name + (counters[item.name] && '#' + counters[item.name] || '')] = item;
+          // }
 
         });
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * multifieldsJS
+ * mfjs
  *
  * Creating custom fields for documents
  *
