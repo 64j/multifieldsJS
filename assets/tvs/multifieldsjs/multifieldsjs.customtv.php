@@ -8,7 +8,8 @@ if (!defined('MODX_BASE_PATH')) {
     die('HACK???');
 }
 
-$name = $row['name'] ?? ($row['id'] ?? 0);
+$id = $row['id'] ?? 0;
+$name = $row['name'] ?? $id;
 $value = $row['value'] ?? '';
 $config = MODX_BASE_PATH . 'assets/plugins/multifieldsjs/config/' . $name;
 
@@ -22,6 +23,6 @@ if (is_file($config . '.php')) {
 }
 
 echo '
-<div id="mfjs-' . $name . '" class="mfjs" data-mfjs="' . $name . '"></div>
-<textarea name="tv' . $name . '" rows="10" hidden>' . $value . '</textarea>
-<script>MfJs.initElement(\'mfjs-' . $name . '\', ' . $config . ');</script>';
+<div id="mfjs-' . $id . '" class="mfjs" data-mfjs="' . $id . '"></div>
+<textarea name="tv' . $id . '" rows="10" hidden>' . $value . '</textarea>
+<script>MfJs.initElement(\'mfjs-' . $id . '\', ' . $config . ');</script>';
