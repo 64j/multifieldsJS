@@ -3,16 +3,28 @@
 class MfJsBack
 {
     /**
-     * @var string
+     * @var null|MfJsBack
      */
-    protected $basePath;
+    private static $instance = null;
 
     /**
-     * @param string $basePath
+     * @return static
      */
-    public function __construct(string $basePath)
+    public static function getInstance(): ?MfJsBack
     {
-        $this->basePath = $basePath;
+        if (is_null(self::$instance)) {
+            self::$instance = new static();
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getBasePath(): string
+    {
+        return dirname(__DIR__);
     }
 
     /**
@@ -47,12 +59,12 @@ class MfJsBack
     }
 
     /**
-     *
+     * @return string
      */
-    public function render()
+    public function render(): string
     {
         $out = [];
-        $elements = array_unique(array_merge([$this->basePath . '/elements/mfjs'], glob($this->basePath . '/elements/*', GLOB_ONLYDIR)));
+        $elements = array_unique(array_merge([$this->getBasePath() . '/elements/mfjs'], glob($this->getBasePath() . '/elements/*', GLOB_ONLYDIR)));
 
         foreach ($elements as $path) {
             if ($elements_elements = glob($path . '/*.{css,js}', GLOB_BRACE)) {
@@ -73,6 +85,37 @@ class MfJsBack
             }
         }
 
-        echo implode("\n", $out);
+        return implode("\n", $out);
+    }
+
+    /**
+     * @param array $row
+     * @return string
+     */
+    public function renderCustomTv(array $row): string
+    {
+        $id = $row['id'] ?? 0;
+        $name = $row['name'] ?? $id;
+        $value = $row['value'] ?? '';
+        $configName = $this->getBasePath() . '/config/' . $name;
+        $config = '';
+
+        if (is_file($file = $configName . '.php')) {
+            $config = require $file;
+            $config = json_encode($config, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        } elseif (is_file($file = $configName . '.json')) {
+            $config = file_get_contents($file);
+        }
+
+        if ($config) {
+            $out = '
+                <div id="mfjs-' . $id . '" class="mfjs" data-mfjs="' . $id . '"></div>
+                <textarea name="tv' . $id . '" rows="10" hidden>' . $value . '</textarea>
+                <script>MfJs.initElement(\'mfjs-' . $id . '\', ' . $config . ');</script>';
+        } else {
+            $out = 'Config not found for tv: <strong>' . $name . '</strong>';
+        }
+
+        return $out;
     }
 }

@@ -5,4 +5,4 @@
  * @author 64j
  */
 
-echo MfJsFront::getInstance()->render($params);
+echo MfJsFront::getInstance()->render($params ?? []);

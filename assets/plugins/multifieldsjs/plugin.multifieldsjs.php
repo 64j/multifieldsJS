@@ -16,7 +16,8 @@ $evo = evolutionCMS();
 switch ($evo->event->name) {
     case 'OnManagerMainFrameHeaderHTMLBlock':
         if (in_array($evo->getManagerApi()->action, [3, 4, 17, 27, 72])) {
-            (new MfJsBack(__DIR__))->render();
+            $evo->event->addOutput(MfJsBack::getInstance()
+                ->render());
         }
         break;
 
