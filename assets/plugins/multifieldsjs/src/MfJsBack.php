@@ -94,11 +94,16 @@ class MfJsBack
      */
     public function renderCustomTv(array $row): string
     {
+        $out = '';
         $id = $row['id'] ?? 0;
         $name = $row['name'] ?? $id;
         $value = $row['value'] ?? '';
         $configName = $this->getBasePath() . '/config/' . $name;
         $config = '';
+
+        if (!$id) {
+            return $out;
+        }
 
         if (is_file($file = $configName . '.php')) {
             $config = require $file;
