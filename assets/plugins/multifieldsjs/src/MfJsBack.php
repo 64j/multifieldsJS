@@ -94,33 +94,40 @@ class MfJsBack
      */
     public function renderCustomTv(array $row): string
     {
-        $out = '';
         $id = $row['id'] ?? 0;
         $name = $row['name'] ?? $id;
         $value = $row['value'] ?? '';
-        $configName = $this->getBasePath() . '/config/' . $name;
-        $config = '';
 
         if (!$id) {
-            return $out;
+            return '';
         }
 
-        if (is_file($file = $configName . '.php')) {
-            $config = require $file;
-            $config = json_encode($config, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
-        } elseif (is_file($file = $configName . '.json')) {
-            $config = file_get_contents($file);
-        }
-
-        if ($config) {
-            $out = '
+        if ($config = $this->getConfig($name)) {
+            return '
                 <div id="mfjs-' . $id . '" class="mfjs" data-mfjs="' . $id . '"></div>
                 <textarea name="tv' . $id . '" rows="10" hidden>' . $value . '</textarea>
                 <script>MfJs.initElement(\'mfjs-' . $id . '\', ' . $config . ');</script>';
         } else {
-            $out = 'Config not found for tv: <strong>' . $name . '</strong>';
+            return 'Config not found for tv: <strong>' . $name . '</strong>';
+        }
+    }
+
+    /**
+     * @param string $name
+     * @return string|null
+     */
+    protected function getConfig(string $name): ?string
+    {
+        $configName = $this->getBasePath() . '/config/' . $name;
+
+        if (is_file($file = $configName . '.php')) {
+            $config = require $file;
+
+            return json_encode($config, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        } elseif (is_file($file = $configName . '.json')) {
+            return file_get_contents($file);
         }
 
-        return $out;
+        return null;
     }
 }

@@ -20,12 +20,21 @@ class MfJsFront
     }
 
     /**
+     * @return string
+     */
+    protected function getBasePath(): string
+    {
+        return dirname(__DIR__);
+    }
+
+    /**
      * @param array $params
      * @return string
      */
     public function render(array $params): string
     {
-        $tv = evolutionCMS()->documentObject[$params['tvName'] ?? null] ?? null;
+        $tvName = $params['tvName'] ?? null;
+        $tv = evolutionCMS()->documentObject[$tvName] ?? null;
         $api = $params['api'] ?? null;
 
         if (is_null($tv)) {
@@ -38,16 +47,36 @@ class MfJsFront
                 return $tv[1];
 
             default:
-                return $this->renderData(json_decode($tv[1] ?: '{}'));
+                return $this->renderData(json_decode($tv[1] ?: '{}', true), $this->getConfig($tvName));
         }
     }
 
     /**
      * @param array $data
+     * @param array $config
      * @return string
      */
-    protected function renderData(array $data): string
+    protected function renderData(array $data, array $config): string
     {
-        dd($data);
+        print_r($data);
+        print_r($config);
+        exit;
+    }
+
+    /**
+     * @param string $name
+     * @return array|null
+     */
+    protected function getConfig(string $name): array
+    {
+        $configName = $this->getBasePath() . '/config/' . $name;
+
+        if (is_file($file = $configName . '.php')) {
+            $config = require $file;
+        } elseif (is_file($file = $configName . '.json')) {
+            $config = json_decode(file_get_contents($file), true);
+        }
+
+        return $config ?? [];
     }
 }
