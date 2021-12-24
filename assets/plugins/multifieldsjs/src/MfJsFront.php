@@ -70,21 +70,45 @@ class MfJsFront
         foreach ($data as $key => $item) {
             $item['name'] = $item['name'] ?? (string) $key;
 
-            $this->prepare($config[$item['name']]['prepare'] ?? ($this->params['prepare_' . $tplKey . $item['name']] ?? ($this->params['prepare_' . $tplKey . '*'] ?? null)), $item);
-            $item['tpl'] = $config[$item['name']]['tpl'] ?? ($this->params['tpl_' . $tplKey . $item['name']] ?? ($this->params['tpl_' . $tplKey . '*'] ?? '@CODE:[+value+]'));
+            $this->prepare(
+                $config[$item['name']]['prepare'] ?? (
+                    $this->params['prepare_' . $tplKey . $item['name']] ?? (
+                        $this->params['prepare_' . $tplKey . '*'] ?? null
+                    )
+                ),
+                $item
+            );
+
+            $item['tpl'] = $config[$item['name']]['tpl'] ?? (
+                    $this->params['tpl_' . $tplKey . $item['name']] ?? (
+                        $this->params['tpl_' . $tplKey . '*'] ?? '@CODE:[+value+]'
+                    )
+                );
 
             if (isset($item['columns']) ?? is_array($item['columns'])) {
-                $tpl = $config[$item['name']]['tpl.columns'] ?? ($this->params['tpl_' . $tplKey . $item['name'] . '.columns'] ?? '@CODE:[+items+]');
+                $tpl = $config[$item['name']]['tpl.columns'] ?? (
+                        $this->params['tpl_' . $tplKey . $item['name'] . '.columns'] ?? '@CODE:[+items+]'
+                    );
+
                 $item['columns'] = $this->tpl($tpl, [
-                    'items' => $this->renderData($item['columns'], $config[$item['name']]['columns'] ?? [], $tplKey . $item['name'] . '.columns.')
+                    'items' => $this->renderData(
+                        $item['columns'],
+                        $config[$item['name']]['columns'] ?? [], $tplKey . $item['name'] . '.columns.'
+                    )
                 ]);
             }
 
             if (isset($item['items']) ?? is_array($item['items'])) {
-                $item['items'] = $this->renderData($item['items'], $config[$item['name']]['items'] ?? [], $tplKey . $item['name'] . '.');
+                $item['items'] = $this->renderData(
+                    $item['items'],
+                    $config[$item['name']]['items'] ?? [], $tplKey . $item['name'] . '.'
+                );
             }
 
-            $out .= $this->tpl($item['tpl'], $item);
+            $out .= $this->tpl(
+                $item['tpl'],
+                $item
+            );
         }
 
         return $out;
