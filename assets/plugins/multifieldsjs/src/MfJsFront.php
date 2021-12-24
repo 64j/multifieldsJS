@@ -66,10 +66,12 @@ class MfJsFront
     protected function renderData(array $data, array $config, string $tplKey = ''): string
     {
         $out = '';
+
         foreach ($data as $item) {
+            $this->prepare($config[$item['name']]['prepare'] ?? ($this->params['prepare_' . $tplKey . $item['name']] ?? null), $item);
             $item['tpl'] = $config[$item['name']]['tpl'] ?? ($this->params['tpl_' . $tplKey . $item['name']] ?? '@CODE:[+value+]');
 
-            if (isset($item['items'])) {
+            if (isset($item['items']) ?? is_array($item['items'])) {
                 $item['items'] = $this->renderData($item['items'], $config[$item['name']]['items'] ?? [], $tplKey . $item['name'] . '_');
             }
 
@@ -118,28 +120,25 @@ class MfJsFront
     }
 
     /**
-     * @param string $name
+     * @param $name
      * @param array $data
      * @return void
      */
-    protected function prepare(string $name = 'prepare', array &$data = [])
+    protected function prepare($name = null, array &$data = [])
     {
         if (!empty($name)) {
             $evo = evolutionCMS();
 
             $args = [
-                'name' => $name,
-                'params' => [
-                    'data' => $data,
-                    'modx' => $evo,
-                    '_MFJS' => $this
-                ]
+                'data' => $data,
+                'modx' => $evo,
+                '_MFJS' => $this
             ];
 
             if ((is_object($name)) || is_callable($name)) {
-                $data = call_user_func_array(...$args);
+                $data = call_user_func_array($name, $args);
             } else {
-                $data = $evo->runSnippet(...$args);
+                $data = $evo->runSnippet($name, $args) ?: $data;
             }
         }
     }
