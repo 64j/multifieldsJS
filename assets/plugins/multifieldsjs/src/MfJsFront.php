@@ -68,45 +68,49 @@ class MfJsFront
         $out = '';
 
         foreach ($data as $key => $item) {
-            $item['name'] = $item['name'] ?? (string) $key;
+            $item = array_combine(array_map(function ($name) {
+                return 'mf.' . $name;
+            }, array_keys($item)), $item);
+
+            $item['mf.name'] = $item['mf.name'] ?? (string) $key;
 
             $this->prepare(
-                $config[$item['name']]['prepare'] ?? (
-                    $this->params['prepare_' . $tplKey . $item['name']] ?? (
+                $config[$item['mf.name']]['prepare'] ?? (
+                    $this->params['prepare_' . $tplKey . $item['mf.name']] ?? (
                         $this->params['prepare_' . $tplKey . '*'] ?? null
                     )
                 ),
                 $item
             );
 
-            $item['tpl'] = $config[$item['name']]['tpl'] ?? (
-                    $this->params['tpl_' . $tplKey . $item['name']] ?? (
-                        $this->params['tpl_' . $tplKey . '*'] ?? '@CODE:[+value+]'
+            $item['mf.tpl'] = $config[$item['mf.name']]['tpl'] ?? (
+                    $this->params['tpl_' . $tplKey . $item['mf.name']] ?? (
+                        $this->params['tpl_' . $tplKey . '*'] ?? '@CODE:[+mf.value+]'
                     )
                 );
 
-            if (isset($item['columns']) ?? is_array($item['columns'])) {
-                $tpl = $config[$item['name']]['tpl.columns'] ?? (
-                        $this->params['tpl_' . $tplKey . $item['name'] . '.columns'] ?? '@CODE:[+items+]'
+            if (isset($item['mf.columns']) ?? is_array($item['mf.columns'])) {
+                $tpl = $config[$item['mf.name']]['tpl.columns'] ?? (
+                        $this->params['tpl_' . $tplKey . $item['mf.name'] . '.columns'] ?? '@CODE:[+mf.items+]'
                     );
 
-                $item['columns'] = $this->tpl($tpl, [
-                    'items' => $this->renderData(
-                        $item['columns'],
-                        $config[$item['name']]['columns'] ?? [], $tplKey . $item['name'] . '.columns.'
+                $item['mf.columns'] = $this->tpl($tpl, [
+                    'mf.items' => $this->renderData(
+                        $item['mf.columns'],
+                        $config[$item['mf.name']]['columns'] ?? [], $tplKey . $item['mf.name'] . '.columns.'
                     )
                 ]);
             }
 
-            if (isset($item['items']) ?? is_array($item['items'])) {
-                $item['items'] = $this->renderData(
-                    $item['items'],
-                    $config[$item['name']]['items'] ?? [], $tplKey . $item['name'] . '.'
+            if (isset($item['mf.items']) ?? is_array($item['mf.items'])) {
+                $item['mf.items'] = $this->renderData(
+                    $item['mf.items'],
+                    $config[$item['mf.name']]['items'] ?? [], $tplKey . $item['mf.name'] . '.'
                 );
             }
 
             $out .= $this->tpl(
-                $item['tpl'],
+                $item['mf.tpl'],
                 $item
             );
         }
@@ -139,14 +143,6 @@ class MfJsFront
     protected function tpl($tpl = null, array $plh = []): string
     {
         $evo = evolutionCMS();
-
-        if (empty($tpl)) {
-            if (isset($plh['mf.items'])) {
-                $tpl = '@CODE:[+mf.items+]';
-            } else {
-                $tpl = '@CODE:[+value+]';
-            }
-        }
 
         return class_exists('DLTemplate') ? DLTemplate::getInstance($evo)
             ->parseChunk($tpl, $plh, false, true) : $evo->parseText($evo->getTpl($tpl), $plh);
