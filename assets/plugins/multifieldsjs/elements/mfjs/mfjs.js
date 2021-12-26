@@ -695,7 +695,7 @@
           if (data.actions) {
             data.actions = actions;
           } else {
-            return '';
+            return data['templates'] ? '<div class="mfjs-actions" data-actions="mfjs' + data.id + '"><i onclick="MfJs.actionTemplate(this);" class="mfjs-actions-template fa"></i></div>' : '';
           }
         }
         if (~data.actions.indexOf('move')) {
