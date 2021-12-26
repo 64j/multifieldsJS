@@ -549,18 +549,35 @@
               case 'option':
               case 'checkbox':
                 let values = data.value.split('||');
-                data['elements'].split('||').map(function(item, i) {
-                  item = item.split('==');
+                let elements = {};
+                if (typeof data['elements'] === 'string') {
+                  let key, value;
+                  data['elements'].split('||').map(function(item, i) {
+                    [key, value] = item.split('==', 2);
+                    if (typeof value === 'undefined') {
+                      value = key;
+                    }
+                    elements[key] = value;
+                  });
+                } else if (Array.isArray(data['elements'])) {
+                  for (let i in data['elements']) {
+                    let value = data['elements'][i];
+                    elements[value] = value;
+                  }
+                }  else {
+                  elements = data['elements'];
+                }
+                for (let i in elements) {
                   data['input'] += MfJs.template(MfJs.elements[data['type']]['input'], {
                     id: 'mfjs' + data['id'] + '_' + i,
                     type: data['type'],
                     name: 'mfjs' + data['id'],
-                    value: item[0],
-                    title: typeof item[1] !== 'undefined' ? item[1] : item[0],
-                    selected: ~values.indexOf(item[0]) ? 'selected' : '',
-                    checked: ~values.indexOf(item[0]) ? 'checked' : '',
+                    value: i,
+                    title: typeof elements[i] !== 'undefined' ? elements[i] : i,
+                    selected: ~values.indexOf(i) ? 'selected' : '',
+                    checked: ~values.indexOf(i) ? 'checked' : '',
                   }, null, null);
-                });
+                }
                 break;
             }
           }
