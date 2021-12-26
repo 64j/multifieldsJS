@@ -38,22 +38,30 @@ class MfJsFront
      */
     public function render(array $params): string
     {
-        $this->params = $params;
-        $tvName = $this->params['tvName'] ?? null;
-        $tv = evolutionCMS()->documentObject[$tvName] ?? null;
-        $api = $this->params['api'] ?? null;
+        $this->params = array_merge([
+            'api' => '',
+            'name' => ''
+        ], $params);
 
-        if (is_null($tv)) {
+        $value = evolutionCMS()->documentObject[$this->params['name']][1] ?? null;
+
+        if (empty($value)) {
             return '';
         }
 
-        switch ($api) {
+        switch ($this->params['api']) {
             case '1':
             case 'json':
-                return $tv[1];
+                return $value;
 
             default:
-                return $this->renderData(json_decode($tv[1] ?: '{}', true), $this->getConfig($tvName));
+                return $this->tpl(
+                    '@CODE:[+mf.items+]',
+                    $this->renderData(
+                        json_decode($value, true),
+                        $this->getConfig($this->params['name'])
+                    )
+                );
         }
     }
 
@@ -61,15 +69,15 @@ class MfJsFront
      * @param array $data
      * @param array $config
      * @param string $tplKey
-     * @return string
+     * @return array
      */
-    protected function renderData(array $data, array $config, string $tplKey = ''): string
+    protected function renderData(array $data, array $config, string $tplKey = ''): array
     {
-        $out = '';
+        $out = [];
 
         foreach ($data as $key => $item) {
             $item = array_combine(array_map(function ($name) {
-                return 'mf.' . $name;
+                return substr($name, 0, 5) == 'mfjs.' ? 'mf.' . substr($name, 5) : 'mf.' . $name;
             }, array_keys($item)), $item);
 
             $item['mf.name'] = $item['mf.name'] ?? (string) $key;
@@ -77,7 +85,9 @@ class MfJsFront
             $this->prepare(
                 $config[$item['mf.name']]['prepare'] ?? (
                     $this->params['prepare_' . $tplKey . $item['mf.name']] ?? (
-                        $this->params['prepare_' . $tplKey . '*'] ?? null
+                        $this->params['prepare_' . $tplKey . '*'] ?? (
+                            $this->params['prepare_' . $item['mf.name']] ?? null
+                        )
                     )
                 ),
                 $item
@@ -85,7 +95,9 @@ class MfJsFront
 
             $item['mf.tpl'] = $config[$item['mf.name']]['tpl'] ?? (
                     $this->params['tpl_' . $tplKey . $item['mf.name']] ?? (
-                        $this->params['tpl_' . $tplKey . '*'] ?? '@CODE:[+mf.value+]'
+                        $this->params['tpl_' . $tplKey . '*'] ?? (
+                            $this->params['tpl_' . $item['mf.name']] ?? '@CODE:[+mf.value+]'
+                        )
                     )
                 );
 
@@ -103,16 +115,27 @@ class MfJsFront
             }
 
             if (isset($item['mf.items']) ?? is_array($item['mf.items'])) {
-                $item['mf.items'] = $this->renderData(
+                $items = $this->renderData(
                     $item['mf.items'],
                     $config[$item['mf.name']]['items'] ?? [], $tplKey . $item['mf.name'] . '.'
                 );
+                $item = array_merge($item, $items);
             }
 
-            $out .= $this->tpl(
+            $key = $item['mf.name'];
+
+            if (!isset($out[$key])) {
+                $out[$key] = '';
+            }
+
+            $out[$key] .= $this->tpl(
                 $item['mf.tpl'],
                 $item
             );
+        }
+
+        if (!empty($out)) {
+            $out['mf.items'] = is_array($out) ? implode($out) : $out;
         }
 
         return $out;
