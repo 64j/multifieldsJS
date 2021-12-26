@@ -76,6 +76,21 @@ class MfJsFront
         $out = [];
 
         foreach ($data as $key => $item) {
+//            if ($item['type'] == 'row') {
+//                $classes = [];
+//                foreach ($item as $k => $v) {
+//                    if (substr($k, 0, 5) == 'mfjs.') {
+//                        if ($v) {
+//                            $classes[] = substr($k, 5) . '-' . $v;
+//                        }
+//                    }
+//                }
+//
+//                if (!empty($classes)) {
+//                    $item['class'] = implode(' ', $classes);
+//                }
+//            }
+
             $item = array_combine(array_map(function ($name) {
                 return substr($name, 0, 5) == 'mfjs.' ? 'mf.' . substr($name, 5) : 'mf.' . $name;
             }, array_keys($item)), $item);
@@ -115,11 +130,10 @@ class MfJsFront
             }
 
             if (isset($item['mf.items']) ?? is_array($item['mf.items'])) {
-                $items = $this->renderData(
+                $item = array_merge($item, $this->renderData(
                     $item['mf.items'],
                     $config[$item['mf.name']]['items'] ?? [], $tplKey . $item['mf.name'] . '.'
-                );
-                $item = array_merge($item, $items);
+                ));
             }
 
             $key = $item['mf.name'];
