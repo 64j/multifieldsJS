@@ -2,9 +2,14 @@
  * @version 1.0
  */
 MfJs.Templates = {
-  get: function(el, name) {
+  templates: {
+    wrapper: '<div class="mfjs-templates mfjs-context-menu contextMenu">[+items+]</div>',
+    item: '<div class="mfjs-option" onclick="MfJs.Templates.get(this);" data-template-name="[+name+]">[+label+]</div>',
+  },
+
+  get: function(el) {
     let parent = el.parentElement.parentElement;
-    MfJs.Render.render([MfJs.Config.find(name)], {}, parent.querySelector(':scope > .mfjs-items'));
+    MfJs.Render.render([MfJs.Config.find(el.dataset['templateName'])], {}, parent.querySelector(':scope > .mfjs-items'));
     MfJs.Render.init();
     parent.classList.remove('open');
   },
@@ -16,23 +21,28 @@ MfJs.Templates = {
     if (typeof data !== 'undefined') {
       if (typeof data === 'boolean' && data) {
         for (let k in templates) {
-          if (templates.hasOwnProperty(k) && !templates[k].hidden) {
+          if (!templates[k].hidden) {
             tpls += MfJs.Templates.renderItem(k, templates[k].label || k);
           }
         }
       } else {
         for (let k in templates) {
-          if (templates.hasOwnProperty(k) && ~data.indexOf(k)) {
+          if (~data.indexOf(k)) {
             tpls += MfJs.Templates.renderItem(k, templates[k].label || k);
           }
         }
       }
     }
 
-    return tpls ? '<div class="mfjs-templates mfjs-context-menu contextMenu">' + tpls + '</div>' : '';
+    return tpls ? MfJs.Render.template(MfJs.Templates.templates.wrapper, {
+      items: tpls,
+    }) : '';
   },
 
-  renderItem: function(key, name) {
-    return '<div class="mfjs-option" onclick="MfJs.Templates.get(this, \'' + key + '\');" data-template-name="' + key + '">' + name + '</div>';
+  renderItem: function(name, label) {
+    return MfJs.Render.template(MfJs.Templates.templates.item, {
+      name: name,
+      label: label,
+    });
   },
 };
