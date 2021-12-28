@@ -27,6 +27,11 @@ class MfJsBack
         return dirname(__DIR__);
     }
 
+    protected function getAssetsPath(): string
+    {
+        return $this->getBasePath() . '/assets';
+    }
+
     /**
      * @param string $filename
      * @return array
@@ -42,6 +47,7 @@ class MfJsBack
             )
         ) {
             return array_map(function ($value) {
+                $value = trim($value);
                 switch (true) {
                     case is_numeric($value):
                         return is_float($value + 0) ? (float) $value : (int) $value;
@@ -64,24 +70,23 @@ class MfJsBack
     public function render(): string
     {
         $out = [];
-        $elements = array_unique(array_merge([$this->getBasePath() . '/elements/mfjs'], glob($this->getBasePath() . '/elements/*', GLOB_ONLYDIR)));
+        $items = array_merge(
+            array_unique(array_merge([$this->getAssetsPath() . '/components/MfJs.js'], glob($this->getAssetsPath() . '/components/*.{css,js}', GLOB_BRACE))),
+            glob($this->getAssetsPath() . '/elements/*/*.{css,js}', GLOB_BRACE)
+        );
 
-        foreach ($elements as $path) {
-            if ($elements_elements = glob($path . '/*.{css,js}', GLOB_BRACE)) {
-                foreach ($elements_elements as $element) {
-                    $docBlock = $this->mfJsParseDocBlock($element);
-                    if (!empty($docBlock['disabled'])) {
-                        continue;
-                    }
-                    $version = $docBlock['version'] ?? filemtime($element);
-                    $ext = pathinfo($element, PATHINFO_EXTENSION);
-                    $element = str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $element);
-                    if ($ext == 'css') {
-                        $out[] = '<link rel="stylesheet" type="text/css" href="..' . $element . '?v=' . $version . '"/>';
-                    } elseif ($ext == 'js') {
-                        $out[] = '<script src="..' . $element . '?v=' . $version . '"></script>';
-                    }
-                }
+        foreach ($items as $item) {
+            $docBlock = $this->mfJsParseDocBlock($item);
+            if (!empty($docBlock['disabled'])) {
+                continue;
+            }
+            $version = $docBlock['version'] ?? filemtime($item);
+            $ext = pathinfo($item, PATHINFO_EXTENSION);
+            $item = str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $item);
+            if ($ext == 'css') {
+                $out[] = '<link rel="stylesheet" type="text/css" href="..' . $item . '?v=' . $version . '"/>';
+            } elseif ($ext == 'js') {
+                $out[] = '<script src="..' . $item . '?v=' . $version . '"></script>';
             }
         }
 
@@ -104,9 +109,9 @@ class MfJsBack
 
         if ($config = $this->getConfig($name)) {
             return '
-                <div id="mfjs-' . $id . '" class="mfjs" data-mfjs="' . $id . '"></div>
+                <div id="' . $name . '" class="mfjs"></div>
                 <textarea name="tv' . $id . '" rows="10" hidden>' . $value . '</textarea>
-                <script>MfJs.initElement(\'mfjs-' . $id . '\', ' . $config . ');</script>';
+                <script>MfJs.render(\'' . $name . '\', ' . $config . ');</script>';
         } else {
             return 'Config not found for tv: <strong>' . $name . '</strong>';
         }

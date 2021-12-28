@@ -5,4 +5,9 @@
  * @author 64j
  */
 
-echo MfJsFront::getInstance()->render($params ?? []);
+if (!defined('MODX_BASE_PATH')) {
+    die('HACK???');
+}
+
+echo MfJsFront::getInstance()
+    ->render($params ?? []);
