@@ -7,5 +7,7 @@
 .mfjs .mfjs-actions-resize-col { left: auto; right: 0; }
 .mfjs .mfjs-row > .mfjs-helper { position: absolute; opacity: 0; visibility: hidden; z-index: 1; top: .5rem; left: 50%; transform: translateX(-50%); margin: -.25rem .25rem; padding: .5rem; background-color: rgba(0, 0, 0, .2); color: #222; font-size: 1.2rem; white-space: nowrap; transition: .5s; }
 .mfjs .mfjs-row > .mfjs-helper.show { opacity: 1; visibility: visible; }
+/* info */
+.mfjs .mfjs-row > .mfjs-info .mfjs-info-cols > *, .mfjs .mfjs-row > .mfjs-info .mfjs-info-offsets > * { display: none; padding: 0 .12rem; }
 /* darkness */
 .darkness .mfjs .mfjs-row > .mfjs-helper { background: rgba(255, 255, 255, 2); }

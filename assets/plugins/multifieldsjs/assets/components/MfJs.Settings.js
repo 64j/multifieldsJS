@@ -113,11 +113,12 @@ MfJs.Settings = {
           let data_col = breakpoint.name ? '-' + breakpoint.name : '';
 
           css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '="auto"]:not([data-mfjs-disable-col]) { flex: 0 0 auto; max-width: none; width: auto; }';
-          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '=""]:not([data-mfjs-disable-col]) { flex-basis: 0; flex-grow: 1; }';
+          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '=""]:not([data-mfjs-disable-col]) { flex-basis: 0; flex-grow: 1; max-width: 100%; }';
 
           for (let i = 1; i <= 12; i++) {
             let n = parseFloat((100 / 12 * i).toFixed(4));
             css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '="' + i + '"]:not([data-mfjs-disable-col]) { flex: 0 0 ' + n + '%; max-width: ' + n + '%; }';
+            css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' .mfjs-show-breakpoint' + data_col + ' { display: block; }';
             if (i < 12) {
               css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-offset' + data_col + '="' + i + '"]:not([data-mfjs-disable-offset]) { margin-left: ' + n + '%; }';
             }

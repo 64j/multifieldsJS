@@ -42,8 +42,10 @@
 .mfjs-toolbar .mfjs-btn:hover path, .mfjs-toolbar .mfjs-btn.active path { fill: #fff; }
 .mfjs-toolbar .mfjs-breakpoints { display: flex; flex-direction: row; flex-wrap: wrap; margin-right: auto; }
 .mfjs-toolbar ~ .mfjs-actions { z-index: 2; top: 2rem; }
-.mfjs-grid { display: flex; justify-content: center; position: absolute; z-index: 0; left: 0; top: 0; right: 0; bottom: 2px; border: 1px solid #d4d4d4; pointer-events: none; }
-.mfjs-grid > div { position: absolute; left: auto; top: 0; right: auto; bottom: 0; width: 100%; border-left: 1px dashed #c6c6c6; border-right: 1px dashed #c6c6c6; }
+.mfjs .mfjs-grid { display: flex; justify-content: center; position: absolute; z-index: 0; left: 0; top: 0; right: 0; bottom: -1px; border: 1px solid #d4d4d4; pointer-events: none; }
+.mfjs .mfjs-grid > div { position: absolute; left: auto; top: 0; right: auto; bottom: 0; width: 100%; border-left: 1px dashed #c6c6c6; border-right: 1px dashed #c6c6c6; }
+.mfjs:not([data-mfjs-breakpoint]) .mfjs-grid { border-color: transparent }
+.mfjs[data-mfjs-breakpoint] > .mfjs-items { border-left: 1px dashed #d4d4d4; border-right: 1px dashed #d4d4d4; }
 .mfjs-mode-fullscreen { overflow: hidden; }
 .mfjs[data-mfjs-fullscreen] { position: fixed; z-index: 1050; left: 0; top: 0; right: 0; bottom: 0; margin: 0 !important; padding: 2.15rem 15rem 0 0 !important; background: #dcdcdc; }
 .mfjs[data-mfjs-fullscreen] > .mfjs-toolbar { position: absolute; left: 0; top: 0; }
@@ -78,6 +80,9 @@
 .mfjs-actions .mfjs-actions-expand::before { content: "\f077"; }
 .mfjs [data-mfjs-hide] > .mfjs-actions .mfjs-actions-hide::before { content: "\f070"; }
 .mfjs [data-mfjs-expand] > .mfjs-actions .mfjs-actions-expand::before { content: "\f078"; }
+/* info */
+.mfjs-info { display: flex; flex-wrap: nowrap; flex-direction: row; position: absolute; opacity: 0; overflow: hidden; z-index: 8; left: auto; right: .125rem; bottom: 100%; margin-bottom: -.125rem; padding: 0 .125rem; transition: 0s; background: #2196f3; color: #fff; font-size: .75rem; }
+.mfjs [data-name]:hover > .mfjs-info, .mfjs [data-name].mfjs-active > .mfjs-info { opacity: 1; overflow: visible; transition-duration: .3s; }
 /* input */
 .mfjs [data-type="image"], .mfjs [data-type="file"], .mfjs [data-type="date"] { display: flex; flex-wrap: wrap; }
 .mfjs [data-type="image"] input + i, .mfjs [data-type="file"] input + i, .mfjs [data-type="date"] input + i { display: flex; align-items: center; position: relative; z-index: 3; margin-left: -1.3rem; width: 1.3rem; cursor: pointer; }
