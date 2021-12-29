@@ -17,7 +17,7 @@ MfJs.Actions = {
       if (data.actions) {
         data.actions = actions;
       } else {
-        return data['templates'] ? MfJs.Actions.render(['template'], data) : '';
+        return MfJs.Actions.render(data['templates'] && ['template'] || [], data);
       }
     }
     if (~data.actions.indexOf('move')) {
@@ -36,7 +36,7 @@ MfJs.Actions = {
   },
 
   render: function(actions, data) {
-    return MfJs.Render.template(MfJs.Actions.templates.wrapper, {
+    return actions.length && MfJs.Render.template(MfJs.Actions.templates.wrapper, {
       id: data.id,
       items: actions.map(function(action) {
         if (MfJs.Elements[data.type]?.Actions?.item) {
@@ -44,7 +44,7 @@ MfJs.Actions = {
         }
         return MfJs.Actions.item(action);
       }).join('')
-    });
+    }) || '';
   },
 
   item: function(action) {

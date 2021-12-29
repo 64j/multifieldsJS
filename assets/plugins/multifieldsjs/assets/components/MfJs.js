@@ -141,12 +141,10 @@
           }
 
           for (let i in item) {
-            if (item.hasOwnProperty(i)) {
-              let ii = i.replace(/([a-z])([A-Z])/g, '$1-$2').replace('mfjs-', 'mfjs.').toLowerCase();
-              if (ii !== i) {
-                item[ii] = item[i];
-                delete item[i];
-              }
+            let ii = i.replace(/([a-z])([A-Z])/g, '$1-$2').replace('mfjs-', 'mfjs.').toLowerCase();
+            if (ii !== i) {
+              item[ii] = item[i];
+              delete item[i];
             }
           }
 

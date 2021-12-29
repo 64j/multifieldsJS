@@ -74,12 +74,10 @@ MfJs.Render = {
     }
 
     for (let i in data) {
-      if (data.hasOwnProperty(i)) {
-        let ii = i.replace(/([a-z])([A-Z])/g, '$1-$2').replace('mfjs.', 'mfjs-').toLowerCase();
-        if (ii !== i) {
-          data.attr += ' data-' + ii + '="' + data[i] + '"';
-          delete data[i];
-        }
+      let ii = i.replace(/([a-z])([A-Z])/g, '$1-$2').replace('mfjs.', 'mfjs-').toLowerCase();
+      if (ii !== i) {
+        data.attr += ' data-' + ii + '="' + data[i] + '"';
+        delete data[i];
       }
     }
 
@@ -157,27 +155,25 @@ MfJs.Render = {
 
   init: function() {
     for (let k in MfJs.Render.initElements) {
-      if (MfJs.Render.initElements.hasOwnProperty(k)) {
-        if (MfJs.Elements?.[MfJs.Render.initElements[k]]?.Render?.init) {
-          MfJs.Elements[MfJs.Render.initElements[k]].Render.init(k);
-        }
-        [...document.querySelectorAll('#' + k + ' > .mfjs-items')].map(function(el) {
-          Sortable.create(el, {
-            animation: 0,
-            draggable: '.mfjs-draggable',
-            dragClass: 'mfjs-drag',
-            ghostClass: 'mfjs-active',
-            selectedClass: 'mfjs-selected',
-            handle: '.mfjs-actions-move',
-            onEnd: function() {
-              el = document.getElementById(k).querySelector(':scope > .mfjs-items [data-type="id"]');
-              if (el && MfJs.Elements?.id?.Render?.init) {
-                MfJs.Elements.id.Render.init(el.id);
-              }
-            },
-          });
-        });
+      if (MfJs.Elements?.[MfJs.Render.initElements[k]]?.Render?.init) {
+        MfJs.Elements[MfJs.Render.initElements[k]].Render.init(k);
       }
+      [...document.querySelectorAll('#' + k + ' > .mfjs-items')].map(function(el) {
+        Sortable.create(el, {
+          animation: 0,
+          draggable: '.mfjs-draggable',
+          dragClass: 'mfjs-drag',
+          ghostClass: 'mfjs-active',
+          selectedClass: 'mfjs-selected',
+          handle: '.mfjs-actions-move',
+          onEnd: function() {
+            el = document.getElementById(k).querySelector(':scope > .mfjs-items [data-type="id"]');
+            if (el && MfJs.Elements?.id?.Render?.init) {
+              MfJs.Elements.id.Render.init(el.id);
+            }
+          },
+        });
+      });
     }
     MfJs.Render.initElements = {};
   },

@@ -37,24 +37,24 @@ MfJs.Config = new function() {
     let a = {};
     let key = parents.pop();
     for (let k in data) {
-      if (data.hasOwnProperty(k) && k === key) {
+      if (k === key) {
+        let item = data[k];
+        a = item;
         if (parents.length) {
-          if (data[k]['items']) {
-            if (MfJs.Elements[data[k]['type']]?.Config?.findChildren) {
-              data[k]['items'] = MfJs.Elements[data[k]['type']].Config.findChildren(data[k]['items']);
+          if (item.items) {
+            if (MfJs.Elements[item.type]?.Config?.findChildren) {
+              item.items = MfJs.Elements[item.type].Config.findChildren(item.items);
             }
-            a = MfJs.Config.findChildren(data[k]['items'], parents);
-          } else if (data[k]['templates']) {
-            a = MfJs.Config.findChildren(Object.keys(data[k]['templates']).reduce(function(obj, key) {
-              obj[data[k]['templates'][key]] = MfJs.Config.get('templates')[data[k]['templates'][key]] || {};
+            a = MfJs.Config.findChildren(item.items, parents);
+          } else if (item.templates) {
+            a = MfJs.Config.findChildren(Object.keys(item.templates).reduce(function(obj, key) {
+              obj[item.templates[key]] = MfJs.Config.get('templates')[item.templates[key]] || {};
               return obj;
             }, {}), parents);
           } else {
-            a = data[k];
             break;
           }
         } else {
-          a = data[k];
           break;
         }
       }

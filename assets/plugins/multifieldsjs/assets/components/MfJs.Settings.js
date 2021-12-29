@@ -94,55 +94,53 @@ MfJs.Settings = {
 
       if (breakpoints) {
         for (let k in breakpoints) {
-          if (breakpoints.hasOwnProperty(k)) {
-            let breakpoint = breakpoints[k];
-            if (typeof breakpoint === 'string') {
-              delete breakpoints[k];
-              breakpoint = MfJs.Settings.default.toolbar.breakpoints[breakpoint];
-              breakpoints[breakpoint.name] = breakpoint;
+          let breakpoint = breakpoints[k];
+          if (typeof breakpoint === 'string') {
+            delete breakpoints[k];
+            breakpoint = MfJs.Settings.default.toolbar.breakpoints[breakpoint];
+            breakpoints[breakpoint.name] = breakpoint;
+          }
+          let active = '';
+          if (localStorage['mfjs-breakpoint-' + MfJs.Container.id] === breakpoint.name || !localStorage['mfjs-breakpoint-' + MfJs.Container.id] && !breakpoint.name) {
+            active = ' active';
+            if (breakpoint.name) {
+              MfJs.Container.setAttribute('data-mfjs-breakpoint', breakpoint.name);
+              MfJs.Container.querySelector(':scope > .mfjs-items').style.maxWidth = breakpoint.value + 'px';
             }
-            let active = '';
-            if (localStorage['mfjs-breakpoint-' + MfJs.Container.id] === breakpoint.name || !localStorage['mfjs-breakpoint-' + MfJs.Container.id] && !breakpoint.name) {
-              active = ' active';
-              if (breakpoint.name) {
-                MfJs.Container.setAttribute('data-mfjs-breakpoint', breakpoint.name);
-                MfJs.Container.querySelector(':scope > .mfjs-items').style.maxWidth = breakpoint.value + 'px';
-              }
+          }
+
+          let data_breakpoint = breakpoint.name ? '[data-mfjs-breakpoint="' + breakpoint.name + '"]' : ':not([data-mfjs-breakpoint])';
+          let data_col = breakpoint.name ? '-' + breakpoint.name : '';
+
+          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '="auto"]:not([data-mfjs-disable-col]) { flex: 0 0 auto; max-width: none; width: auto; }';
+          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '=""]:not([data-mfjs-disable-col]) { flex-basis: 0; flex-grow: 1; }';
+
+          for (let i = 1; i <= 12; i++) {
+            let n = parseFloat((100 / 12 * i).toFixed(4));
+            css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '="' + i + '"]:not([data-mfjs-disable-col]) { flex: 0 0 ' + n + '%; max-width: ' + n + '%; }';
+            if (i < 12) {
+              css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-offset' + data_col + '="' + i + '"]:not([data-mfjs-disable-offset]) { margin-left: ' + n + '%; }';
             }
+          }
 
-            let data_breakpoint = breakpoint.name ? '[data-mfjs-breakpoint="' + breakpoint.name + '"]' : ':not([data-mfjs-breakpoint])';
-            let data_col = breakpoint.name ? '-' + breakpoint.name : '';
-
-            css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '="auto"]:not([data-mfjs-disable-col]) { flex: 0 0 auto; max-width: none; width: auto; }';
-            css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '=""]:not([data-mfjs-disable-col]) { flex-basis: 0; flex-grow: 1; }';
-
-            for (let i = 1; i <= 12; i++) {
-              let n = parseFloat((100 / 12 * i).toFixed(4));
-              css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '="' + i + '"]:not([data-mfjs-disable-col]) { flex: 0 0 ' + n + '%; max-width: ' + n + '%; }';
-              if (i < 12) {
-                css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-offset' + data_col + '="' + i + '"]:not([data-mfjs-disable-offset]) { margin-left: ' + n + '%; }';
-              }
-            }
-
-            if (breakpoint.value) {
-              htmlGrid += MfJs.Render.template(MfJs.Settings.templates.gridItem, {
-                width: breakpoint.value,
-              });
-            }
-
-            htmlBreakpoints += MfJs.Render.template(MfJs.Settings.templates.action, {
-              action: 'breakpoint',
-              title: breakpoint.label,
-              class: active,
-              attr: 'data-breakpoint-key="' + breakpoint.value + '" data-breakpoint-name="' + breakpoint.name + '"',
-              icon: breakpoint.icon || '<i class="fa ' + breakpoint.class + '"></i>',
+          if (breakpoint.value) {
+            htmlGrid += MfJs.Render.template(MfJs.Settings.templates.gridItem, {
+              width: breakpoint.value,
             });
           }
+
+          htmlBreakpoints += MfJs.Render.template(MfJs.Settings.templates.action, {
+            action: 'breakpoint',
+            title: breakpoint.label,
+            class: active,
+            attr: 'data-breakpoint-key="' + breakpoint.value + '" data-breakpoint-name="' + breakpoint.name + '"',
+            icon: breakpoint.icon || '<i class="fa ' + breakpoint.class + '"></i>',
+          });
         }
 
         if (htmlBreakpoints) {
           htmlToolbar += MfJs.Render.template(MfJs.Settings.templates.breakpoints, {
-            items: htmlBreakpoints
+            items: htmlBreakpoints,
           });
         }
       }

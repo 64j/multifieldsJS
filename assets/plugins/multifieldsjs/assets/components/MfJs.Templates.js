@@ -4,39 +4,30 @@
 MfJs.Templates = {
   templates: {
     wrapper: '<div class="mfjs-templates mfjs-context-menu contextMenu">[+items+]</div>',
-    item: '<div class="mfjs-option" onclick="MfJs.Templates.get(this);" data-template-name="[+name+]">[+label+]</div>',
+    item: '<div class="mfjs-option" onclick="MfJs.Templates.get(\'[+name+]\', this);" data-template-name="[+name+]">[+label+]</div>',
   },
 
-  get: function(el) {
+  get: function(name, el) {
     let parent = el.parentElement.parentElement;
-    MfJs.Render.render([MfJs.Config.find(el.dataset['templateName'])], {}, parent.querySelector(':scope > .mfjs-items'));
+    MfJs.Render.render([MfJs.Config.find(name)], {}, parent.querySelector(':scope > .mfjs-items'));
     MfJs.Render.init();
     parent.classList.remove('open');
   },
 
   render: function(data) {
-    let tpls = '',
-        templates = MfJs.Config.get('templates') || {};
+    let templates = [];
 
     if (typeof data !== 'undefined') {
-      if (typeof data === 'boolean' && data) {
-        for (let k in templates) {
-          if (!templates[k].hidden) {
-            tpls += MfJs.Templates.renderItem(k, templates[k].label || k);
-          }
-        }
-      } else {
-        for (let k in templates) {
-          if (~data.indexOf(k)) {
-            tpls += MfJs.Templates.renderItem(k, templates[k].label || k);
-          }
-        }
-      }
+      templates = Object.entries(MfJs.Config.get('templates') || {}).filter(function([k, item]) {
+        return typeof data === 'boolean' && data ? !item.hidden : ~data.indexOf(k);
+      });
     }
 
-    return tpls ? MfJs.Render.template(MfJs.Templates.templates.wrapper, {
-      items: tpls,
-    }) : '';
+    return templates.length && MfJs.Render.template(MfJs.Templates.templates.wrapper, {
+      items: templates.map(function([k, item]) {
+        return MfJs.Templates.renderItem(k, item.label || k);
+      }).join(''),
+    }) || '';
   },
 
   renderItem: function(name, label) {
