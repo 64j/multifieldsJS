@@ -154,11 +154,11 @@ MfJs.Render = {
   },
 
   init: function() {
-    for (let k in MfJs.Render.initElements) {
-      if (MfJs.Elements?.[MfJs.Render.initElements[k]]?.Render?.init) {
-        MfJs.Elements[MfJs.Render.initElements[k]].Render.init(k);
+    Object.entries(MfJs.Render.initElements).map(function([id, type]) {
+      if (MfJs.Elements?.[type]?.Render?.init) {
+        MfJs.Elements[type].Render.init(id);
       }
-      [...document.querySelectorAll('#' + k + ' > .mfjs-items')].map(function(el) {
+      [...document.querySelectorAll('#' + id + ' > .mfjs-items')].map(function(el) {
         Sortable.create(el, {
           animation: 0,
           draggable: '.mfjs-draggable',
@@ -167,14 +167,14 @@ MfJs.Render = {
           selectedClass: 'mfjs-selected',
           handle: '.mfjs-actions-move',
           onEnd: function() {
-            el = document.getElementById(k).querySelector(':scope > .mfjs-items [data-type="id"]');
+            el = document.getElementById(id).querySelector(':scope > .mfjs-items [data-type="id"]');
             if (el && MfJs.Elements?.id?.Render?.init) {
               MfJs.Elements.id.Render.init(el.id);
             }
           },
         });
       });
-    }
+    });
     MfJs.Render.initElements = {};
   },
 
