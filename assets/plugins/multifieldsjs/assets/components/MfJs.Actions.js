@@ -6,7 +6,7 @@ MfJs.Actions = {
 
   templates: {
     wrapper: '<div class="mfjs-actions" data-actions="[+id+]">[+items+]</div>',
-    item: '<i class="mfjs-actions-[+action+] fa" onclick="MfJs.Actions.action(\'[+action+]\', this);"></i>'
+    item: '<i class="mfjs-actions-[+action+] fa" onclick="MfJs.Actions.action(\'[+action+]\', this);"></i>',
   },
 
   set: function(data) {
@@ -17,19 +17,21 @@ MfJs.Actions = {
       if (data.actions) {
         data.actions = actions;
       } else {
-        return MfJs.Actions.render(data['templates'] && ['template'] || [], data);
+        data.actions = actions = data.templates && ['template'] || [];
+        return MfJs.Actions.render(actions, data);
       }
     }
     if (~data.actions.indexOf('move')) {
       data.class += ' mfjs-draggable';
     }
 
-    actions = actions.filter(function(n) {
+    data.actions = actions = actions.filter(function(n) {
       return ~data.actions.indexOf(n);
     });
 
-    if (MfJs.Config.get('templates')?.[data.name]?.templates) {
+    if (data.templates) {
       actions.push('template');
+      data.actions.push('template');
     }
 
     return MfJs.Actions.render(actions, data);
@@ -43,7 +45,7 @@ MfJs.Actions = {
           return MfJs.Elements[data.type].Actions.item(action, data);
         }
         return MfJs.Actions.item(action);
-      }).join('')
+      }).join(''),
     }) || '';
   },
 
@@ -59,6 +61,10 @@ MfJs.Actions = {
       MfJs.Elements[type].Actions.actions[action](el);
     } else if (MfJs.Actions.actions?.[action]) {
       MfJs.Actions.actions[action](el);
+    } else {
+      MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.noAction, {
+        action: action,
+      }));
     }
   },
 

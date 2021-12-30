@@ -6,6 +6,11 @@ MfJs.Render = {
 
   render: function(data, config, parent, replace) {
     Object.entries(data).map(function([key, item]) {
+      if (!MfJs.Elements[item.type]) {
+        return MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.elementNotFound, {
+          type: item.type
+        }));
+      }
       let items;
       item.name = item.name || key;
       item = MfJs.Render.item(item, config[item.name] || {});
@@ -73,6 +78,10 @@ MfJs.Render = {
       data = MfJs.Elements[data.type].Render.item(data, config);
     }
 
+    if (!data.actions && !data.templates) {
+      data.attr += ' data-no-actions';
+    }
+
     for (let i in data) {
       let ii = i.replace(/([a-z])([A-Z])/g, '$1-$2').replace('mfjs.', 'mfjs-').toLowerCase();
       if (ii !== i) {
@@ -118,18 +127,30 @@ MfJs.Render = {
                 elements['$' + i] = item.elements[i];
               }
             }
-            for (let i in elements) {
-              let k = i.substr(1);
+            Object.entries(elements).map(function([key, element], index) {
+              let k = key.substr(1);
               item.input += MfJs.Render.template(MfJs.Elements[item.type].input, {
-                id: 'mfjs' + item.id + '_' + k,
+                id: item.id + '_' + index,
                 type: item.type,
-                name: 'mfjs' + item.id,
+                name: item.id,
                 value: k,
-                title: typeof elements[i] !== 'undefined' ? elements[i] : k,
+                title: element || k,
                 selected: ~values.indexOf(k) ? 'selected' : '',
                 checked: ~values.indexOf(k) ? 'checked' : '',
               }, null, null);
-            }
+            });
+            // for (let i in elements) {
+            //   let k = i.substr(1);
+            //   item.input += MfJs.Render.template(MfJs.Elements[item.type].input, {
+            //     id: item.id + '_' + k,
+            //     type: item.type,
+            //     name: item.id,
+            //     value: k,
+            //     title: typeof elements[i] !== 'undefined' ? elements[i] : k,
+            //     selected: ~values.indexOf(k) ? 'selected' : '',
+            //     checked: ~values.indexOf(k) ? 'checked' : '',
+            //   }, null, null);
+            // }
             break;
         }
       }

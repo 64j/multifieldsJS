@@ -50,6 +50,8 @@ MfJs.Settings = {
     },
     messages: {
       limit: 'The limit ([+limit+]) for adding elements of this name has been exceeded.',
+      elementNotFound: 'Element [+type+] not found.',
+      noAction: 'Action [+action+] not found.'
     },
   },
 

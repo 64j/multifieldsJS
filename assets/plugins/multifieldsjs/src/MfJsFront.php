@@ -38,12 +38,15 @@ class MfJsFront
      */
     public function render(array $params): string
     {
+        $evo = evolutionCMS();
+
         $this->params = array_merge([
-            'api' => '',
-            'name' => ''
+            'api' => null,
+            'tvName' => null,
+            'docid' => $evo->documentIdentifier
         ], $params);
 
-        $value = evolutionCMS()->documentObject[$this->params['name']][1] ?? null;
+        $value = $evo->documentObject[$this->params['tvName']][1] ?? null;
 
         if (empty($value)) {
             return '';
@@ -59,7 +62,7 @@ class MfJsFront
                     '@CODE:[+mf.items+]',
                     $this->renderData(
                         json_decode($value, true),
-                        $this->getConfig($this->params['name'])
+                        $this->getConfig($this->params['tvName'])
                     )
                 );
         }
@@ -76,21 +79,6 @@ class MfJsFront
         $out = [];
 
         foreach ($data as $key => $item) {
-//            if ($item['type'] == 'row') {
-//                $classes = [];
-//                foreach ($item as $k => $v) {
-//                    if (substr($k, 0, 5) == 'mfjs.') {
-//                        if ($v) {
-//                            $classes[] = substr($k, 5) . '-' . $v;
-//                        }
-//                    }
-//                }
-//
-//                if (!empty($classes)) {
-//                    $item['class'] = implode(' ', $classes);
-//                }
-//            }
-
             $item = array_combine(array_map(function ($name) {
                 return substr($name, 0, 5) == 'mfjs.' ? 'mf.' . substr($name, 5) : 'mf.' . $name;
             }, array_keys($item)), $item);
@@ -207,5 +195,15 @@ class MfJsFront
                 $data = $evo->runSnippet($name, $args) ?: $data;
             }
         }
+    }
+
+    /**
+     * @param string $name
+     * @param $default
+     * @return mixed|string
+     */
+    public function param(string $name, $default = null)
+    {
+        return $this->params[$name] ?? ($default ?? '');
     }
 }
