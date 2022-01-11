@@ -2,19 +2,18 @@
  * @version 1.0
  */
 MfJs.Elements['table'] = {
-  template: '' +
-      '<div id="[+id+]" class="mfjs-row col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
-      '    [+title+]\n' +
-      '    [+templates+]\n' +
-      '    [+actions+]\n' +
-      '    [+value+]\n' +
-      '    <div class="mfjs-table-columns row">[+header+]</div>\n' +
-      '    <div class="mfjs-items [+items.class+]">\n' +
-      '        [+items+]\n' +
-      '    </div>\n' +
-      '</div>',
-
   templates: {
+    wrapper: '' +
+        '<div id="[+id+]" class="mfjs-row col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
+        '    [+title+]\n' +
+        '    [+templates+]\n' +
+        '    [+actions+]\n' +
+        '    [+value+]\n' +
+        '    <div class="mfjs-table-columns row">[+header+]</div>\n' +
+        '    <div class="mfjs-items [+items.class+]">\n' +
+        '        [+items+]\n' +
+        '    </div>\n' +
+        '</div>',
     column: '' +
         '<div id="[+id+]" class="col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
         '    <input type="text" id="tv[+id+]" class="form-control [+item.class+]" name="tv[+id+]" value="[+value+]" placeholder="[+placeholder+]" onchange="documentDirty=true;" [+item.attr+]>\n' +
@@ -55,9 +54,9 @@ MfJs.Elements['table'] = {
 
     data.items = Object.values(data.items);
     data.items.map(function(row) {
-      row.name = 'row';
+      row.name = data.name + ':row';
       row.type = 'row';
-      row.items = Object.values(row.items);
+      row.items = Object.values(row.items || {});
       row.items.map(function(item) {
         delete item.name;
       });
@@ -74,6 +73,10 @@ MfJs.Elements['table'] = {
     item: function(data, config) {
       if (data.columns) {
         data.types = config.types || [
+          {
+            type: 'id',
+            label: 'ID',
+          },
           {
             type: 'text',
             label: 'Text',
@@ -129,28 +132,44 @@ MfJs.Elements['table'] = {
       data.items = Object.values(data.items || [
         {
           items: data.columns,
-        }]);
-      data.items.map(function(row) {
-        row.name = 'row';
-        row.type = 'row';
-        row.value = false;
-        row.actions = ['add', 'del', 'move'];
-        row.attr = 'data-clone="1"';
-        if (data['limit.rows']) {
-          row.attr += ' data-limit="' + data['limit.rows'] + '"';
+        },
+      ]);
+
+      if (data.items.length) {
+        if (!data.items[0].type || data.items[0].type === 'table:row' || data.items[0].type === 'row') {
+          data.items.map(function(row) {
+            row.name = data.name + ':row';
+            row.type = 'row';
+            row.value = false;
+            row.actions = ['add', 'del', 'move'];
+            row.attr = 'data-clone="1"' + (data['limit.rows'] ? ' data-limit="' + data['limit.rows'] + '"' : '');
+            row.items = row.items.map(function(item, j) {
+              item.actions = item.type === 'thumb:image' ? ['edit'] : false;
+              if (data?.columns?.[j]) {
+                item.type = data.columns[j]['type'] || item.type || 'text';
+              }
+              return item;
+            });
+          });
+        } else {
+          data.items = [
+            {
+              name: data.name + ':row',
+              type: 'row',
+              value: false,
+              actions: ['add', 'del', 'move'],
+              attr: 'data-clone="1"' + (data['limit.rows'] ? ' data-limit="' + data['limit.rows'] + '"' : ''),
+              items: data.items.map(function(item, j) {
+                item.actions = item.type === 'thumb:image' ? ['edit'] : false;
+                if (data?.columns?.[j]) {
+                  item.type = data.columns[j]['type'] || item.type || 'text';
+                }
+                return item;
+              }),
+            },
+          ];
         }
-        row.items = Object.values(row.items);
-        row.items.map(function(item, j) {
-          if (item.type === 'thumb:image') {
-            item.actions = ['edit'];
-          } else {
-            item.actions = false;
-          }
-          if (data.columns && data.columns[j]) {
-            item.type = data.columns[j]['type'] || item.type || 'text';
-          }
-        });
-      });
+      }
 
       data.value = MfJs.Elements.row.Render.value(data);
 
@@ -180,7 +199,7 @@ MfJs.Elements['table'] = {
             if (col.type) {
               col.attr = '';
               for (let k in data.types) {
-                if (data.types.hasOwnProperty(k) && col.type === data.types[k]['type']) {
+                if (col.type === data.types[k]['type']) {
                   if (data.types[k]['elements']) {
                     col.elements = data.types[k]['elements'];
                   }

@@ -2,17 +2,19 @@
  * @version 1.0
  */
 MfJs.Elements['row'] = {
-  template: '' +
-      '<div id="[+id+]" class="mfjs-row col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
-      '    [+title+]\n' +
-      '    [+templates+]\n' +
-      '    [+actions+]\n' +
-      '    [+info+]\n' +
-      '    [+value+]\n' +
-      '    <div class="mfjs-items [+items.class+]">\n' +
-      '        [+items+]\n' +
-      '    </div>\n' +
-      '</div>',
+  templates: {
+    wrapper: '' +
+        '<div id="[+id+]" class="mfjs-row col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
+        '    [+title+]\n' +
+        '    [+templates+]\n' +
+        '    [+actions+]\n' +
+        '    [+info+]\n' +
+        '    [+value+]\n' +
+        '    <div class="mfjs-items [+items.class+]">\n' +
+        '        [+items+]\n' +
+        '    </div>\n' +
+        '</div>',
+  },
 
   Render: {
     item: function(data) {

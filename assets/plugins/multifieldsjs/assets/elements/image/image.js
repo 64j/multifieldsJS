@@ -2,13 +2,15 @@
  * @version 1.0
  */
 MfJs.Elements['image'] = {
-  template: '' +
-      '<div id="[+id+]" class="col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
-      '    [+actions+]\n' +
-      '    [+title+]\n' +
-      '    <input type="text" id="tv[+id+]" class="form-control [+item.class+]" name="[+name+]" placeholder="[+placeholder+]" value="[+value+]" onchange="documentDirty=true;MfJs.Elements.image.Actions.actions.edit(this);" [+item.attr+]>\n' +
-      '    <i class="[+icon+]" onclick="BrowseServer(\'tv[+id+]\');[+onclick+]"></i>\n' +
-      '</div>',
+  templates: {
+    wrapper: '' +
+        '<div id="[+id+]" class="col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
+        '    [+actions+]\n' +
+        '    [+title+]\n' +
+        '    <input type="text" id="tv[+id+]" class="form-control [+item.class+]" name="[+name+]" placeholder="[+placeholder+]" value="[+value+]" onchange="documentDirty=true;MfJs.Elements.image.Actions.actions.edit(this);" [+item.attr+]>\n' +
+        '    <i class="[+icon+]" onclick="BrowseServer(\'tv[+id+]\');[+onclick+]"></i>\n' +
+        '</div>',
+  },
 
   interval: null,
 

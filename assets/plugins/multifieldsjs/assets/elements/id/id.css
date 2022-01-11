@@ -2,7 +2,6 @@
 * @version 1.0
 */
 .mfjs [data-type="id"]:first-child { max-width: 4rem; }
-.mfjs [data-type="id"] > input { pointer-events: none; }
-.mfjs .mfjs-items > [data-type="id"] > input { text-align: right; background: #f9f9f9 !important; }
+.mfjs .mfjs-items > [data-type="id"] > input { pointer-events: none; text-align: right; background: #f9f9f9 !important; }
 /* darkness */
 .darkness .mfjs .mfjs-items > [data-type="id"] > input { background: #202329 !important; }

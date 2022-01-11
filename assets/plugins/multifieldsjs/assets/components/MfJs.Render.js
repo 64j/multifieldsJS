@@ -26,7 +26,7 @@ MfJs.Render = {
         item.items = '';
       }
       let $config = item['$config'] || {};
-      item = MfJs.Render.template(MfJs.Elements[item.type]['template'], item, true, null);
+      item = MfJs.Render.template(MfJs.Elements[item.type].templates.wrapper, item, true, null);
       if (replace === 1) {
         parent.parentElement.replaceChild(item, parent);
       } else if (replace === 2) {
@@ -94,6 +94,48 @@ MfJs.Render = {
   },
 
   elements: function(item) {
+    if (item.elements) {
+      let elements = item.elements;
+      item.elements = [];
+      if (typeof elements === 'string') {
+        let key, value;
+        elements.split('||').map(function(element) {
+          [key, value] = element.split('==', 2);
+          if (typeof value === 'undefined') {
+            value = key;
+          }
+          item.elements.push({
+            key: key,
+            value: value
+          });
+        });
+      } else if (Array.isArray(elements)) {
+        for (let i in elements) {
+          item.elements.push({
+            key: elements[i],
+            value: elements[i]
+          });
+        }
+      } else if (elements instanceof Object) {
+        for (let key in elements) {
+          let value = elements[key];
+          key = key[0] === '`' ? key.substr(1) : key;
+          item.elements.push({
+            key: key,
+            value: value
+          });
+        }
+      }
+    }
+
+    if (MfJs.Elements[item.type]?.Render?.elements) {
+      item = MfJs.Elements[item.type].Render.elements(item);
+    }
+
+    return item;
+  },
+
+  _elements: function(item) {
     item.input = '';
 
     if (MfJs.Elements[item.type]?.Render?.elements) {

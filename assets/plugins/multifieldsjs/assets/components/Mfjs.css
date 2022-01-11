@@ -67,7 +67,7 @@
 .mfjs-templates ~ .mfjs-actions i { background: #0a5; }
 .mfjs [data-type]:hover > .mfjs-actions i { opacity: 1; visibility: visible; transition: .3s; }
 .mfjs-actions i::before { position: relative; z-index: 1; font-size: .625rem; color: #fff; }
-.mfjs-actions .mfjs-actions-template { position: absolute; left: 50%; top: auto; bottom: -0.65rem; transform: translateX(-50%); font-weight: 600; font-size: 1.4rem; border-radius: 50%; color: #0a5; }
+.mfjs-actions .mfjs-actions-template { position: absolute; z-index: 3; left: 50%; top: auto; bottom: -0.65rem; transform: translateX(-50%); font-weight: 600; font-size: 1.4rem; border-radius: 50%; color: #0a5; }
 .mfjs > .mfjs-actions .mfjs-actions-template { bottom: -1.5rem; opacity: 1; visibility: visible; }
 .mfjs-actions .mfjs-actions-template::before { content: "\f067"; font-weight: 900; font-size: .4em; }
 .mfjs-actions .mfjs-actions-template::after { content: "\f111"; position: absolute; z-index: 0; }

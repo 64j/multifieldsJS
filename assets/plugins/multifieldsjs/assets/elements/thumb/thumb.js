@@ -6,15 +6,17 @@ MfJs.Elements['thumb'] = {
   parent: null,
   interval: null,
 
-  template: '' +
-      '<div id="[+id+]" class="mfjs-thumb col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
-      '    [+title+]\n' +
-      '    [+actions+]\n' +
-      '    [+value+]\n' +
-      '    <div class="mfjs-items [+items.class+]">\n' +
-      '        [+items+]\n' +
-      '    </div>\n' +
-      '</div>',
+  templates: {
+    wrapper: '' +
+        '<div id="[+id+]" class="mfjs-thumb col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
+        '    [+title+]\n' +
+        '    [+actions+]\n' +
+        '    [+value+]\n' +
+        '    <div class="mfjs-items [+items.class+]">\n' +
+        '        [+items+]\n' +
+        '    </div>\n' +
+        '</div>',
+  },
 
   Render: {
     item: function(data, config) {
