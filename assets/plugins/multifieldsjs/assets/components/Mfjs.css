@@ -27,7 +27,7 @@
 .mfjs-context-menu.show { opacity: 1; visibility: visible; }
 .mfjs-context-menu .selected { background: #1976d2; color: #fff; }
 /* templates */
-.mfjs-templates { overflow: auto; top: auto; left: 50%; bottom: 0; margin: 0 0 0 -7.5rem; width: 13rem !important; max-height: 20rem; opacity: 0; visibility: hidden; display: block !important; font-size: .75rem; transform: translate3d(-50%, 50%, 0); transition: opacity .1s, visibility .1s, bottom .1s; }
+.mfjs-templates { overflow: auto; top: auto; left: 50%; bottom: -1rem; margin: 0 0 0 -7.5rem; width: 13rem !important; max-height: 20rem; opacity: 0; visibility: hidden; display: block !important; font-size: .75rem; transform: translate(-50%, 50%); transition: opacity .1s, visibility .1s, bottom .1s; }
 .mfjs.open > .mfjs-templates, .mfjs [data-type].open:hover > .mfjs-templates, .mfjs-templates.show { opacity: 1; visibility: visible }
 /* templates view icons */
 .mfjs[data-view="icons"] > .mfjs-actions { display: none; }

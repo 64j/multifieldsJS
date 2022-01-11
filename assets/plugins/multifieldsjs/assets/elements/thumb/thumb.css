@@ -6,7 +6,7 @@
 .mfjs .mfjs-thumb[data-mfjs-hide]::before { opacity: .5; }
 .mfjs .mfjs-thumb.mfjs-group > .mfjs-actions i { background: #0a5; }
 .mfjs .mfjs-thumb.mfjs-group:hover > .mfjs-actions::before { border-color: #0a5; }
-.mfjs .mfjs-thumb > .mfjs-actions > .mfjs-actions-edit { position: absolute; left: 50%; top: 50%; transform: translate3d(-50%, -50%, 0); opacity: .6; visibility: visible; width: 2rem; height: 2rem; background: rgba(255, 255, 255, .5) !important; border-radius: 50%; }
+.mfjs .mfjs-thumb > .mfjs-actions > .mfjs-actions-edit { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: .6; visibility: visible; width: 2rem; height: 2rem; background: rgba(255, 255, 255, .5) !important; border-radius: 50%; }
 .mfjs .mfjs-thumb > .mfjs-actions > .mfjs-actions-edit::before { content: "\f044"; margin: 0 0 .1rem .25rem; color: #222; font-size: 1rem; }
 .mfjs .mfjs-thumb[data-type="thumb"]:not(.mfjs-group) > .mfjs-actions .mfjs-actions-edit::before { content: "\f03e"; margin: 0; }
 .mfjs .mfjs-thumb[data-type="thumb"][data-multi]:not(.mfjs-group) > .mfjs-actions .mfjs-actions-edit::before { content: "\f302"; }
