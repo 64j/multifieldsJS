@@ -78,10 +78,6 @@ MfJs.Render = {
       data = MfJs.Elements[data.type].Render.item(data, config);
     }
 
-    if (!data.actions && !data.templates) {
-      data.attr += ' data-no-actions';
-    }
-
     for (let i in data) {
       let ii = i.replace(/([a-z])([A-Z])/g, '$1-$2').replace('mfjs.', 'mfjs-').toLowerCase();
       if (ii !== i) {
@@ -164,7 +160,7 @@ MfJs.Render = {
           selectedClass: 'mfjs-selected',
           handle: '.mfjs-actions-move',
           onEnd: function() {
-            el = document.getElementById(id).querySelector(':scope > .mfjs-items [data-type="id"]');
+            el = document.getElementById(id).querySelector(':scope > .mfjs-items .mfjs-items > [data-type="id"]');
             if (el && MfJs.Elements?.id?.Render?.init) {
               MfJs.Elements.id.Render.init(el.id);
             }
