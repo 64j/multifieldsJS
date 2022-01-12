@@ -142,9 +142,9 @@ MfJs.Actions = {
             templates.height += templates.children[i].offsetHeight;
           }
           if (templates.height / 2 > t.position.top - (t.offsetHeight / 2)) {
-            templates.style.marginBottom = t.position.top - (t.offsetHeight / 2) - (templates.height / 2) + 'px';
+            templates.style.marginBottom = Math.floor(t.position.top - (t.offsetHeight / 2) - (templates.height / 2)) + 'px';
           } else if (t.position.top + (templates.height / 2) > window.innerHeight) {
-            templates.style.marginBottom = t.position.top + (templates.height / 2) - window.innerHeight + 'px';
+            templates.style.marginBottom = Math.ceil(t.position.top + (templates.height / 2) - window.innerHeight) + 'px';
           } else {
             templates.style.marginBottom = '';
           }

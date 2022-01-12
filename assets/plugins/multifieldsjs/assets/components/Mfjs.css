@@ -28,9 +28,9 @@
 .mfjs-context-menu .selected { background: #1976d2; color: #fff; }
 .mfjs-context-menu > div:hover .fa { color: #fff !important; }
 /* templates */
-.mfjs-templates { overflow: auto; top: auto; left: 50%; bottom: 4px; margin: 0 0 0 -7rem; width: 13rem !important; max-height: 0; opacity: 0; visibility: hidden; display: block !important; font-size: .75rem; transform: translate(-50%, 50%); transition: all .1s; }
-.mfjs-templates.show { max-height: 20rem; }
-.mfjs.open > .mfjs-templates, .mfjs [data-type].open:hover > .mfjs-templates, .mfjs-templates.show { opacity: 1; visibility: visible }
+.mfjs-templates { overflow: hidden; top: auto; left: 50%; bottom: 4px; margin: 0 0 0 -7rem; width: 13rem !important; max-height: 0; opacity: 0; visibility: hidden; display: block !important; font-size: .75rem; transform: translate(-50%, 50%); transition: all .1s; }
+.mfjs-templates.show { max-height: 20rem; overflow: auto; }
+.mfjs.open > .mfjs-templates, .mfjs [data-type].open:hover > .mfjs-templates, .mfjs-templates.show { overflow: auto; opacity: 1; visibility: visible }
 /* templates view icons */
 .mfjs[data-view="icons"] > .mfjs-actions { display: none; }
 .mfjs[data-view="icons"] > .mfjs-templates { position: relative; z-index: 1; left: 0; top: 0; right: 0; bottom: 0; margin: 0 0 -3px; padding: 0 0 .5rem; width: 100% !important; max-width: none; max-height: none; opacity: 1; visibility: visible; box-shadow: none; background: none; display: flex !important; flex-wrap: wrap; flex-direction: row; align-items: stretch; justify-content: center; transform: none; border-radius: 0; border-bottom: 1px solid transparent; background: #f9f9f9; transition: none; }
