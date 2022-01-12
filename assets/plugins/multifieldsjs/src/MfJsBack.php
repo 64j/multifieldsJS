@@ -69,6 +69,7 @@ class MfJsBack
      */
     public function render(): string
     {
+        $evo = evolutionCMS();
         $out = [];
         $items = array_merge(
             array_unique(array_merge([$this->getAssetsPath() . '/components/MfJs.js'], glob($this->getAssetsPath() . '/components/*.{css,js}', GLOB_BRACE))),
@@ -81,12 +82,17 @@ class MfJsBack
                 continue;
             }
             $version = $docBlock['version'] ?? filemtime($item);
-            $ext = pathinfo($item, PATHINFO_EXTENSION);
+            $pathinfo = pathinfo($item);
             $item = str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $item);
-            if ($ext == 'css') {
+            if ($pathinfo['extension'] == 'css') {
                 $out[] = '<link rel="stylesheet" type="text/css" href="..' . $item . '?v=' . $version . '"/>';
-            } elseif ($ext == 'js') {
+            } elseif ($pathinfo['extension'] == 'js') {
                 $out[] = '<script src="..' . $item . '?v=' . $version . '"></script>';
+                if (is_file($file = $pathinfo['dirname'] . '/lang/' . $evo->getConfig('manager_language') . '.js')) {
+                    $out[] = '<script src="..' . str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $file) . '?v=' . $version . '"></script>';
+                } elseif (is_file($file = $pathinfo['dirname'] . '/lang/en.js')) {
+                    $out[] = '<script src="..' . str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $file) . '?v=' . $version . '"></script>';
+                }
             }
         }
 

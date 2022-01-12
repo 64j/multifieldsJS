@@ -14,24 +14,31 @@ MfJs.Elements['table'] = {
         '        [+items+]\n' +
         '    </div>\n' +
         '</div>',
+    value: '' +
+        '<div class="mfjs-value" [+hidden+]>\n' +
+        '    <input type="[+type+]" class="form-control form-control-sm" value="[+value+]" placeholder="[+placeholder+]" [+hidden+]>\n' +
+        '</div>',
     column: '' +
         '<div id="[+id+]" class="col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
         '    <input type="text" id="tv[+id+]" class="form-control [+item.class+]" name="tv[+id+]" value="[+value+]" placeholder="[+placeholder+]" onchange="documentDirty=true;" [+item.attr+]>\n' +
         '    <div data-mfjs-actions>' +
-        '      <i class="mfjs-column-menu-toggle fas fa-angle-down" onclick="MfJs.Elements.table.Actions.columns.menu(this)"></i>\n' +
         '      [+menu+]\n' +
+        '      <i class="mfjs-column-menu-toggle fas fa-angle-down" onclick="MfJs.Elements.table.Actions.columns.menu(this)"></i>\n' +
         '    </div>' +
         '</div>',
     menu: '' +
         '<div class="mfjs-column-menu mfjs-context-menu contextMenu">\n' +
-        '    <div onclick="MfJs.Elements.table.Actions.columns.add(this);">\n' +
-        '        <i class="fa fa-plus fa-fw"></i> Add column\n' +
+        '    <div onclick="MfJs.Elements.table.Actions.columns.addAfter(this);">\n' +
+        '        <i class="fa fa-share fa-fw"></i> [+actions.addAfter+]\n' +
+        '    </div>\n' +
+        '    <div onclick="MfJs.Elements.table.Actions.columns.addBefore(this);">\n' +
+        '        <i class="fa fa-reply fa-fw"></i> [+actions.addBefore+]\n' +
         '    </div>\n' +
         '    <div onclick="MfJs.Elements.table.Actions.columns.del(this);">\n' +
-        '        <i class="fa fa-minus fa-fw"></i> Delete column\n' +
+        '        <i class="fa fa-minus-circle fa-fw text-danger"></i> [+actions.del+]\n' +
         '    </div>\n' +
         '    <div onclick="MfJs.Elements.table.Actions.columns.clear(this);">\n' +
-        '        <i class="fa fa-eraser fa-fw"></i> Clear column\n' +
+        '        <i class="fa fa-eraser fa-fw"></i> [+actions.clear+]\n' +
         '    </div>\n' +
         '    <div class="separator cntxMnuSeparator"></div>\n' +
         '    [+types+]\n' +
@@ -72,30 +79,33 @@ MfJs.Elements['table'] = {
   Render: {
     item: function(data, config) {
       if (data.columns) {
-        data.types = config.types || [
+        if (typeof config.types === 'string') {
+          config.types = JSON.parse(config.types);
+        }
+        data.types = config.types || data.types || [
           {
             type: 'id',
-            label: 'ID',
+            label: MfJs.Elements.table.Lang.types.id,
           },
           {
             type: 'text',
-            label: 'Text',
+            label: MfJs.Elements.table.Lang.types.text,
           },
           {
             type: 'number',
-            label: 'Number',
+            label: MfJs.Elements.table.Lang.types.number,
           },
           {
             type: 'date',
-            label: 'Date',
+            label: MfJs.Elements.table.Lang.types.date,
           },
           {
             type: 'image',
-            label: 'Image',
+            label: MfJs.Elements.table.Lang.types.image,
           },
           {
             type: 'file',
-            label: 'File',
+            label: MfJs.Elements.table.Lang.types.file,
           },
         ];
 
@@ -121,6 +131,7 @@ MfJs.Elements['table'] = {
 
           item.menu = MfJs.Render.template(MfJs.Elements.table.templates.menu, {
             types: types,
+            actions: MfJs.Elements.table.Lang.menu.actions,
           });
 
           data['header'] += MfJs.Render.template(MfJs.Elements.table.templates.column, item);
@@ -186,7 +197,12 @@ MfJs.Elements['table'] = {
       } else if (typeof data.value === 'undefined') {
         data.value = '';
       }
-      return '<div class="mfjs-value" ' + hidden + '><input type="' + type + '" class="form-control form-control-sm" value="' + MfJs.escape(data.value) + '" placeholder="' + (data.placeholder || '') + '" ' + hidden + '></div>';
+      return MfJs.Render.template(MfJs.Elements.table.templates.value, {
+        type: type,
+        value: MfJs.escape(data.value),
+        placeholder: data.placeholder || '',
+        hidden: hidden,
+      });
     },
     elements: function(data) {
       if (!data.class) {
@@ -245,8 +261,36 @@ MfJs.Elements['table'] = {
 
         menu.classList.toggle('show');
       },
-      add: function(t) {
+      addBefore: function(t) {
         let col = t.closest('[data-type][data-name]'),
+            name = col.dataset.name,
+            parent = col.parentElement.closest('[data-type][data-name]'),
+            items = parent && parent.querySelector(':scope > .mfjs-items') || null;
+        if (items) {
+          col.insertAdjacentHTML('beforebegin', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), MfJs.qid('mfjs')));
+          [...col.parentElement.children].map(function(el, i) {
+            el.dataset.name = i.toString();
+          });
+          [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
+            let id = MfJs.qid('mfjs');
+            col.insertAdjacentHTML('beforebegin', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), id));
+            col = col.previousElementSibling;
+            if (col.dataset.type === 'thumb:image') {
+              col.style.backgroundImage = '';
+              col.querySelector('.mfjs-value input').value = '';
+            }
+            [...col.parentElement.children].map(function(el, i) {
+              el.dataset.name = i.toString();
+            });
+            MfJs.Render.addInit(id, col.dataset.type);
+          });
+          MfJs.Elements.table.Actions.columns.clear(col.previousElementSibling.querySelector('.mfjs-column-menu > div'));
+          MfJs.Render.init();
+        }
+      },
+      addAfter: function(t) {
+        let col = t.closest('[data-type][data-name]'),
+            name = col.dataset.name,
             parent = col.parentElement.closest('[data-type][data-name]'),
             items = parent && parent.querySelector(':scope > .mfjs-items') || null;
         if (items) {
@@ -254,7 +298,7 @@ MfJs.Elements['table'] = {
           [...col.parentElement.children].map(function(el, i) {
             el.dataset.name = i.toString();
           });
-          [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + col.dataset.name + '"]')].map(function(col) {
+          [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
             let id = MfJs.qid('mfjs');
             col.insertAdjacentHTML('afterend', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), id));
             col = col.nextElementSibling;
@@ -267,6 +311,7 @@ MfJs.Elements['table'] = {
             });
             MfJs.Render.addInit(id, col.dataset.type);
           });
+          MfJs.Elements.table.Actions.columns.clear(col.nextElementSibling.querySelector('.mfjs-column-menu > div'));
           MfJs.Render.init();
         }
       },

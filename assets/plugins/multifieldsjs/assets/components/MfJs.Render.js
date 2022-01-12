@@ -135,72 +135,6 @@ MfJs.Render = {
     return item;
   },
 
-  _elements: function(item) {
-    item.input = '';
-
-    if (MfJs.Elements[item.type]?.Render?.elements) {
-      item = MfJs.Elements[item.type].Render.elements(item);
-    } else {
-      if (item.elements && MfJs.Elements[item.type].input) {
-        switch (item.type) {
-          case 'dropdown':
-          case 'listbox':
-          case 'listbox-multiple':
-          case 'option':
-          case 'checkbox':
-            let values = item.value.split('||'),
-                elements = {};
-            if (typeof item.elements === 'string') {
-              let key, value;
-              item.elements.split('||').map(function(element) {
-                [key, value] = element.split('==', 2);
-                if (typeof value === 'undefined') {
-                  value = key;
-                }
-                elements['$' + key] = value;
-              });
-            } else if (Array.isArray(item.elements)) {
-              for (let i in item.elements) {
-                let value = item.elements[i];
-                elements['$' + value] = value;
-              }
-            } else {
-              for (let i in item.elements) {
-                elements['$' + i] = item.elements[i];
-              }
-            }
-            Object.entries(elements).map(function([key, element], index) {
-              let k = key.substr(1);
-              item.input += MfJs.Render.template(MfJs.Elements[item.type].input, {
-                id: item.id + '_' + index,
-                type: item.type,
-                name: item.id,
-                value: k,
-                title: element || k,
-                selected: ~values.indexOf(k) ? 'selected' : '',
-                checked: ~values.indexOf(k) ? 'checked' : '',
-              }, null, null);
-            });
-            // for (let i in elements) {
-            //   let k = i.substr(1);
-            //   item.input += MfJs.Render.template(MfJs.Elements[item.type].input, {
-            //     id: item.id + '_' + k,
-            //     type: item.type,
-            //     name: item.id,
-            //     value: k,
-            //     title: typeof elements[i] !== 'undefined' ? elements[i] : k,
-            //     selected: ~values.indexOf(k) ? 'selected' : '',
-            //     checked: ~values.indexOf(k) ? 'checked' : '',
-            //   }, null, null);
-            // }
-            break;
-        }
-      }
-    }
-
-    return item;
-  },
-
   title: function(title) {
     if (typeof title === 'boolean') {
       title = title ? '' : undefined;
@@ -242,7 +176,7 @@ MfJs.Render = {
   },
 
   template: function(html, data, isDom, cleanKeys) {
-    data = data || {};
+    data = MfJs.Render.flatData(data || {});
     isDom = isDom || false;
     if (typeof cleanKeys === 'undefined') {
       cleanKeys = true;
@@ -261,5 +195,18 @@ MfJs.Render = {
     } else {
       return html;
     }
+  },
+
+  flatData: function(data, key) {
+    let out = {};
+    key = key && key + '.' || '';
+    for (let k in data) {
+      if (typeof data[k] === 'object') {
+        Object.assign(out, MfJs.Render.flatData(data[k], key + k));
+      } else {
+        out[key + k] = data[k];
+      }
+    }
+    return out;
   },
 };

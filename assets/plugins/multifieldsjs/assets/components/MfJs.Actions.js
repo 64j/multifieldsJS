@@ -133,7 +133,23 @@ MfJs.Actions = {
     template: function(t) {
       let templates = t.parentElement.parentElement.querySelector('.mfjs-templates');
       if (templates.children.length > 1) {
-        templates.classList.toggle('show');
+        if (templates.classList.contains('show')) {
+          templates.classList.remove('show');
+        } else {
+          t.position = t.getBoundingClientRect();
+          templates.height = 0;
+          for (let i = 0; i < templates.children.length; i++) {
+            templates.height += templates.children[i].offsetHeight;
+          }
+          if (templates.height / 2 > t.position.top - (t.offsetHeight / 2)) {
+            templates.style.marginBottom = t.position.top - (t.offsetHeight / 2) - (templates.height / 2) + 'px';
+          } else if (t.position.top + (templates.height / 2) > window.innerHeight) {
+            templates.style.marginBottom = t.position.top + (templates.height / 2) - window.innerHeight + 'px';
+          } else {
+            templates.style.marginBottom = '';
+          }
+          templates.classList.add('show');
+        }
       } else {
         templates.firstElementChild.click();
       }
