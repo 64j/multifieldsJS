@@ -16,6 +16,11 @@ MfJs.Elements['thumb:image'] = {
         '        [+items+]\n' +
         '    </div>\n' +
         '</div>',
+
+    value: '' +
+        '<div class="mfjs-value" hidden>\n' +
+        '    <input type="text" id="[+id+]_value" class="form-control form-control-sm" value="[+value+]">\n' +
+        '</div>',
   },
 
   Render: {
@@ -31,22 +36,18 @@ MfJs.Elements['thumb:image'] = {
         data.attr += ' data-image="' + image + '"';
       }
 
-      if (data.clone) {
-        data.attr += ' data-clone="1"';
-      }
-
       data.attr += ' style="background-image: url(../' + data.value + ');"';
-      data.value = MfJs.Elements['thumb:image'].Render.value(data);
+      data.value = MfJs.Render.template(MfJs.Elements['thumb:image'].templates.value, {
+        id: data.id,
+        value: MfJs.escape(data.value || ''),
+      });
 
       if (data.items) {
         delete data.items;
       }
 
       return data;
-    },
-    value: function(data) {
-      return '<div class="mfjs-value" hidden><input type="text" id="' + data.id + '_value" class="form-control form-control-sm" value="' + MfJs.escape(data.value || '') + '"></div>';
-    },
+    }
   },
 
   Actions: {

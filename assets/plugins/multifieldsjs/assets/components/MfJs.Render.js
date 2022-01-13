@@ -5,47 +5,53 @@ MfJs.Render = {
   initElements: {},
 
   render: function(data, config, parent, replace) {
-    Object.entries(data).map(function([key, item]) {
-      if (!MfJs.Elements[item.type]) {
+    Object.entries(data).map(function([key, data]) {
+      if (!MfJs.Elements[data.type]) {
         return MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.elementNotFound, {
-          type: item.type
+          type: data.type,
         }));
       }
       let items;
-      item.name = item.name || key;
-      item = MfJs.Render.item(item, config[item.name] || {});
-      item = MfJs.Render.elements(item);
-      item.actions = MfJs.Actions.set(item);
-      if (item.title && typeof item.title !== 'boolean') {
-        item.attr += ' data-title="' + item.title + '"';
+      data.name = data.name || key;
+      data = MfJs.Render.item(data, config[data.name] || {});
+      data = MfJs.Render.elements(data);
+      data.title = MfJs.Render.title(data.title);
+      data.actions = MfJs.Actions.set(data);
+      data.value = typeof data.value === 'undefined' ? '' : data.value;
+      if (data.title && typeof data.title !== 'boolean') {
+        data.attr += ' data-title="' + data.title + '"';
       }
-      item.title = MfJs.Render.title(item.title);
-      MfJs.Render.addInit(item.id, item.type);
-      if (item.items) {
-        items = item.items;
-        item.items = '';
+      if (data.clone) {
+        data.attr += ' data-clone="1"';
       }
-      let $config = item['$config'] || {};
-      item = MfJs.Render.template(MfJs.Elements[item.type].templates.wrapper, item, true, null);
+      if (data.limit) {
+        data.attr += ' data-limit="' + data.limit + '"';
+      }
+      MfJs.Render.addInit(data.id, data.type);
+      if (data.items) {
+        items = data.items;
+        data.items = '';
+      }
+      let item = MfJs.Render.template(MfJs.Elements[data.type].templates.wrapper, data, true, null);
       if (replace === 1) {
         parent.parentElement.replaceChild(item, parent);
       } else if (replace === 2) {
-        if (parent.parentElement.querySelectorAll('[data-name="' + item.dataset.name + '"]').length >= item.dataset.limit) {
+        if (parent.parentElement.querySelectorAll('[data-name="' + data.name + '"]').length >= data.limit) {
           return MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.limit, {
-            limit: item.dataset.limit,
+            limit: data.limit,
           }, null, null));
         }
         parent.insertAdjacentElement('afterend', item);
       } else {
-        if (parent.querySelectorAll('[data-name="' + item.dataset.name + '"]').length >= item.dataset.limit) {
+        if (parent.querySelectorAll('[data-name="' + data.name + '"]').length >= data.limit) {
           return MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.limit, {
-            limit: item.dataset.limit,
+            limit: data.limit,
           }, null, null));
         }
         parent.appendChild(item);
       }
       if (items) {
-        MfJs.Render.render(items, $config, item.querySelector(':scope > .mfjs-items'));
+        MfJs.Render.render(items, data['$config'] || {}, item.querySelector(':scope > .mfjs-items'));
       }
     });
   },
@@ -62,17 +68,8 @@ MfJs.Render = {
     }
 
     data.id = MfJs.qid('mfjs');
-
-    if (typeof data.value === 'undefined') {
-      data.value = '';
-    }
-
     data.class = data.class || '';
     data.attr = data.attr || '';
-
-    if (data.limit) {
-      data.attr += ' data-limit="' + data.limit + '"';
-    }
 
     if (MfJs.Elements[data.type]?.Render?.item) {
       data = MfJs.Elements[data.type].Render.item(data, config);
@@ -136,10 +133,6 @@ MfJs.Render = {
       title = title ? '' : undefined;
     }
     return typeof title !== 'undefined' ? '<div class="mfjs-title">' + title + '</div>' : '';
-  },
-
-  value: function(value) {
-    return value;
   },
 
   addInit: function(id, type) {

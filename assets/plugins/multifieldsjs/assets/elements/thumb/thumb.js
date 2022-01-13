@@ -16,6 +16,10 @@ MfJs.Elements['thumb'] = {
         '        [+items+]\n' +
         '    </div>\n' +
         '</div>',
+    value: '' +
+        '<div class="mfjs-value" hidden>\n' +
+        '    <input type="text" id="[+id+]_value" class="form-control form-control-sm" value="[+value+]">\n' +
+        '</div>',
   },
 
   Render: {
@@ -31,12 +35,12 @@ MfJs.Elements['thumb'] = {
       }
 
       data.attr += 'style="background-image: url(../' + data.value + ');"';
-      data.value = MfJs.Elements.thumb.Render.value(data);
+      data.value = MfJs.Render.template(MfJs.Elements['thumb:image'].templates.value, {
+        id: data.id,
+        value: MfJs.escape(data.value || ''),
+      });
 
       return data;
-    },
-    value: function(data) {
-      return '<div class="mfjs-value" hidden><input type="text" id="' + data.id + '_value" class="form-control form-control-sm" value="' + MfJs.escape(data.value || '') + '"></div>';
     },
   },
 

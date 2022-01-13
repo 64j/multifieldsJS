@@ -73,7 +73,7 @@ MfJs.Actions = {
     add: function(t) {
       let el = document.getElementById(t.parentElement.dataset.actions),
           data = MfJs.Config.find(el.dataset.name, MfJs.parents(el, '[data-type]'));
-      if (Object.values(data).length && !el.dataset.clone) {
+      if (Object.values(data).length && !el?.dataset?.clone) {
         let config = {};
         config[data.name] = Object.assign({}, el.dataset, data);
         MfJs.Render.render([data], config, el, 2);
