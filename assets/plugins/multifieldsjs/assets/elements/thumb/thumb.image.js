@@ -31,6 +31,10 @@ MfJs.Elements['thumb:image'] = {
         data.attr += ' data-image="' + image + '"';
       }
 
+      if (data.clone) {
+        data.attr += ' data-clone="1"';
+      }
+
       data.attr += ' style="background-image: url(../' + data.value + ');"';
       data.value = MfJs.Elements['thumb:image'].Render.value(data);
 
@@ -41,7 +45,7 @@ MfJs.Elements['thumb:image'] = {
       return data;
     },
     value: function(data) {
-      return '<div class="mfjs-value" hidden><input type="text" id="mfjs' + data.id + '_value" class="form-control form-control-sm" value="' + MfJs.escape(data.value || '') + '"></div>';
+      return '<div class="mfjs-value" hidden><input type="text" id="' + data.id + '_value" class="form-control form-control-sm" value="' + MfJs.escape(data.value || '') + '"></div>';
     },
   },
 

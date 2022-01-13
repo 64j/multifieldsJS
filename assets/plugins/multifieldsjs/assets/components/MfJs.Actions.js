@@ -97,8 +97,14 @@ MfJs.Actions = {
               limit: el.dataset.limit,
             }, null, null));
           }
+          if (item.classList.contains('mfjs-thumb')) {
+            [...item.querySelectorAll('input')].map(function(input) {
+              input.value = '';
+            });
+            item.style.backgroundImage = '';
+          }
           el.insertAdjacentElement('afterend', item);
-          if (item.dataset && item.dataset.type && item.id) {
+          if (item?.dataset?.type && item.id) {
             MfJs.Render.addInit(item.id, item.dataset.type);
           }
         });
@@ -124,10 +130,13 @@ MfJs.Actions = {
     del: function(t) {
       let el = document.getElementById(t.parentElement.dataset.actions),
           parent = el && el.parentElement.parentElement.querySelector('.mfjs-templates');
-      if ((parent && parent.querySelector('.mfjs-option[data-template-name="' + el.dataset.name + '"]')) || el.parentElement.querySelectorAll('[data-name="' + el.dataset.name + '"]').length > 1) {
-        el && el.parentElement.removeChild(el);
-      } else {
-
+      if (el) {
+        if ((parent && parent.querySelector('.mfjs-option[data-template-name="' + el.dataset.name + '"]')) || el.parentElement.querySelectorAll('[data-name="' + el.dataset.name + '"]').length > 1) {
+          el.parentElement.removeChild(el);
+        } else {
+          MfJs.Actions.actions.add(t);
+          el.parentElement.removeChild(el);
+        }
       }
     },
     template: function(t) {

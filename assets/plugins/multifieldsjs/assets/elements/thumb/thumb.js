@@ -36,7 +36,7 @@ MfJs.Elements['thumb'] = {
       return data;
     },
     value: function(data) {
-      return '<div class="mfjs-value" hidden><input type="text" id="mfjs' + data.id + '_value" class="form-control form-control-sm" value="' + MfJs.escape(data.value || '') + '"></div>';
+      return '<div class="mfjs-value" hidden><input type="text" id="' + data.id + '_value" class="form-control form-control-sm" value="' + MfJs.escape(data.value || '') + '"></div>';
     },
   },
 

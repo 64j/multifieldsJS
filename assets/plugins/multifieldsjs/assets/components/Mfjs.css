@@ -78,7 +78,7 @@
 .mfjs-actions .mfjs-actions-add::before { content: "\f24d"; font-weight: 400; }
 .mfjs-actions .mfjs-actions-add::after { font-size: 1.4rem; }
 .mfjs-actions .mfjs-actions-del, .mfjs-templates ~ .mfjs-actions .mfjs-actions-del { background: #e53935 !important }
-.mfjs-actions .mfjs-actions-del::before { content: "\f2ed"; font-weight: 400; }
+.mfjs-actions .mfjs-actions-del::before { content: "\f00d"; font-weight: 600; }
 .mfjs-actions .mfjs-actions-move { cursor: all-scroll; }
 .mfjs-actions .mfjs-actions-move::before { content: "\f0b2"; }
 .mfjs-actions .mfjs-actions-hide::before { content: "\f06e"; }

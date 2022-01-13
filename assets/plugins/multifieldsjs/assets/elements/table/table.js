@@ -111,6 +111,10 @@ MfJs.Elements['table'] = {
             label: MfJs.Elements.table.Lang.menu.types.image,
           },
           {
+            type: 'thumb:image',
+            label: MfJs.Elements.table.Lang.menu.types.thumbImage,
+          },
+          {
             type: 'file',
             label: MfJs.Elements.table.Lang.menu.types.file,
           },
@@ -162,7 +166,8 @@ MfJs.Elements['table'] = {
             row.actions = ['add', 'del', 'move'];
             row.attr = 'data-clone="1"' + (data['limit.rows'] ? ' data-limit="' + data['limit.rows'] + '"' : '');
             row.items = row.items.map(function(item, j) {
-              item.actions = item.type === 'thumb:image' ? ['edit'] : false;
+              item.actions = item.type === 'thumb:image' ? ['edit', 'del'] : false;
+              item.attr = item.type === 'thumb:image' ? 'data-clone="1"' : '';
               if (data?.columns?.[j]) {
                 item.type = data.columns[j]['type'] || item.type || 'text';
               }
@@ -178,7 +183,8 @@ MfJs.Elements['table'] = {
               actions: ['add', 'del', 'move'],
               attr: 'data-clone="1"' + (data['limit.rows'] ? ' data-limit="' + data['limit.rows'] + '"' : ''),
               items: data.items.map(function(item, j) {
-                item.actions = item.type === 'thumb:image' ? ['edit'] : false;
+                item.actions = item.type === 'thumb:image' ? ['edit', 'del'] : false;
+                item.attr += item.type === 'thumb:image' ? 'data-clone="1"' : '';
                 if (data?.columns?.[j]) {
                   item.type = data.columns[j]['type'] || item.type || 'text';
                 }
@@ -278,6 +284,7 @@ MfJs.Elements['table'] = {
           [...col.parentElement.children].map(function(el, i) {
             el.dataset.name = i.toString();
           });
+          col.previousElementSibling.querySelector('input').value = '';
           [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
             let id = MfJs.qid('mfjs');
             col.insertAdjacentHTML('beforebegin', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), id));
@@ -305,6 +312,7 @@ MfJs.Elements['table'] = {
           [...col.parentElement.children].map(function(el, i) {
             el.dataset.name = i.toString();
           });
+          col.nextElementSibling.querySelector('input').value = '';
           [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
             let id = MfJs.qid('mfjs');
             col.insertAdjacentHTML('afterend', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), id));
@@ -328,12 +336,12 @@ MfJs.Elements['table'] = {
             parent = col.parentElement.closest('[data-type][data-name]'),
             items = parent && parent.querySelector(':scope > .mfjs-items') || null;
         if (items && col.previousElementSibling) {
-          col.previousElementSibling.before(col);
+          col.previousElementSibling.insertAdjacentElement('beforebegin', col);
           [...col.parentElement.children].map(function(el, i) {
             el.dataset.name = i.toString();
           });
           [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
-            col.previousElementSibling.before(col);
+            col.previousElementSibling.insertAdjacentElement('beforebegin', col);
             [...col.parentElement.children].map(function(el, i) {
               el.dataset.name = i.toString();
             });
@@ -346,12 +354,12 @@ MfJs.Elements['table'] = {
             parent = col.parentElement.closest('[data-type][data-name]'),
             items = parent && parent.querySelector(':scope > .mfjs-items') || null;
         if (items && col.nextElementSibling) {
-          col.nextElementSibling.after(col);
+          col.nextElementSibling.insertAdjacentElement('afterend', col);
           [...col.parentElement.children].map(function(el, i) {
             el.dataset.name = i.toString();
           });
           [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
-            col.nextElementSibling.after(col);
+            col.nextElementSibling.insertAdjacentElement('afterend', col);
             [...col.parentElement.children].map(function(el, i) {
               el.dataset.name = i.toString();
             });
@@ -427,7 +435,8 @@ MfJs.Elements['table'] = {
             {
               type: col.dataset.type,
               name: col.dataset.name,
-              actions: col.dataset.type === 'thumb:image' ? ['edit'] : false,
+              actions: col.dataset.type === 'thumb:image' ? ['edit', 'del'] : false,
+              attr: col.dataset.type === 'thumb:image' ? 'data-clone="1"' : '',
               value: value,
               elements: elements || '',
             }], {}, el, 1);

@@ -16,6 +16,7 @@ MfJs.Elements.table.Lang = {
       number: 'Number',
       date: 'Date',
       image: 'Image',
+      thumbImage: 'Icon',
       file: 'File',
     },
   },
