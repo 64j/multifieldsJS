@@ -28,19 +28,26 @@ MfJs.Elements['table'] = {
         '</div>',
     menu: '' +
         '<div class="mfjs-column-menu mfjs-context-menu contextMenu">\n' +
+        '    <div class="separator cntxMnuSeparator">[+lang.actionsHeader+]</div>\n' +
         '    <div onclick="MfJs.Elements.table.Actions.columns.addAfter(this);">\n' +
-        '        <i class="fa fa-share fa-fw"></i> [+actions.addAfter+]\n' +
+        '        <i class="fa fa-share fa-fw"></i> [+lang.actions.addAfter+]\n' +
         '    </div>\n' +
         '    <div onclick="MfJs.Elements.table.Actions.columns.addBefore(this);">\n' +
-        '        <i class="fa fa-reply fa-fw"></i> [+actions.addBefore+]\n' +
+        '        <i class="fa fa-reply fa-fw"></i> [+lang.actions.addBefore+]\n' +
         '    </div>\n' +
-        '    <div onclick="MfJs.Elements.table.Actions.columns.del(this);">\n' +
-        '        <i class="fa fa-minus-circle fa-fw text-danger"></i> [+actions.del+]\n' +
+        '    <div onclick="MfJs.Elements.table.Actions.columns.moveRight(this);">\n' +
+        '        <i class="fa fa-arrow-right fa-fw"></i> [+lang.actions.moveRight+]\n' +
+        '    </div>\n' +
+        '    <div onclick="MfJs.Elements.table.Actions.columns.moveLeft(this);">\n' +
+        '        <i class="fa fa-arrow-left fa-fw"></i> [+lang.actions.moveLeft+]\n' +
         '    </div>\n' +
         '    <div onclick="MfJs.Elements.table.Actions.columns.clear(this);">\n' +
-        '        <i class="fa fa-eraser fa-fw"></i> [+actions.clear+]\n' +
+        '        <i class="fa fa-eraser fa-fw"></i> [+lang.actions.clear+]\n' +
         '    </div>\n' +
-        '    <div class="separator cntxMnuSeparator"></div>\n' +
+        '    <div onclick="MfJs.Elements.table.Actions.columns.del(this);">\n' +
+        '        <i class="fa fa-minus-circle fa-fw text-danger"></i> [+lang.actions.del+]\n' +
+        '    </div>\n' +
+        '    <div class="separator cntxMnuSeparator">[+lang.typesHeader+]</div>\n' +
         '    [+types+]\n' +
         '</div>',
     menuItem: '<div class="[+selected+]" onclick="MfJs.Elements.table.Actions.columns.type(this, \'[+type+]\', \'[+elements+]\');" data-type="[+type+]">[+label+]</div>',
@@ -70,7 +77,7 @@ MfJs.Elements['table'] = {
     });
 
     if (data.types) {
-      data.types = JSON.parse(data.types);
+      delete data.types;
     }
 
     return data;
@@ -82,34 +89,34 @@ MfJs.Elements['table'] = {
         if (typeof config.types === 'string') {
           config.types = JSON.parse(config.types);
         }
-        data.types = config.types || data.types || [
+        data.types = config.types || [
           {
             type: 'id',
-            label: MfJs.Elements.table.Lang.types.id,
+            label: MfJs.Elements.table.Lang.menu.types.id,
           },
           {
             type: 'text',
-            label: MfJs.Elements.table.Lang.types.text,
+            label: MfJs.Elements.table.Lang.menu.types.text,
           },
           {
             type: 'number',
-            label: MfJs.Elements.table.Lang.types.number,
+            label: MfJs.Elements.table.Lang.menu.types.number,
           },
           {
             type: 'date',
-            label: MfJs.Elements.table.Lang.types.date,
+            label: MfJs.Elements.table.Lang.menu.types.date,
           },
           {
             type: 'image',
-            label: MfJs.Elements.table.Lang.types.image,
+            label: MfJs.Elements.table.Lang.menu.types.image,
           },
           {
             type: 'file',
-            label: MfJs.Elements.table.Lang.types.file,
+            label: MfJs.Elements.table.Lang.menu.types.file,
           },
         ];
 
-        data['header'] = '';
+        data.header = '';
         data.columns = Object.values(data.columns);
         data.columns.map(function(item, k) {
           item.id = MfJs.qid('mfjs');
@@ -131,10 +138,10 @@ MfJs.Elements['table'] = {
 
           item.menu = MfJs.Render.template(MfJs.Elements.table.templates.menu, {
             types: types,
-            actions: MfJs.Elements.table.Lang.menu.actions,
+            lang: MfJs.Elements.table.Lang.menu,
           });
 
-          data['header'] += MfJs.Render.template(MfJs.Elements.table.templates.column, item);
+          data.header += MfJs.Render.template(MfJs.Elements.table.templates.column, item);
         });
 
         data.attr += ' data-types="' + MfJs.escape(JSON.stringify(data.types)) + '"';
@@ -215,12 +222,12 @@ MfJs.Elements['table'] = {
             if (col.type) {
               col.attr = '';
               for (let k in data.types) {
-                if (col.type === data.types[k]['type']) {
-                  if (data.types[k]['elements']) {
-                    col.elements = data.types[k]['elements'];
+                if (col.type === data.types[k].type) {
+                  if (data.types[k].elements) {
+                    col.elements = data.types[k].elements;
                   }
-                  if (data.types[k]['width']) {
-                    col.attr += ' style="max-width:' + data.types[k]['width'] + '"';
+                  if (data.types[k].width) {
+                    col.attr += ' style="max-width:' + data.types[k].width + '"';
                   }
                 }
               }
@@ -313,6 +320,42 @@ MfJs.Elements['table'] = {
           });
           MfJs.Elements.table.Actions.columns.clear(col.nextElementSibling.querySelector('.mfjs-column-menu > div'));
           MfJs.Render.init();
+        }
+      },
+      moveLeft: function(t) {
+        let col = t.closest('[data-type][data-name]'),
+            name = col.dataset.name,
+            parent = col.parentElement.closest('[data-type][data-name]'),
+            items = parent && parent.querySelector(':scope > .mfjs-items') || null;
+        if (items && col.previousElementSibling) {
+          col.previousElementSibling.before(col);
+          [...col.parentElement.children].map(function(el, i) {
+            el.dataset.name = i.toString();
+          });
+          [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
+            col.previousElementSibling.before(col);
+            [...col.parentElement.children].map(function(el, i) {
+              el.dataset.name = i.toString();
+            });
+          });
+        }
+      },
+      moveRight: function(t) {
+        let col = t.closest('[data-type][data-name]'),
+            name = col.dataset.name,
+            parent = col.parentElement.closest('[data-type][data-name]'),
+            items = parent && parent.querySelector(':scope > .mfjs-items') || null;
+        if (items && col.nextElementSibling) {
+          col.nextElementSibling.after(col);
+          [...col.parentElement.children].map(function(el, i) {
+            el.dataset.name = i.toString();
+          });
+          [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
+            col.nextElementSibling.after(col);
+            [...col.parentElement.children].map(function(el, i) {
+              el.dataset.name = i.toString();
+            });
+          });
         }
       },
       del: function(t) {

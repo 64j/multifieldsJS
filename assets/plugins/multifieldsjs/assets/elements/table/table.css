@@ -16,7 +16,7 @@
 .mfjs [data-type="table"] .mfjs-table-columns { margin: 0 1px -1px 0; padding: 0; }
 .mfjs [data-type="table"] .mfjs-table-columns > .col { padding: 0; margin-right: -1px; }
 .mfjs [data-type="table"] .mfjs-table-columns input { background: transparent }
-.mfjs [data-type="table"] .mfjs-column-menu { top: 100%; right: 4px; min-width: 10rem; font-size: 0.725rem; }
+.mfjs [data-type="table"] .mfjs-column-menu { top: 100%; right: 4px; min-width: 12rem; font-size: 0.7125rem; }
 .mfjs [data-type="table"] .mfjs-column-menu > div:not(.separator) { padding: .25em 2em .25em 1em; }
 .mfjs [data-type="table"] .mfjs-column-menu .fa { margin-right: .25rem; font-size: .75rem; }
 .mfjs [data-type="table"] .mfjs-column-menu-toggle { position: absolute; z-index: 5; top: 0; right: 0; padding: .5rem; cursor: pointer; }

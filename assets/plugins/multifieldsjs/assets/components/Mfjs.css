@@ -27,6 +27,8 @@
 .mfjs-context-menu.show { opacity: 1; visibility: visible; }
 .mfjs-context-menu .selected { background: #1976d2; color: #fff; }
 .mfjs-context-menu > div:hover .fa { color: #fff !important; }
+.mfjs-context-menu .separator { height: auto; padding: 1px 0 0; font-size: 0.5rem; text-align: center; }
+.mfjs-context-menu .separator:hover { color: inherit; }
 /* templates */
 .mfjs-templates { overflow: hidden; top: auto; left: 50%; bottom: 4px; margin: 0 0 0 -7rem; width: 13rem !important; max-height: 0; opacity: 0; visibility: hidden; display: block !important; font-size: .75rem; transform: translate(-50%, 50%); transition: all .1s; }
 .mfjs-templates.show { max-height: 20rem; overflow: auto; }
