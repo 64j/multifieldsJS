@@ -8,23 +8,17 @@ MfJs.Elements['thumb:image'] = {
 
   templates: {
     wrapper: '' +
-        '<div id="[+id+]" class="mfjs-thumb col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
-        '    [+title+]\n' +
-        '    [+actions+]\n' +
-        '    [+value+]\n' +
-        '    <div class="mfjs-items [+items.class+]">\n' +
-        '        [+items+]\n' +
-        '    </div>\n' +
-        '</div>',
-
-    value: '' +
-        '<div class="mfjs-value" hidden>\n' +
-        '    <input type="text" id="[+id+]_value" class="form-control form-control-sm" value="[+value+]">\n' +
+        '<div id="[+id+]" class="mfjs-thumb col [+class+]" [+attr+]>\n' +
+        '    [+el.title+]\n' +
+        '    [+el.actions+]\n' +
+        '    <div class="mfjs-value" hidden>\n' +
+        '        <input type="text" id="[+id+]_value" class="form-control form-control-sm" value="[+value+]">\n' +
+        '    </div>' +
         '</div>',
   },
 
   Render: {
-    item: function(data, config) {
+    data: function(data, config) {
       let multi = typeof config['multi'] === 'boolean' && config['multi'] && data.name || config['multi'] || '';
       let image = config['image'] || '';
 
@@ -37,10 +31,6 @@ MfJs.Elements['thumb:image'] = {
       }
 
       data.attr += ' style="background-image: url(../' + data.value + ');"';
-      data.value = MfJs.Render.template(MfJs.Elements['thumb:image'].templates.value, {
-        id: data.id,
-        value: MfJs.escape(data.value || ''),
-      });
 
       if (data.items) {
         delete data.items;
@@ -64,7 +54,7 @@ MfJs.Elements['thumb:image'] = {
           valueEl.onchange = function(e) {
             el.style.backgroundImage = 'url(\'../' + e.target.value + '\')';
             if (el.dataset.image) {
-              [...el.parentElement.querySelectorAll('[data-name="' + el.dataset.image + '"]')].map(function(item) {
+              el.parentElement.querySelectorAll('[data-name="' + el.dataset.image + '"]').forEach(function(item) {
                 let input = item.querySelector('input[id][name]');
                 if (input) {
                   input.value = e.target.value;
@@ -88,7 +78,7 @@ MfJs.Elements['thumb:image'] = {
           let parent = el.parentElement.parentElement;
           for (let k in files) {
             if (files.hasOwnProperty(k) && parseInt(k)) {
-              MfJs.Render.item([MfJs.Config.find(parent.dataset.name)], {}, parent, 2);
+              MfJs.Render.render([MfJs.Config.find(parent.dataset.name)], {}, parent, 2);
               parent = parent.nextElementSibling;
               parent.style.backgroundImage = 'url(\'../' + files[k] + '\')';
               window.lastFileCtrl = parent.querySelector('.mfjs-value > input').id;

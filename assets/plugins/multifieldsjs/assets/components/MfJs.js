@@ -49,20 +49,20 @@
 
       load: function() {
         (document['mutate'] || document['settings']).addEventListener('submit', function() {
-          [...document.querySelectorAll('.mfjs')].map(function(el) {
+          document.querySelectorAll('.mfjs').forEach(function(el) {
             MfJs.Container = el;
             if (!el.disabled) {
               MfJs.save();
             }
           });
-          [...document.querySelectorAll('.mfjs [name]')].map(function(el) {
+          document.querySelectorAll('.mfjs [name]').forEach(function(el) {
             el.disabled = !0;
           });
         });
 
         document.addEventListener('click', function(e) {
           let menu = e.target.parentElement && e.target.parentElement.classList.contains('mfjs-actions') && e.target.parentElement.parentElement.querySelector('.mfjs-context-menu') || (e.target.parentElement && typeof e.target.parentElement.dataset['mfjsActions'] !== 'undefined') && e.target.parentElement.querySelector('.mfjs-context-menu') || null;
-          [...document.querySelectorAll('.mfjs-context-menu.show')].map(function(item) {
+          document.querySelectorAll('.mfjs-context-menu.show').forEach(function(item) {
             if (menu !== item) {
               item.classList.remove('show');
             }
@@ -78,7 +78,7 @@
       values: function(els) {
         let data = [],
             counters = {};
-        [...els].map(function(el, i) {
+        els.forEach(function(el, i) {
           let item = Object.assign({}, el.dataset),
               inputEl;
 
@@ -88,9 +88,8 @@
           counters[item.name]++;
 
           if (item.type) {
-            if (el.querySelector('.mfjs-items')) {
-              inputEl = el.querySelector(':scope > .mfjs-value input');
-            } else {
+            inputEl = el.querySelector(':scope > .mfjs-value input');
+            if (!inputEl) {
               inputEl = el.querySelectorAll('[id][name]');
             }
           } else {
@@ -100,7 +99,7 @@
           if (inputEl) {
             if (inputEl.length) {
               let value = [];
-              [...inputEl].map(function(input) {
+              inputEl.forEach(function(input) {
                 if (!input.hidden) {
                   switch (input.type) {
                     case 'checkbox':

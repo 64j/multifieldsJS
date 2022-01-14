@@ -80,34 +80,37 @@ MfJs.Actions = {
       } else {
         let d = document.createElement('div');
         d.innerHTML = el.cloneNode(true).outerHTML.replace(new RegExp(el.id, 'g'), MfJs.qid('mfjs'));
-        [d.firstElementChild].map(function(item) {
-          [...item.querySelectorAll('[id][data-type][data-name]')].map(function(el) {
-            let id = MfJs.qid('mfjs');
-            item.innerHTML = item.innerHTML.replace(new RegExp(el.id, 'g'), id);
-            [...item.querySelectorAll('input')].map(function(input) {
-              input.value = '';
-            });
-            [...item.querySelectorAll('.mfjs-thumb')].map(function(input) {
-              input.style.backgroundImage = '';
-            });
-            MfJs.Render.addInit(id, el.dataset.type);
+        let item = d.firstElementChild;
+        item.querySelectorAll('[id][data-type][data-name]').forEach(function(el) {
+          let id = MfJs.qid('mfjs');
+          item.innerHTML = item.innerHTML.replace(new RegExp(el.id, 'g'), id);
+          item.querySelectorAll('input').forEach(function(input) {
+            input.value = '';
           });
-          if (el.parentElement.querySelectorAll('[data-name="' + el.dataset.name + '"]').length >= el.dataset.limit) {
-            return MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.limit, {
-              limit: el.dataset.limit,
-            }, null, null));
-          }
-          if (item.classList.contains('mfjs-thumb')) {
-            [...item.querySelectorAll('input')].map(function(input) {
-              input.value = '';
-            });
-            item.style.backgroundImage = '';
-          }
-          el.insertAdjacentElement('afterend', item);
-          if (item?.dataset?.type && item.id) {
-            MfJs.Render.addInit(item.id, item.dataset.type);
-          }
+          item.querySelectorAll('.mfjs-thumb').forEach(function(input) {
+            input.style.backgroundImage = '';
+          });
+          MfJs.Render.addInit(id, el.dataset.type);
         });
+
+        if (el.parentElement.querySelectorAll('[data-name="' + el.dataset.name + '"]').length >= el.dataset.limit) {
+          return MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.limit, {
+            limit: el.dataset.limit,
+          }));
+        }
+
+        if (item.classList.contains('mfjs-thumb')) {
+          item.querySelectorAll('input').forEach(function(input) {
+            input.value = '';
+          });
+          item.style.backgroundImage = '';
+        }
+
+        el.insertAdjacentElement('afterend', item);
+
+        if (item?.dataset?.type && item.id) {
+          MfJs.Render.addInit(item.id, item.dataset.type);
+        }
       }
       MfJs.Render.init();
     },

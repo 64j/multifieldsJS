@@ -210,7 +210,7 @@ MfJs.Settings = {
 
   actions: {
     breakpoint: function(el) {
-      [...el.parentElement.querySelectorAll('.active')].map(function(item) {
+      el.parentElement.querySelectorAll('.active').forEach(function(item) {
         item.classList.remove('active');
       });
       el.classList.add('active');

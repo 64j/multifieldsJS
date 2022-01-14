@@ -4,59 +4,58 @@
 MfJs.Elements['table'] = {
   templates: {
     wrapper: '' +
-        '<div id="[+id+]" class="mfjs-row col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
-        '    [+title+]\n' +
-        '    [+templates+]\n' +
-        '    [+actions+]\n' +
-        '    [+value+]\n' +
-        '    <div class="mfjs-table-columns row">[+header+]</div>\n' +
-        '    <div class="mfjs-items [+items.class+]">\n' +
-        '        [+items+]\n' +
-        '    </div>\n' +
+        '<div id="[+id+]" class="mfjs-row col [+class+]" [+attr+]>\n' +
+        '    [+el.title+]\n' +
+        '    [+el.templates+]\n' +
+        '    [+el.actions+]\n' +
+        '    [+el.value+]\n' +
+        '    [+el.columns+]\n' +
+        '    <div class="mfjs-items [+items.class+]"></div>\n' +
         '</div>',
     value: '' +
         '<div class="mfjs-value" [+hidden+]>\n' +
-        '    <input type="[+type+]" class="form-control form-control-sm" value="[+value+]" placeholder="[+placeholder+]" [+hidden+]>\n' +
+        '    <input type="[+type+]" class="form-control form-control-sm" value="[+value+]" placeholder="[+placeholder+]" oninput="MfJs.Elements.table.Actions.actions.title(this);" [+hidden+]>\n' +
         '</div>',
+    columns: '<div class="mfjs-table-columns row">[+items+]</div>',
     column: '' +
         '<div id="[+id+]" class="col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
         '    <input type="text" id="tv[+id+]" class="form-control [+item.class+]" name="tv[+id+]" value="[+value+]" placeholder="[+placeholder+]" onchange="documentDirty=true;" [+item.attr+]>\n' +
         '    <div data-mfjs-actions>' +
         '      [+menu+]\n' +
-        '      <i class="mfjs-column-menu-toggle fas fa-angle-down" onclick="MfJs.Elements.table.Actions.columns.menu(this)"></i>\n' +
+        '      <i class="mfjs-column-menu-toggle fas fa-angle-down" onclick="MfJs.Elements.table.Actions.actions.columns.menu(this)"></i>\n' +
         '    </div>' +
         '</div>',
     menu: '' +
         '<div class="mfjs-column-menu mfjs-context-menu contextMenu">\n' +
         '    <div class="separator cntxMnuSeparator">[+lang.actionsHeader+]</div>\n' +
-        '    <div onclick="MfJs.Elements.table.Actions.columns.addAfter(this);">\n' +
+        '    <div onclick="MfJs.Elements.table.Actions.actions.columns.addAfter(this);">\n' +
         '        <i class="fa fa-share fa-fw"></i> [+lang.actions.addAfter+]\n' +
         '    </div>\n' +
-        '    <div onclick="MfJs.Elements.table.Actions.columns.addBefore(this);">\n' +
+        '    <div onclick="MfJs.Elements.table.Actions.actions.columns.addBefore(this);">\n' +
         '        <i class="fa fa-reply fa-fw"></i> [+lang.actions.addBefore+]\n' +
         '    </div>\n' +
-        '    <div onclick="MfJs.Elements.table.Actions.columns.moveRight(this);">\n' +
+        '    <div onclick="MfJs.Elements.table.Actions.actions.columns.moveRight(this);">\n' +
         '        <i class="fa fa-arrow-right fa-fw"></i> [+lang.actions.moveRight+]\n' +
         '    </div>\n' +
-        '    <div onclick="MfJs.Elements.table.Actions.columns.moveLeft(this);">\n' +
+        '    <div onclick="MfJs.Elements.table.Actions.actions.columns.moveLeft(this);">\n' +
         '        <i class="fa fa-arrow-left fa-fw"></i> [+lang.actions.moveLeft+]\n' +
         '    </div>\n' +
-        '    <div onclick="MfJs.Elements.table.Actions.columns.clear(this);">\n' +
+        '    <div onclick="MfJs.Elements.table.Actions.actions.columns.clear(this);">\n' +
         '        <i class="fa fa-eraser fa-fw"></i> [+lang.actions.clear+]\n' +
         '    </div>\n' +
-        '    <div onclick="MfJs.Elements.table.Actions.columns.del(this);">\n' +
+        '    <div onclick="MfJs.Elements.table.Actions.actions.columns.del(this);">\n' +
         '        <i class="fa fa-minus-circle fa-fw text-danger"></i> [+lang.actions.del+]\n' +
         '    </div>\n' +
         '    <div class="separator cntxMnuSeparator">[+lang.typesHeader+]</div>\n' +
         '    [+types+]\n' +
         '</div>',
-    menuItem: '<div class="[+selected+]" onclick="MfJs.Elements.table.Actions.columns.type(this, \'[+type+]\', \'[+elements+]\');" data-type="[+type+]">[+label+]</div>',
+    menuItem: '<div class="[+selected+]" onclick="MfJs.Elements.table.Actions.actions.columns.type(this, \'[+type+]\', \'[+elements+]\');" data-type="[+type+]">[+label+]</div>',
   },
 
   values: function(data, el, i) {
     let columns = {};
 
-    [...el.querySelectorAll(':scope > .mfjs-table-columns > .col > input[name]')].map(function(input, i) {
+    el.querySelectorAll(':scope > .mfjs-table-columns > .col > input[name]').forEach(function(input, i) {
       columns[i] = {
         type: input.parentElement.dataset.type,
         value: input.value,
@@ -69,11 +68,11 @@ MfJs.Elements['table'] = {
 
     data.items = Object.values(data.items);
 
-    data.items.map(function(row) {
+    data.items.forEach(function(row) {
       row.name = data.name + ':row';
       row.type = 'row';
       row.items = Object.values(row.items || {});
-      row.items.map(function(item) {
+      row.items.forEach(function(item) {
         delete item.name;
       });
     });
@@ -86,7 +85,15 @@ MfJs.Elements['table'] = {
   },
 
   Render: {
-    item: function(data, config) {
+    data: function(data, config) {
+      if (!data.class) {
+        data.class = 'col-12';
+      }
+
+      if (data.title && config.title && data.value !== '') {
+        data.title = config.title + ':' + data.value;
+      }
+
       if (data.columns) {
         if (typeof config.types === 'string') {
           config.types = JSON.parse(config.types);
@@ -123,15 +130,15 @@ MfJs.Elements['table'] = {
           },
         ];
 
-        data.header = '';
+        data.el.columns = '';
         data.columns = Object.values(data.columns);
-        data.columns.map(function(item, k) {
+        data.columns.forEach(function(item, k) {
           item.id = MfJs.qid('mfjs');
           item.name = k;
           item.type = item.type || 'text';
 
           let types = '';
-          data.types.map(function(col) {
+          data.types.forEach(function(col) {
             if (col.type === item.type && col.width) {
               item.attr = ' style="max-width:' + col.width + '"';
             }
@@ -148,8 +155,14 @@ MfJs.Elements['table'] = {
             lang: MfJs.Elements.table.Lang.menu,
           });
 
-          data.header += MfJs.Render.template(MfJs.Elements.table.templates.column, item);
+          data.el.columns += MfJs.Render.template(MfJs.Elements.table.templates.column, item);
         });
+
+        if (data.el.columns) {
+          data.el.columns = MfJs.Render.template(MfJs.Elements.table.templates.columns, {
+            items: data.el.columns,
+          });
+        }
 
         data.attr += ' data-types="' + MfJs.escape(JSON.stringify(data.types)) + '"';
       }
@@ -162,7 +175,7 @@ MfJs.Elements['table'] = {
 
       if (data.items.length) {
         if (!data.items[0].type || data.items[0].type === 'table:row' || data.items[0].type === 'row') {
-          data.items.map(function(row) {
+          data.items.forEach(function(row) {
             row.name = data.name + ':row';
             row.type = 'row';
             row.value = false;
@@ -206,7 +219,29 @@ MfJs.Elements['table'] = {
         }
       }
 
-      data.value = MfJs.Elements.row.Render.value(data);
+      if (data.items && data.types) {
+        data.items.forEach(function(row) {
+          row.items.forEach(function(col) {
+            if (col.type) {
+              col.attr = '';
+
+              for (let k in data.types) {
+                if (col.type === data.types[k].type) {
+                  if (data.types[k].elements) {
+                    col.elements = data.types[k].elements;
+                  }
+
+                  if (data.types[k].width) {
+                    col.attr += ' style="max-width:' + data.types[k].width + '"';
+                  }
+                }
+              }
+            }
+          });
+        });
+      }
+
+      data.el.value = MfJs.Elements.table.Render.value(data);
 
       return data;
     },
@@ -231,42 +266,13 @@ MfJs.Elements['table'] = {
         hidden: hidden,
       });
     },
-    elements: function(data) {
-      if (!data.class) {
-        data.class = 'col-12';
-      }
-
-      if (data.items && data.types) {
-        data.items.map(function(row) {
-          row.items.map(function(col) {
-            if (col.type) {
-              col.attr = '';
-
-              for (let k in data.types) {
-                if (col.type === data.types[k].type) {
-                  if (data.types[k].elements) {
-                    col.elements = data.types[k].elements;
-                  }
-
-                  if (data.types[k].width) {
-                    col.attr += ' style="max-width:' + data.types[k].width + '"';
-                  }
-                }
-              }
-            }
-          });
-        });
-      }
-
-      return data;
-    },
   },
 
   Config: {
     findChildren: function(items) {
       items = Object.values(items);
 
-      items.map(function(item) {
+      items.forEach(function(item) {
         item.value = false;
       });
 
@@ -275,232 +281,258 @@ MfJs.Elements['table'] = {
   },
 
   Actions: {
-    columns: {
-      menu: function(t) {
-        let col = t.parentElement,
-            table = col.parentElement.parentElement.parentElement,
-            menu = col.querySelector('.mfjs-column-menu');
+    actions: {
+      columns: {
+        menu: function(t) {
+          let col = t.parentElement,
+              table = col.parentElement.parentElement.parentElement,
+              menu = col.querySelector('.mfjs-column-menu');
 
-        table.position = table.getBoundingClientRect();
-        col.position = col.getBoundingClientRect();
+          if (menu.classList.contains('show')) {
+            menu.classList.remove('show');
+          } else {
+            table.position = table.getBoundingClientRect();
+            col.position = col.getBoundingClientRect();
 
-        if (Math.round(table.position.left) > Math.round(col.position.right - (menu.offsetWidth + 8))) {
-          menu.style.right = Math.round(col.position.right - table.position.left - (menu.offsetWidth + 6)) + 'px';
-        } else {
-          menu.style.right = '';
-        }
-
-        menu.classList.toggle('show');
-      },
-      addBefore: function(t) {
-        let col = t.closest('[data-type][data-name]'),
-            name = col.dataset.name,
-            parent = col.parentElement.closest('[data-type][data-name]'),
-            items = parent && parent.querySelector(':scope > .mfjs-items') || null;
-
-        if (items) {
-          col.insertAdjacentHTML('beforebegin', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), MfJs.qid('mfjs')));
-
-          [...col.parentElement.children].map(function(el, i) {
-            el.dataset.name = i.toString();
-          });
-
-          col.previousElementSibling.querySelector('input').value = '';
-
-          [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
-            let id = MfJs.qid('mfjs');
-            col.insertAdjacentHTML('beforebegin', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), id));
-            col = col.previousElementSibling;
-            if (col.dataset.type === 'thumb:image') {
-              col.style.backgroundImage = '';
-              col.querySelector('.mfjs-value input').value = '';
+            if (table.position.left > col.position.left + col.offsetWidth - menu.offsetWidth - 20) {
+              menu.style.right = -menu.offsetWidth + 'px';
+            } else {
+              menu.style.right = '';
             }
-            [...col.parentElement.children].map(function(el, i) {
-              el.dataset.name = i.toString();
-            });
-            MfJs.Render.addInit(id, col.dataset.type);
-          });
 
-          MfJs.Elements.table.Actions.columns.clear(col.previousElementSibling.querySelector('.mfjs-column-menu > div'));
-          MfJs.Render.init();
-        }
-      },
-      addAfter: function(t) {
-        let col = t.closest('[data-type][data-name]'),
-            name = col.dataset.name,
-            parent = col.parentElement.closest('[data-type][data-name]'),
-            items = parent && parent.querySelector(':scope > .mfjs-items') || null;
-
-        if (items) {
-          col.insertAdjacentHTML('afterend', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), MfJs.qid('mfjs')));
-
-          [...col.parentElement.children].map(function(el, i) {
-            el.dataset.name = i.toString();
-          });
-
-          col.nextElementSibling.querySelector('input').value = '';
-
-          [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
-            let id = MfJs.qid('mfjs');
-            col.insertAdjacentHTML('afterend', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), id));
-            col = col.nextElementSibling;
-            if (col.dataset.type === 'thumb:image') {
-              col.style.backgroundImage = '';
-              col.querySelector('.mfjs-value input').value = '';
+            menu.height = 0;
+            for (let i = 0; i < menu.children.length; i++) {
+              menu.height += menu.children[i].offsetHeight;
             }
-            [...col.parentElement.children].map(function(el, i) {
+
+            if (menu.height + col.position.top > window.innerHeight) {
+              menu.style.top = window.innerHeight - col.position.top - menu.height + 'px';
+            } else {
+              menu.style.top = '0';
+            }
+
+            menu.classList.add('show');
+          }
+        },
+        addBefore: function(t) {
+          let col = t.closest('[data-type][data-name]'),
+              name = col.dataset.name,
+              parent = col.parentElement.closest('[data-type][data-name]'),
+              items = parent && parent.querySelector(':scope > .mfjs-items') || null;
+
+          if (items) {
+            col.insertAdjacentHTML('beforebegin', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), MfJs.qid('mfjs')));
+
+            [...col.parentElement.children].forEach(function(el, i) {
               el.dataset.name = i.toString();
             });
-            MfJs.Render.addInit(id, col.dataset.type);
-          });
 
-          MfJs.Elements.table.Actions.columns.clear(col.nextElementSibling.querySelector('.mfjs-column-menu > div'));
-          MfJs.Render.init();
-        }
-      },
-      moveLeft: function(t) {
-        let col = t.closest('[data-type][data-name]'),
-            name = col.dataset.name,
-            parent = col.parentElement.closest('[data-type][data-name]'),
-            items = parent && parent.querySelector(':scope > .mfjs-items') || null;
+            col.previousElementSibling.querySelector('input').value = '';
 
-        if (items && col.previousElementSibling) {
-          col.previousElementSibling.insertAdjacentElement('beforebegin', col);
-
-          [...col.parentElement.children].map(function(el, i) {
-            el.dataset.name = i.toString();
-          });
-
-          [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
-            col.previousElementSibling.insertAdjacentElement('beforebegin', col);
-            [...col.parentElement.children].map(function(el, i) {
-              el.dataset.name = i.toString();
-            });
-          });
-        }
-      },
-      moveRight: function(t) {
-        let col = t.closest('[data-type][data-name]'),
-            name = col.dataset.name,
-            parent = col.parentElement.closest('[data-type][data-name]'),
-            items = parent && parent.querySelector(':scope > .mfjs-items') || null;
-
-        if (items && col.nextElementSibling) {
-          col.nextElementSibling.insertAdjacentElement('afterend', col);
-
-          [...col.parentElement.children].map(function(el, i) {
-            el.dataset.name = i.toString();
-          });
-
-          [...items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]')].map(function(col) {
-            col.nextElementSibling.insertAdjacentElement('afterend', col);
-            [...col.parentElement.children].map(function(el, i) {
-              el.dataset.name = i.toString();
-            });
-          });
-        }
-      },
-      del: function(t) {
-        let col = t.closest('[data-type][data-name]'),
-            name = col.dataset.name,
-            parent = col.parentElement.closest('[data-type][data-name]'),
-            items = parent && parent.querySelector(':scope > .mfjs-items') || null;
-
-        if (items && col.parentElement.children.length > 1) {
-          parent = col.parentElement;
-          parent.removeChild(col);
-
-          [...parent.children].map(function(el, i) {
-            el.dataset.name = i.toString();
-          });
-
-          [...items.querySelectorAll('[data-type][data-name="' + name + '"]')].map(function(col) {
-            let parent = col.parentElement;
-            parent.removeChild(col);
-            [...parent.children].map(function(el, i) {
-              el.dataset.name = i.toString();
-              if (MfJs.Elements?.[el.dataset.type]?.Render?.init) {
-                MfJs.Elements[el.dataset.type].Render.init(el.id);
+            items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]').forEach(function(col) {
+              let id = MfJs.qid('mfjs');
+              col.insertAdjacentHTML('beforebegin', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), id));
+              col = col.previousElementSibling;
+              if (col.dataset.type === 'thumb:image') {
+                col.style.backgroundImage = '';
+                col.querySelector('.mfjs-value input').value = '';
               }
+              [...col.parentElement.children].forEach(function(el, i) {
+                el.dataset.name = i.toString();
+              });
+              MfJs.Render.addInit(id, col.dataset.type);
             });
-          });
-        }
-      },
-      clear: function(t) {
-        let col = t.closest('[data-type][data-name]'),
-            name = col.dataset.name,
-            parent = col.parentElement.closest('[data-type][data-name]'),
-            items = parent && parent.querySelector(':scope > .mfjs-items') || null;
 
-        [...items.querySelectorAll('[data-type][data-name="' + name + '"]')].map(function(col) {
-          let input = col.querySelector('[id][name]');
+            MfJs.Elements.table.Actions.actions.columns.clear(col.previousElementSibling.querySelector('.mfjs-column-menu > div'));
+            MfJs.Render.init();
+          }
+        },
+        addAfter: function(t) {
+          let col = t.closest('[data-type][data-name]'),
+              name = col.dataset.name,
+              parent = col.parentElement.closest('[data-type][data-name]'),
+              items = parent && parent.querySelector(':scope > .mfjs-items') || null;
 
-          if (input) {
-            switch (input.type) {
-              case 'select':
-              case 'select-one':
-              case 'select-multiple':
-                for (let i = 0; i < input.length; i++) {
-                  if (input[i].selected) {
-                    input[i].selected = false;
-                  }
+          if (items) {
+            col.insertAdjacentHTML('afterend', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), MfJs.qid('mfjs')));
+
+            [...col.parentElement.children].forEach(function(el, i) {
+              el.dataset.name = i.toString();
+            });
+
+            col.nextElementSibling.querySelector('input').value = '';
+
+            items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]').forEach(function(col) {
+              let id = MfJs.qid('mfjs');
+              col.insertAdjacentHTML('afterend', col.cloneNode(true).outerHTML.replace(new RegExp(col.id, 'g'), id));
+              col = col.nextElementSibling;
+              if (col.dataset.type === 'thumb:image') {
+                col.style.backgroundImage = '';
+                col.querySelector('.mfjs-value input').value = '';
+              }
+              [...col.parentElement.children].forEach(function(el, i) {
+                el.dataset.name = i.toString();
+              });
+              MfJs.Render.addInit(id, col.dataset.type);
+            });
+
+            MfJs.Elements.table.Actions.actions.columns.clear(col.nextElementSibling.querySelector('.mfjs-column-menu > div'));
+            MfJs.Render.init();
+          }
+        },
+        moveLeft: function(t) {
+          let col = t.closest('[data-type][data-name]'),
+              name = col.dataset.name,
+              parent = col.parentElement.closest('[data-type][data-name]'),
+              items = parent && parent.querySelector(':scope > .mfjs-items') || null;
+
+          if (items && col.previousElementSibling) {
+            col.previousElementSibling.insertAdjacentElement('beforebegin', col);
+
+            [...col.parentElement.children].forEach(function(el, i) {
+              el.dataset.name = i.toString();
+            });
+
+            items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]').forEach(function(col) {
+              col.previousElementSibling.insertAdjacentElement('beforebegin', col);
+              [...col.parentElement.children].forEach(function(el, i) {
+                el.dataset.name = i.toString();
+              });
+            });
+          }
+        },
+        moveRight: function(t) {
+          let col = t.closest('[data-type][data-name]'),
+              name = col.dataset.name,
+              parent = col.parentElement.closest('[data-type][data-name]'),
+              items = parent && parent.querySelector(':scope > .mfjs-items') || null;
+
+          if (items && col.nextElementSibling) {
+            col.nextElementSibling.insertAdjacentElement('afterend', col);
+
+            [...col.parentElement.children].forEach(function(el, i) {
+              el.dataset.name = i.toString();
+            });
+
+            items.querySelectorAll(':scope > .mfjs-row > .mfjs-items > [data-type][data-name="' + name + '"]').forEach(function(col) {
+              col.nextElementSibling.insertAdjacentElement('afterend', col);
+              [...col.parentElement.children].forEach(function(el, i) {
+                el.dataset.name = i.toString();
+              });
+            });
+          }
+        },
+        del: function(t) {
+          let col = t.closest('[data-type][data-name]'),
+              name = col.dataset.name,
+              parent = col.parentElement.closest('[data-type][data-name]'),
+              items = parent && parent.querySelector(':scope > .mfjs-items') || null;
+
+          if (items && col.parentElement.children.length > 1) {
+            parent = col.parentElement;
+            parent.removeChild(col);
+
+            [...parent.children].forEach(function(el, i) {
+              el.dataset.name = i.toString();
+            });
+
+            items.querySelectorAll('[data-type][data-name="' + name + '"]').forEach(function(col) {
+              let parent = col.parentElement;
+              parent.removeChild(col);
+              [...parent.children].forEach(function(el, i) {
+                el.dataset.name = i.toString();
+                if (MfJs.Elements?.[el.dataset.type]?.Render?.init) {
+                  MfJs.Elements[el.dataset.type].Render.init(el.id);
                 }
-                break;
+              });
+            });
+          }
+        },
+        clear: function(t) {
+          let col = t.closest('[data-type][data-name]'),
+              name = col.dataset.name,
+              parent = col.parentElement.closest('[data-type][data-name]'),
+              items = parent && parent.querySelector(':scope > .mfjs-items') || null;
 
-              case 'radio':
-              case 'checkbox':
-                input.checked = false;
-                break;
+          items.querySelectorAll('[data-type][data-name="' + name + '"]').forEach(function(col) {
+            let input = col.querySelector('[id][name]');
 
-              default:
-                input.value = '';
-                break;
+            if (input) {
+              switch (input.type) {
+                case 'select':
+                case 'select-one':
+                case 'select-multiple':
+                  for (let i = 0; i < input.length; i++) {
+                    if (input[i].selected) {
+                      input[i].selected = false;
+                    }
+                  }
+                  break;
+
+                case 'radio':
+                case 'checkbox':
+                  input.checked = false;
+                  break;
+
+                default:
+                  input.value = '';
+                  break;
+              }
             }
+
+            if (col.dataset.type === 'thumb:image') {
+              col.style.backgroundImage = '';
+              col.querySelector('.mfjs-value input').value = '';
+            }
+          });
+        },
+        type: function(t, type, elements) {
+          let col = t.closest('[data-type][data-name]'),
+              name = col.dataset.name;
+
+          if (col.dataset.type === 'id' && col.parentElement.children.length === 1) {
+            return;
           }
 
-          if (col.dataset.type === 'thumb:image') {
-            col.style.backgroundImage = '';
-            col.querySelector('.mfjs-value input').value = '';
-          }
-        });
+          col.dataset.type = type;
+
+          col.parentElement.parentElement.querySelectorAll(':scope > .mfjs-items [data-name="' + name + '"]').forEach(function(el) {
+            let value = el.querySelector('.mfjs-value input') && el.querySelector('.mfjs-value input').value || el.querySelector('[id][name]') && el.querySelector('[id][name]').value || '';
+
+            el.innerHTML = '';
+
+            let item = {
+              type: type,
+              name: name,
+              value: value,
+              elements: elements || '',
+              actions: false,
+            };
+
+            if (item.type === 'thumb:image') {
+              item.actions = ['edit', 'del'];
+              item.clone = 1;
+            }
+
+            MfJs.Render.render([item], {}, el, 1);
+          });
+
+          t.parentElement.querySelectorAll('.selected').forEach(function(el) {
+            el.classList.remove('selected');
+          });
+
+          t.classList.add('selected');
+          MfJs.Render.init();
+        },
       },
-      type: function(t, type, elements) {
-        let col = t.closest('[data-type][data-name]'),
-            name = col.dataset.name;
-
-        if (col.dataset.type === 'id' && col.parentElement.children.length === 1) {
-          return;
+      title: function(t) {
+        let parent = t.parentElement.parentElement,
+            title = parent.querySelector(':scope > .mfjs-title');
+        if (title) {
+          let value = t.value !== '' && ':' + t.value || '';
+          parent.dataset.title = parent.dataset.titleOriginal + value;
+          title.innerHTML = parent.dataset.titleOriginal + value;
         }
-
-        col.dataset.type = type;
-
-        [...col.parentElement.parentElement.querySelectorAll(':scope > .mfjs-items [data-name="' + name + '"]')].map(function(el) {
-          let value = el.querySelector('.mfjs-value input') && el.querySelector('.mfjs-value input').value || el.querySelector('[id][name]') && el.querySelector('[id][name]').value || '';
-
-          el.innerHTML = '';
-
-          let item = {
-            type: type,
-            name: name,
-            value: value,
-            elements: elements || '',
-            actions: false,
-          };
-
-          if (item.type === 'thumb:image') {
-            item.actions = ['edit', 'del'];
-            item.clone = 1;
-          }
-
-          MfJs.Render.render([item], {}, el, 1);
-        });
-
-        [...t.parentElement.querySelectorAll('.selected')].map(function(el) {
-          el.classList.remove('selected');
-        });
-
-        t.classList.add('selected');
-        MfJs.Render.init();
       },
     },
   },

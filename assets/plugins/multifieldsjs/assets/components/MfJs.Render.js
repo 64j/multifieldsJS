@@ -5,48 +5,38 @@ MfJs.Render = {
   initElements: {},
 
   render: function(data, config, parent, replace) {
-    Object.entries(data).map(function([key, data]) {
+    if (!parent) {
+      return;
+    }
+    Object.entries(data).forEach(function([key, data]) {
       if (!MfJs.Elements[data.type]) {
         return MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.elementNotFound, {
           type: data.type,
         }));
       }
-      let items;
       data.name = data.name || key;
-      data = MfJs.Render.item(data, config[data.name] || {});
-      data = MfJs.Render.elements(data);
-      data.title = MfJs.Render.title(data.title);
-      data.actions = MfJs.Actions.set(data);
-      data.value = typeof data.value === 'undefined' ? '' : data.value;
-      if (data.title && typeof data.title !== 'boolean') {
-        data.attr += ' data-title="' + data.title + '"';
-      }
-      if (data.clone) {
-        data.attr += ' data-clone="1"';
-      }
-      if (data.limit) {
-        data.attr += ' data-limit="' + data.limit + '"';
-      }
+      data = MfJs.Render.data(data, config[data.name] || {});
       MfJs.Render.addInit(data.id, data.type);
+      let items = '';
       if (data.items) {
         items = data.items;
         data.items = '';
       }
-      let item = MfJs.Render.template(MfJs.Elements[data.type].templates.wrapper, data, true, null);
+      let item = MfJs.Render.template(MfJs.Elements[data.type].templates.wrapper, data, true);
       if (replace === 1) {
         parent.parentElement.replaceChild(item, parent);
       } else if (replace === 2) {
         if (parent.parentElement.querySelectorAll('[data-name="' + data.name + '"]').length >= data.limit) {
           return MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.limit, {
             limit: data.limit,
-          }, null, null));
+          }));
         }
         parent.insertAdjacentElement('afterend', item);
       } else {
         if (parent.querySelectorAll('[data-name="' + data.name + '"]').length >= data.limit) {
           return MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.limit, {
             limit: data.limit,
-          }, null, null));
+          }));
         }
         parent.appendChild(item);
       }
@@ -56,23 +46,76 @@ MfJs.Render = {
     });
   },
 
-  item: function(data, config) {
+  data: function(data, config) {
     if (config) {
       if (!Object.values(config).length) {
         config = MfJs.Config.find(data.name);
       }
-      let c = Object.assign({}, config);
-      data['$config'] = Object.assign({}, config.items || {});
+      let c = {...config};
       delete c.items;
-      data = Object.assign({}, c, data);
+      data['$config'] = config.items || {};
+      data = {...c, ...data};
     }
 
     data.id = MfJs.qid('mfjs');
     data.class = data.class || '';
     data.attr = data.attr || '';
+    data.value = typeof data.value === 'undefined' ? '' : data.value;
+    data.el = {};
 
-    if (MfJs.Elements[data.type]?.Render?.item) {
-      data = MfJs.Elements[data.type].Render.item(data, config);
+    if (data.elements) {
+      let elements = data.elements;
+      data.elements = [];
+      if (typeof elements === 'string') {
+        let key, value;
+        elements.split('||').forEach(function(element) {
+          [key, value] = element.split('==', 2);
+          if (typeof value === 'undefined') {
+            value = key;
+          }
+          data.elements.push({
+            key: key,
+            value: value,
+          });
+        });
+      } else if (Array.isArray(elements)) {
+        for (let value of elements) {
+          data.elements.push({
+            key: value,
+            value: value,
+          });
+        }
+      } else if (elements instanceof Object) {
+        for (let key in elements) {
+          let value = elements[key];
+          key = key[0] === '`' ? key.substr(1) : key;
+          data.elements.push({
+            key: key,
+            value: value,
+          });
+        }
+      }
+    }
+
+    if (MfJs.Elements[data.type]?.Render?.data) {
+      data = MfJs.Elements[data.type].Render.data(data, config);
+    }
+
+    data.el.title = MfJs.Render.title(data.title);
+    data.el.actions = MfJs.Actions.set(data);
+
+    if (!data.el.actions) {
+      data.attr += ' data-no-actions';
+    }
+
+    ['name', 'type', 'title', 'clone', 'limit'].forEach(function(item) {
+      if (typeof data[item] !== 'undefined') {
+        data.attr += ' data-' + item + '="' + MfJs.escape(data[item]) + '"';
+      }
+    });
+
+    if (typeof config.title === 'string') {
+      data.attr += ' data-title-original="' + config.title + '"';
     }
 
     for (let i in data) {
@@ -84,48 +127,6 @@ MfJs.Render = {
     }
 
     return data;
-  },
-
-  elements: function(item) {
-    if (item.elements) {
-      let elements = item.elements;
-      item.elements = [];
-      if (typeof elements === 'string') {
-        let key, value;
-        elements.split('||').map(function(element) {
-          [key, value] = element.split('==', 2);
-          if (typeof value === 'undefined') {
-            value = key;
-          }
-          item.elements.push({
-            key: key,
-            value: value
-          });
-        });
-      } else if (Array.isArray(elements)) {
-        for (let i in elements) {
-          item.elements.push({
-            key: elements[i],
-            value: elements[i]
-          });
-        }
-      } else if (elements instanceof Object) {
-        for (let key in elements) {
-          let value = elements[key];
-          key = key[0] === '`' ? key.substr(1) : key;
-          item.elements.push({
-            key: key,
-            value: value
-          });
-        }
-      }
-    }
-
-    if (MfJs.Elements[item.type]?.Render?.elements) {
-      item = MfJs.Elements[item.type].Render.elements(item);
-    }
-
-    return item;
   },
 
   title: function(title) {
@@ -140,11 +141,11 @@ MfJs.Render = {
   },
 
   init: function() {
-    Object.entries(MfJs.Render.initElements).map(function([id, type]) {
+    Object.entries(MfJs.Render.initElements).forEach(function([id, type]) {
       if (MfJs.Elements?.[type]?.Render?.init) {
         MfJs.Elements[type].Render.init(id);
       }
-      [...document.querySelectorAll('#' + id + ' > .mfjs-items')].map(function(el) {
+      document.querySelectorAll('#' + id + ' > .mfjs-items').forEach(function(el) {
         Sortable.create(el, {
           animation: 0,
           draggable: '.mfjs-draggable',
@@ -166,10 +167,8 @@ MfJs.Render = {
 
   template: function(html, data, isDom, cleanKeys) {
     data = MfJs.Render.flatData(data || {});
-    isDom = isDom || false;
-    if (typeof cleanKeys === 'undefined') {
-      cleanKeys = true;
-    }
+    isDom = isDom || null;
+    cleanKeys = !(cleanKeys || null);
     html = html.replace(/\[\+([\w\.]*)\+\]/g, function(str, key) {
       let value = typeof data[key] !== 'undefined' ? data[key] : '';
       return (value === null || value === undefined) ? (cleanKeys ? '' : str) : value;

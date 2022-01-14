@@ -4,9 +4,9 @@
 MfJs.Elements['richtext'] = {
   templates: {
     wrapper: '' +
-        '<div id="[+id+]" class="col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
-        '    [+actions+]\n' +
-        '    [+title+]\n' +
+        '<div id="[+id+]" class="col [+class+]" [+attr+]>\n' +
+        '    [+el.actions+]\n' +
+        '    [+el.title+]\n' +
         '    <textarea type="text" id="tv[+id+]" class="form-control [+item.class+]" name="tv[+id+]" placeholder="[+placeholder+]" onchange="documentDirty=true;" [+item.attr+]>[+value+]</textarea>\n' +
         '</div>',
   },
@@ -31,13 +31,13 @@ MfJs.Elements['richtext'] = {
 
     if (typeof tinymce !== 'undefined') {
       let conf = theme !== undefined ? window['config_tinymce4_' + theme] : window[modxRTEbridge_tinymce4.default];
-      conf = Object.assign({}, conf, options);
+      conf = {...conf, ...options};
       conf.selector = '#' + inputEl.id;
       if (document.body.classList.contains('darkness')) {
         conf.skin = 'oxide-dark';
         conf.content_css = 'dark';
       }
-      [...el.querySelectorAll('.mce-tinymce')].map(function(div) {
+      el.querySelectorAll('.mce-tinymce').forEach(function(div) {
         div.parentElement.removeChild(div);
       });
       inputEl.style.display = 'block';
@@ -51,7 +51,7 @@ MfJs.Elements['richtext'] = {
       if (myCodeMirrors['ta']) {
         options = Object.assign({}, myCodeMirrors['ta'].options, options);
       }
-      [...el.querySelectorAll('.CodeMirror')].map(function(div) {
+      el.querySelectorAll('.CodeMirror').forEach(function(div) {
         div.parentElement.removeChild(div);
       });
       inputEl.style.display = 'block';

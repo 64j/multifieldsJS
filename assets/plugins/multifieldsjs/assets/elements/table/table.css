@@ -19,11 +19,12 @@
 .mfjs [data-type="table"] .mfjs-table-columns > .col { padding: 0; margin-right: -1px; }
 .mfjs [data-type="table"] .mfjs-table-columns > .col[data-type="thumb:image"] { max-width: 5rem; }
 .mfjs [data-type="table"] .mfjs-table-columns input { background: transparent }
-.mfjs [data-type="table"] .mfjs-column-menu { top: 100%; right: 4px; min-width: 12rem; font-size: 0.7125rem; }
+.mfjs [data-type="table"] .mfjs-column-menu { top: 0; right: 20px; min-width: 12rem; height: 0; font-size: 0.7125rem; }
 .mfjs [data-type="table"] .mfjs-column-menu > div:not(.separator) { padding: .25em 2em .25em 1em; }
 .mfjs [data-type="table"] .mfjs-column-menu .fa { margin-right: .25rem; font-size: .75rem; }
 .mfjs [data-type="table"] .mfjs-column-menu-toggle { position: absolute; z-index: 5; top: 0; right: 0; padding: .5rem; cursor: pointer; }
 .mfjs [data-type="table"] .mfjs-column-menu.show + .mfjs-column-menu-toggle { transform: rotate(180deg); color: #1976d2; }
+.mfjs [data-type="table"] .mfjs-column-menu.show { height: auto; }
 /* darkness */
 .darkness .mfjs [data-type="table"] > .mfjs-items .mfjs-items { background: #282c34 }
 .darkness .mfjs [data-type="table"] > .mfjs-items .mfjs-items > .col { border-color: #3e4249; }

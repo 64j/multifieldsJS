@@ -4,10 +4,10 @@
 MfJs.Elements['checkbox'] = {
   templates: {
     wrapper: '' +
-        '<div id="[+id+]" class="col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
-        ' [+actions+]\n' +
-        ' [+title+]\n' +
-        ' [+elements+]\n' +
+        '<div id="[+id+]" class="col [+class+]" [+attr+]>\n' +
+        ' [+el.actions+]\n' +
+        ' [+el.title+]\n' +
+        ' [+el.elements+]\n' +
         '</div>',
     element: '' +
         '<label class="checkbox">\n' +
@@ -16,23 +16,24 @@ MfJs.Elements['checkbox'] = {
   },
 
   Render: {
-    elements: function(item) {
-      if (item.elements) {
-        let values = item.value.split('||');
-        item.elements = item.elements.map(function(element, index) {
-          return MfJs.Render.template(MfJs.Elements[item.type].templates.element, {
-            id: item.id + '_' + index,
-            type: item.type,
-            name: item.id,
-            value: element.key,
-            title: element.value !== '' && element.value || element.key,
-            selected: ~values.indexOf('' + element.key) ? 'selected' : '',
-            checked: ~values.indexOf('' + element.key) ? 'checked' : '',
-          }, null, null);
-        }).join('');
+    data: function(data) {
+      if (data.elements) {
+        let values = data.value.split('||');
+        data.el.elements = '';
+        data.elements.forEach(function(item, index) {
+          data.el.elements += MfJs.Render.template(MfJs.Elements[data.type].templates.element, {
+            id: data.id + '_' + index,
+            type: data.type,
+            name: data.id,
+            value: item.key,
+            title: item.value !== '' && item.value || item.key,
+            selected: ~values.indexOf('' + item.key) ? 'selected' : '',
+            checked: ~values.indexOf('' + item.key) ? 'checked' : '',
+          });
+        });
       }
 
-      return item;
+      return data;
     },
   },
 };

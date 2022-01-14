@@ -4,23 +4,21 @@
 MfJs.Elements['row'] = {
   templates: {
     wrapper: '' +
-        '<div id="[+id+]" class="mfjs-row col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
-        '    [+title+]\n' +
-        '    [+templates+]\n' +
-        '    [+actions+]\n' +
-        '    [+info+]\n' +
-        '    [+value+]\n' +
-        '    <div class="mfjs-items [+items.class+]">\n' +
-        '        [+items+]\n' +
-        '    </div>\n' +
+        '<div id="[+id+]" class="mfjs-row col [+class+]" [+attr+]>\n' +
+        '    [+el.title+]\n' +
+        '    [+el.templates+]\n' +
+        '    [+el.actions+]\n' +
+        '    [+el.info+]\n' +
+        '    [+el.value+]\n' +
+        '    <div class="mfjs-items [+items.class+]"></div>\n' +
         '</div>',
   },
 
   Render: {
-    item: function(data) {
-      data.templates = MfJs.Templates.render(data.templates || []);
-      data.value = MfJs.Elements.row.Render.value(data);
-      data.info = MfJs.Elements.row.Render.info(data);
+    data: function(data, config) {
+      data.el.templates = MfJs.Templates.render(data.templates || []);
+      data.el.value = MfJs.Elements.row.Render.value(data);
+      data.el.info = MfJs.Elements.row.Render.info(data);
 
       if (!data.class) {
         data.class = 'col-12';
@@ -171,7 +169,7 @@ MfJs.Elements['row'] = {
           }
           let breakpoints = MfJs.Config.get('settings')?.toolbar?.breakpoints;
           if (breakpoints) {
-            [...parent.attributes].map(function(attr) {
+            [...parent.attributes].forEach(function(attr) {
               if (attr.name.substr(0, 16) === 'data-mfjs-offset') {
                 let name = attr.name.substr(17) || attr.name.substr(16);
                 if (typeof breakpoints[name] === 'undefined' || attr.value === '') {
@@ -257,7 +255,7 @@ MfJs.Elements['row'] = {
           }
           let breakpoints = MfJs.Config.get('settings')?.toolbar?.breakpoints;
           if (breakpoints) {
-            [...parent.attributes].map(function(attr) {
+            [...parent.attributes].forEach(function(attr) {
               if (attr.name.substr(0, 13) === 'data-mfjs-col') {
                 let name = attr.name.substr(14) || attr.name.substr(13);
                 if (typeof breakpoints[name] === 'undefined' || attr.value === '') {

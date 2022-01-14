@@ -4,9 +4,9 @@
 MfJs.Elements['image'] = {
   templates: {
     wrapper: '' +
-        '<div id="[+id+]" class="col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
-        '    [+actions+]\n' +
-        '    [+title+]\n' +
+        '<div id="[+id+]" class="col [+class+]" [+attr+]>\n' +
+        '    [+el.actions+]\n' +
+        '    [+el.title+]\n' +
         '    <input type="text" id="tv[+id+]" class="form-control [+item.class+]" name="[+name+]" placeholder="[+placeholder+]" value="[+value+]" onchange="documentDirty=true;MfJs.Elements.image.Actions.actions.edit(this);" [+item.attr+]>\n' +
         '    <i class="[+icon+]" onclick="BrowseServer(\'tv[+id+]\');[+onclick+]"></i>\n' +
         '</div>',
@@ -15,7 +15,7 @@ MfJs.Elements['image'] = {
   interval: null,
 
   Render: {
-    item: function(data, config) {
+    data: function(data, config) {
       let multi = typeof config['multi'] === 'boolean' && config['multi'] && data.name || config['multi'] || '';
       let thumb = config['thumb'] || '';
 
@@ -43,7 +43,7 @@ MfJs.Elements['image'] = {
               itemsEl = t.parentElement.parentElement;
           for (let k in thumbs) {
             if (thumbs.hasOwnProperty(k)) {
-              [...itemsEl.querySelectorAll('[data-name="' + thumbs[k] + '"]')].map(function(item) {
+              itemsEl.querySelectorAll('[data-name="' + thumbs[k] + '"]').forEach(function(item) {
                 item.style.backgroundImage = 'url(\'../' + t.value + '\')';
                 let input = item.querySelector(':scope > .mfjs-value input');
                 if (input) {
