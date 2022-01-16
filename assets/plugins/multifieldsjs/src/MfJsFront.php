@@ -13,6 +13,11 @@ class MfJsFront
     protected $params = [];
 
     /**
+     * @var array
+     */
+    protected $config = [];
+
+    /**
      * @return static
      */
     public static function getInstance(): ?MfJsFront
@@ -71,10 +76,10 @@ class MfJsFront
     /**
      * @param array $data
      * @param array $config
-     * @param string $tplKey
+     * @param string $parentName
      * @return array
      */
-    protected function renderData(array $data, array $config, string $tplKey = ''): array
+    protected function renderData(array $data, array $config, string $parentName = ''): array
     {
         $out = [];
 
@@ -85,44 +90,29 @@ class MfJsFront
 
             $item['mf.name'] = $item['mf.name'] ?? (string) $key;
 
-            $this->prepare(
-                $config[$item['mf.name']]['prepare'] ?? (
-                    $this->params['prepare_' . $tplKey . $item['mf.name']] ?? (
-                        $this->params['prepare_' . $tplKey . '*'] ?? (
-                            $this->params['prepare_' . $item['mf.name']] ?? null
-                        )
-                    )
-                ),
-                $item
-            );
+            $item = $this->setPrepare($item, $item['mf.name'], $parentName, $config);
 
-            $item['mf.tpl'] = $config[$item['mf.name']]['tpl'] ?? (
-                    $this->params['tpl_' . $tplKey . $item['mf.name']] ?? (
-                        $this->params['tpl_' . $tplKey . '*'] ?? (
-                            $this->params['tpl_' . $item['mf.name']] ?? '@CODE:[+mf.value+]'
-                        )
-                    )
-                );
-
-            if (isset($item['mf.columns']) ?? is_array($item['mf.columns'])) {
+            if (isset($item['mf.columns']) && is_array($item['mf.columns'])) {
                 $tpl = $config[$item['mf.name']]['tpl.columns'] ?? (
-                        $this->params['tpl_' . $tplKey . $item['mf.name'] . '.columns'] ?? '@CODE:[+mf.items+]'
+                        $this->params['tpl_' . $parentName . $item['mf.name'] . '.columns'] ?? '@CODE:[+mf.items+]'
                     );
 
                 $item['mf.columns'] = $this->tpl($tpl, [
                     'mf.items' => $this->renderData(
                         $item['mf.columns'],
-                        $config[$item['mf.name']]['columns'] ?? [], $tplKey . $item['mf.name'] . '.columns.'
+                        $config[$item['mf.name']]['columns'] ?? [], $parentName . $item['mf.name'] . '.columns.'
                     )
                 ]);
             }
 
-            if (isset($item['mf.items']) ?? is_array($item['mf.items'])) {
+            if (isset($item['mf.items']) && is_array($item['mf.items'])) {
                 $item = array_merge($item, $this->renderData(
                     $item['mf.items'],
-                    $config[$item['mf.name']]['items'] ?? [], $tplKey . $item['mf.name'] . '.'
+                    $config[$item['mf.name']]['items'] ?? [], $parentName . $item['mf.name'] . '.'
                 ));
             }
+
+            $item = $this->setPrepareWrap($item, $item['mf.name'], $parentName, $config);
 
             $key = $item['mf.name'];
 
@@ -131,7 +121,7 @@ class MfJsFront
             }
 
             $out[$key] .= $this->tpl(
-                $item['mf.tpl'],
+                $this->setTpl($item['mf.name'], $parentName, $config),
                 $item
             );
         }
@@ -157,7 +147,9 @@ class MfJsFront
             $config = json_decode(file_get_contents($file), true);
         }
 
-        return $config['templates'] ?? [];
+        $this->config = $config['templates'] ?? [];
+
+        return $this->config;
     }
 
     /**
@@ -174,11 +166,76 @@ class MfJsFront
     }
 
     /**
+     * @param string $name
+     * @param string $parentName
+     * @param array $config
+     * @return string
+     */
+    protected function setTpl(string $name, string $parentName, array $config): string
+    {
+        return $config[$name]['tpl'] ?? (
+                $this->config[$name]['tpl'] ?? (
+                    $this->params['tpl_' . $parentName . $name] ?? (
+                        $this->params['tpl_' . $parentName . '*'] ?? (
+                            $this->params['tpl_' . $name] ?? '@CODE:[+mf.value+]'
+                        )
+                    )
+                )
+            );
+    }
+
+    /**
+     * @param array $item
+     * @param string $name
+     * @param string $parentName
+     * @param array $config
+     * @return array
+     */
+    protected function setPrepare(array $item, string $name, string $parentName, array $config): array
+    {
+        return $this->prepare(
+            $config[$name]['prepare'] ?? (
+                $this->config[$name]['prepare'] ?? (
+                    $this->params['prepare_' . $parentName . $name] ?? (
+                        $this->params['prepare_' . $parentName . '*'] ?? (
+                            $this->params['prepare_' . $name] ?? null
+                        )
+                    )
+                )
+            ),
+            $item
+        );
+    }
+
+    /**
+     * @param array $item
+     * @param string $name
+     * @param string $parentName
+     * @param array $config
+     * @return array
+     */
+    protected function setPrepareWrap(array $item, string $name, string $parentName, array $config): array
+    {
+        return $this->prepare(
+            $config[$name]['prepareWrap'] ?? (
+                $this->config[$name]['prepareWrap'] ?? (
+                    $this->params['prepareWrap_' . $parentName . $name] ?? (
+                        $this->params['prepareWrap_' . $parentName . '*'] ?? (
+                            $this->params['prepareWrap_' . $name] ?? null
+                        )
+                    )
+                )
+            ),
+            $item
+        );
+    }
+
+    /**
      * @param $name
      * @param array $data
-     * @return void
+     * @return array
      */
-    protected function prepare($name = null, array &$data = [])
+    protected function prepare($name = null, array $data = []): array
     {
         if (!empty($name)) {
             $evo = evolutionCMS();
@@ -195,6 +252,8 @@ class MfJsFront
                 $data = $evo->runSnippet($name, $args) ?: $data;
             }
         }
+
+        return $data;
     }
 
     /**
