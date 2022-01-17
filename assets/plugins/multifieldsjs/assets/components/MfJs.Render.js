@@ -63,6 +63,9 @@ MfJs.Render = {
     data.value = typeof data.value === 'undefined' ? '' : data.value;
     data.el = {};
 
+    data.prepare && delete data.prepare;
+    data.prepareWrap && delete data.prepareWrap;
+
     if (data.elements) {
       let elements = data.elements;
       data.elements = [];

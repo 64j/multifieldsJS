@@ -19,8 +19,10 @@
 
       render: function(id, config) {
         MfJs.Container = document.getElementById(id);
-        MfJs.Container.addEventListener('mousedown', function() {
-          MfJs.Container = this;
+        MfJs.Container.addEventListener('mousemove', function() {
+          if (MfJs.Container.id !== this.id) {
+            MfJs.Container = this;
+          }
         });
         MfJs.Config.add(config);
         if (config) {

@@ -20,6 +20,14 @@ MfJs.Elements['row'] = {
       data.el.value = MfJs.Elements.row.Render.value(data);
       data.el.info = MfJs.Elements.row.Render.info(data);
 
+      if (data['mfjs.col']) {
+        data.class += ' col-' + data['mfjs.col'];
+      }
+
+      if (data['mfjs.offset']) {
+        data.class += ' offset-' + data['mfjs.offset'];
+      }
+
       if (!data.class) {
         data.class = 'col-12';
       }
@@ -149,7 +157,7 @@ MfJs.Elements['row'] = {
           if (Math.round((e.clientX - x) / widthCol) !== offset) {
             offset = Math.round((e.clientX - x) / widthCol);
             if (offset > 11) {
-              offset = 12;
+              offset = 11;
             } else if (offset < 1) {
               offset = 0;
             }
@@ -158,26 +166,28 @@ MfJs.Elements['row'] = {
         };
 
         document.onmouseup = function(e) {
+          parent.className = className.replace(/offset-[\d]+/g, '');
           parent.classList.remove('mfjs-active');
-          parent.classList.remove('offset-' + offset);
-          parent.setAttribute('data-mfjs-offset' + breakpoint, offset || '');
           if (offset) {
+            parent.classList.add('offset-' + offset);
+            parent.setAttribute('data-mfjs-offset' + breakpoint, offset || '');
             if (!info.querySelector('.mfjs-info-offset' + breakpoint)) {
               info.insertAdjacentHTML('beforeend', '<div class="mfjs-info-offset' + breakpoint + ' mfjs-show-breakpoint' + breakpoint + '"></div>');
             }
             info.querySelector('.mfjs-info-offset' + breakpoint).innerHTML = 'offset' + breakpoint + ':' + offset;
+          } else {
+            parent.removeAttribute('data-mfjs-offset' + breakpoint);
           }
-          let breakpoints = MfJs.Config.get('settings')?.toolbar?.breakpoints;
-          if (breakpoints) {
-            [...parent.attributes].forEach(function(attr) {
-              if (attr.name.substr(0, 16) === 'data-mfjs-offset') {
-                let name = attr.name.substr(17) || attr.name.substr(16);
-                if (typeof breakpoints[name] === 'undefined' || attr.value === '') {
-                  parent.removeAttribute(attr.name);
-                }
+          [...parent.attributes].forEach(function(attr) {
+            if (!offset) {
+              if (attr.name.substr(0, 16) === 'data-mfjs-offset' && attr.value === '') {
+                parent.removeAttribute(attr.name);
               }
-            });
-          }
+            }
+            if (attr.name.substr(0, 17) === 'data-mfjs-offset-' && !MfJs.Config.get('settings')?.toolbar?.breakpoints[attr.name.substr(17)]) {
+              parent.removeAttribute(attr.name);
+            }
+          });
           parent.removeAttribute('data-mfjs-disable-offset');
           document.onmousemove = null;
           e.preventDefault();
@@ -243,9 +253,9 @@ MfJs.Elements['row'] = {
         };
 
         document.onmouseup = function(e) {
+          parent.className = className.replace(/col-[\d|auto]+/g, '');
           parent.classList.remove('mfjs-active');
-          parent.classList.remove('col-' + col);
-          parent.classList.add('col-12');
+          parent.classList.add(col ? 'col-' + col : 'col');
           parent.setAttribute('data-mfjs-col' + breakpoint, col || '');
           if (col) {
             if (!info.querySelector('.mfjs-info-col' + breakpoint)) {
@@ -253,17 +263,16 @@ MfJs.Elements['row'] = {
             }
             info.querySelector('.mfjs-info-col' + breakpoint).innerHTML = 'col' + breakpoint + ':' + col;
           }
-          let breakpoints = MfJs.Config.get('settings')?.toolbar?.breakpoints;
-          if (breakpoints) {
-            [...parent.attributes].forEach(function(attr) {
-              if (attr.name.substr(0, 13) === 'data-mfjs-col') {
-                let name = attr.name.substr(14) || attr.name.substr(13);
-                if (typeof breakpoints[name] === 'undefined' || attr.value === '') {
-                  parent.removeAttribute(attr.name);
-                }
+          [...parent.attributes].forEach(function(attr) {
+            if (!col) {
+              if (attr.name.substr(0, 13) === 'data-mfjs-col' && attr.value === '') {
+                parent.removeAttribute(attr.name);
               }
-            });
-          }
+            }
+            if (attr.name.substr(0, 14) === 'data-mfjs-col-' && !MfJs.Config.get('settings')?.toolbar?.breakpoints[attr.name.substr(14)]) {
+              parent.removeAttribute(attr.name);
+            }
+          });
           parent.removeAttribute('data-mfjs-disable-col');
           document.onmousemove = null;
           e.preventDefault();

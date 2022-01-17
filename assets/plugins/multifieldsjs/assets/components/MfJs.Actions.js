@@ -150,7 +150,11 @@ MfJs.Actions = {
         } else {
           t.position = t.getBoundingClientRect();
           templates.height = 0;
+          let style = getComputedStyle(templates);
           for (let i = 0; i < templates.children.length; i++) {
+            if (templates.height + templates.children[i].offsetHeight > parseInt(style.maxHeight)) {
+              break;
+            }
             templates.height += templates.children[i].offsetHeight;
           }
           if (templates.height / 2 > t.position.top - (t.offsetHeight / 2)) {
