@@ -117,12 +117,8 @@ MfJs.Render = {
       }
     });
 
-    if (typeof config.title === 'string') {
-      data.attr += ' data-title-original="' + config.title + '"';
-    }
-
     for (let i in data) {
-      let ii = i.replace(/([a-z])([A-Z])/g, '$1-$2').replace('mfjs.', 'mfjs-').toLowerCase();
+      let ii = i.replace(/([a-z])([A-Z])/g, '$1-$2').replace('mf.', 'mf-').toLowerCase();
       if (ii !== i) {
         data.attr += ' data-' + ii + '="' + data[i] + '"';
         delete data[i];

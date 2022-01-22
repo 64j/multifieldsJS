@@ -20,12 +20,12 @@ MfJs.Elements['row'] = {
       data.el.value = MfJs.Elements.row.Render.value(data);
       data.el.info = MfJs.Elements.row.Render.info(data);
 
-      if (data['mfjs.col']) {
-        data.class += ' col-' + data['mfjs.col'];
+      if (data['mf.col']) {
+        data.class += ' col-' + data['mf.col'];
       }
 
-      if (data['mfjs.offset']) {
-        data.class += ' offset-' + data['mfjs.offset'];
+      if (data['mf.offset']) {
+        data.class += ' offset-' + data['mf.offset'];
       }
 
       if (!data.class) {
@@ -60,8 +60,8 @@ MfJs.Elements['row'] = {
 
       a = '';
       for (let k in data) {
-        if (k.substr(0, 11) === 'mfjs.offset') {
-          let n = k.substr(11) || '';
+        if (k.substr(0, 9) === 'mf.offset') {
+          let n = k.substr(9) || '';
           a += data[k] && '<div class="mfjs-info-offset' + n + ' mfjs-show-breakpoint' + n + '">offset' + n + ':' + data[k] + '</div>' || '';
         }
       }
@@ -69,8 +69,8 @@ MfJs.Elements['row'] = {
 
       a = '';
       for (let k in data) {
-        if (k.substr(0, 8) === 'mfjs.col') {
-          let n = k.substr(8) || '';
+        if (k.substr(0, 6) === 'mf.col') {
+          let n = k.substr(6) || '';
           a += data[k] && '<div class="mfjs-info-col' + n + ' mfjs-show-breakpoint' + n + '">col' + n + ':' + data[k] + '</div>' || '';
         }
       }
@@ -130,7 +130,7 @@ MfJs.Elements['row'] = {
           parent.querySelector(':scope > .mfjs-info').appendChild(info);
         }
 
-        parent.setAttribute('data-mfjs-disable-offset', '');
+        parent.setAttribute('data-mf-disable-offset', '');
 
         document.onmousemove = function(e) {
           window.getSelection().removeAllRanges();
@@ -170,25 +170,25 @@ MfJs.Elements['row'] = {
           parent.classList.remove('mfjs-active');
           if (offset) {
             parent.classList.add('offset-' + offset);
-            parent.setAttribute('data-mfjs-offset' + breakpoint, offset || '');
+            parent.setAttribute('data-mf-offset' + breakpoint, offset || '');
             if (!info.querySelector('.mfjs-info-offset' + breakpoint)) {
               info.insertAdjacentHTML('beforeend', '<div class="mfjs-info-offset' + breakpoint + ' mfjs-show-breakpoint' + breakpoint + '"></div>');
             }
             info.querySelector('.mfjs-info-offset' + breakpoint).innerHTML = 'offset' + breakpoint + ':' + offset;
           } else {
-            parent.removeAttribute('data-mfjs-offset' + breakpoint);
+            parent.removeAttribute('data-mf-offset' + breakpoint);
           }
           [...parent.attributes].forEach(function(attr) {
             if (!offset) {
-              if (attr.name.substr(0, 16) === 'data-mfjs-offset' && attr.value === '') {
+              if (attr.name.substr(0, 14) === 'data-mf-offset' && attr.value === '') {
                 parent.removeAttribute(attr.name);
               }
             }
-            if (attr.name.substr(0, 17) === 'data-mfjs-offset-' && !MfJs.Config.get('settings')?.toolbar?.breakpoints[attr.name.substr(17)]) {
+            if (attr.name.substr(0, 15) === 'data-mf-offset-' && !MfJs.Config.get('settings')?.toolbar?.breakpoints[attr.name.substr(15)]) {
               parent.removeAttribute(attr.name);
             }
           });
-          parent.removeAttribute('data-mfjs-disable-offset');
+          parent.removeAttribute('data-mf-disable-offset');
           document.onmousemove = null;
           e.preventDefault();
           e.stopPropagation();
@@ -216,7 +216,7 @@ MfJs.Elements['row'] = {
           parent.querySelector(':scope > .mfjs-info').appendChild(info);
         }
 
-        parent.setAttribute('data-mfjs-disable-col', '');
+        parent.setAttribute('data-mf-disable-col', '');
 
         document.onmousemove = function(e) {
           window.getSelection().removeAllRanges();
@@ -256,7 +256,7 @@ MfJs.Elements['row'] = {
           parent.className = className.replace(/col-[\d|auto]+/g, '');
           parent.classList.remove('mfjs-active');
           parent.classList.add(col ? 'col-' + col : 'col');
-          parent.setAttribute('data-mfjs-col' + breakpoint, col || '');
+          parent.setAttribute('data-mf-col' + breakpoint, col || '');
           if (col) {
             if (!info.querySelector('.mfjs-info-col' + breakpoint)) {
               info.insertAdjacentHTML('beforeend', '<div class="mfjs-info-col' + breakpoint + ' mfjs-show-breakpoint' + breakpoint + '"></div>');
@@ -265,15 +265,15 @@ MfJs.Elements['row'] = {
           }
           [...parent.attributes].forEach(function(attr) {
             if (!col) {
-              if (attr.name.substr(0, 13) === 'data-mfjs-col' && attr.value === '') {
+              if (attr.name.substr(0, 11) === 'data-mf-col' && attr.value === '') {
                 parent.removeAttribute(attr.name);
               }
             }
-            if (attr.name.substr(0, 14) === 'data-mfjs-col-' && !MfJs.Config.get('settings')?.toolbar?.breakpoints[attr.name.substr(14)]) {
+            if (attr.name.substr(0, 12) === 'data-mf-col-' && !MfJs.Config.get('settings')?.toolbar?.breakpoints[attr.name.substr(12)]) {
               parent.removeAttribute(attr.name);
             }
           });
-          parent.removeAttribute('data-mfjs-disable-col');
+          parent.removeAttribute('data-mf-disable-col');
           document.onmousemove = null;
           e.preventDefault();
           e.stopPropagation();

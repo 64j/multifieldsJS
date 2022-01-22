@@ -85,7 +85,7 @@ class MfJsFront
 
         foreach ($data as $key => $item) {
             $item = array_combine(array_map(function ($name) {
-                return substr($name, 0, 5) == 'mfjs.' ? 'mf.' . substr($name, 5) : 'mf.' . $name;
+                return substr($name, 0, 3) == 'mf.' ? $name : 'mf.' . $name;
             }, array_keys($item)), $item);
 
             $item['mf.name'] = $item['mf.name'] ?? (string) $key;

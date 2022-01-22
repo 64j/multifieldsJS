@@ -106,24 +106,24 @@ MfJs.Settings = {
           if (localStorage['mfjs-breakpoint-' + MfJs.Container.id] === breakpoint.name || !localStorage['mfjs-breakpoint-' + MfJs.Container.id] && !breakpoint.name) {
             active = ' active';
             if (breakpoint.name) {
-              MfJs.Container.setAttribute('data-mfjs-breakpoint', breakpoint.name);
+              MfJs.Container.setAttribute('data-mf-breakpoint', breakpoint.name);
               MfJs.Container.querySelector(':scope > .mfjs-items').style.maxWidth = breakpoint.value + 'px';
             }
           }
 
-          let data_breakpoint = breakpoint.name ? '[data-mfjs-breakpoint="' + breakpoint.name + '"]' : ':not([data-mfjs-breakpoint])';
+          let data_breakpoint = breakpoint.name ? '[data-mf-breakpoint="' + breakpoint.name + '"]' : ':not([data-mf-breakpoint])';
           let data_col = breakpoint.name ? '-' + breakpoint.name : '';
 
-          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col]:not([data-mfjs-disable-col]) { flex-basis: 100%; max-width: 100%; }';
-          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-offset]:not([data-mfjs-disable-offset]) { margin-left: 0 }';
-          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '="auto"]:not([data-mfjs-disable-col]) { flex: 0 0 auto; max-width: none; width: auto; }';
-          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '=""]:not([data-mfjs-disable-col]) { flex-basis: 0; flex-grow: 1; max-width: 100%; }';
+          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mf-col]:not([data-mf-disable-col]) { flex-basis: 100%; max-width: 100%; }';
+          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mf-offset]:not([data-mf-disable-offset]) { margin-left: 0 }';
+          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mf-col' + data_col + '="auto"]:not([data-mf-disable-col]) { flex: 0 0 auto; max-width: none; width: auto; }';
+          css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mf-col' + data_col + '=""]:not([data-mf-disable-col]) { flex-basis: 0; flex-grow: 1; max-width: 100%; }';
 
           for (let i = 1; i <= 12; i++) {
             let n = parseFloat((100 / 12 * i).toFixed(4));
-            css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-col' + data_col + '="' + i + '"]:not([data-mfjs-disable-col]) { flex: 0 0 ' + n + '%; max-width: ' + n + '%; }';
+            css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mf-col' + data_col + '="' + i + '"]:not([data-mf-disable-col]) { flex: 0 0 ' + n + '%; max-width: ' + n + '%; }';
             if (i < 12) {
-              css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mfjs-offset' + data_col + '="' + i + '"]:not([data-mfjs-disable-offset]) { margin-left: ' + n + '%; }';
+              css += '#' + MfJs.Container.id + '.mfjs' + data_breakpoint + ' [data-mf-offset' + data_col + '="' + i + '"]:not([data-mf-disable-offset]) { margin-left: ' + n + '%; }';
             }
           }
 
@@ -178,7 +178,7 @@ MfJs.Settings = {
         if (localStorage['mfjs-fullscreen-' + MfJs.Container.id]) {
           active = 'active';
           document.body.classList.add('mfjs-mode-fullscreen');
-          MfJs.Container.setAttribute('data-mfjs-fullscreen', '');
+          MfJs.Container.setAttribute('data-mf-fullscreen', '');
         }
 
         htmlToolbar += MfJs.Render.template(MfJs.Settings.templates.action, {
@@ -217,12 +217,12 @@ MfJs.Settings = {
       el.classList.add('active');
       if (parseInt(el.dataset['breakpointKey'])) {
         MfJs.Container.querySelector('.mfjs-items').style.maxWidth = el.dataset['breakpointKey'] + 'px';
-        MfJs.Container.setAttribute('data-mfjs-breakpoint', el.dataset['breakpointName']);
+        MfJs.Container.setAttribute('data-mf-breakpoint', el.dataset['breakpointName']);
         MfJs.Config.get().breakpoint = el.dataset['breakpointName'];
         localStorage['mfjs-breakpoint-' + MfJs.Container.id] = el.dataset['breakpointName'];
       } else {
         MfJs.Container.querySelector('.mfjs-items').style.maxWidth = '';
-        MfJs.Container.removeAttribute('data-mfjs-breakpoint');
+        MfJs.Container.removeAttribute('data-mf-breakpoint');
         MfJs.Config.get().breakpoint = null;
         delete localStorage['mfjs-breakpoint-' + MfJs.Container.id];
       }
@@ -268,14 +268,14 @@ MfJs.Settings = {
       fileInput.click();
     },
     fullscreen: function(el) {
-      if (MfJs.Container.hasAttribute('data-mfjs-fullscreen')) {
+      if (MfJs.Container.hasAttribute('data-mf-fullscreen')) {
         document.body.classList.remove('mfjs-mode-fullscreen');
-        MfJs.Container.removeAttribute('data-mfjs-fullscreen');
+        MfJs.Container.removeAttribute('data-mf-fullscreen');
         el.classList.remove('active');
         delete localStorage['mfjs-fullscreen-' + MfJs.Container.id];
       } else {
         document.body.classList.add('mfjs-mode-fullscreen');
-        MfJs.Container.setAttribute('data-mfjs-fullscreen', '');
+        MfJs.Container.setAttribute('data-mf-fullscreen', '');
         el.classList.add('active');
         localStorage['mfjs-fullscreen-' + MfJs.Container.id] = 1;
       }

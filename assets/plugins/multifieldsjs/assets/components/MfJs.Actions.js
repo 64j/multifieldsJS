@@ -116,18 +116,18 @@ MfJs.Actions = {
     },
     hide: function(t) {
       let target = t.parentElement.parentElement;
-      if (target.dataset['mfjsHide']) {
-        target.removeAttribute('data-mfjs-hide');
+      if (target.dataset['mfHide']) {
+        target.removeAttribute('data-mf-hide');
       } else {
-        target.dataset['mfjsHide'] = '1';
+        target.dataset['mfHide'] = '1';
       }
     },
     expand: function(t) {
       let target = t.parentElement.parentElement;
-      if (target.dataset['mfjsExpand']) {
-        target.removeAttribute('data-mfjs-expand');
+      if (target.dataset['mfExpand']) {
+        target.removeAttribute('data-mf-expand');
       } else {
-        target.dataset['mfjsExpand'] = '1';
+        target.dataset['mfExpand'] = '1';
       }
     },
     del: function(t) {
