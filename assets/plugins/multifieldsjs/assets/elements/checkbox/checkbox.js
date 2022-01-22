@@ -25,10 +25,10 @@ MfJs.Elements['checkbox'] = {
             id: data.id + '_' + index,
             type: data.type,
             name: data.id,
-            value: item.key,
-            title: item.value !== '' && item.value || item.key,
-            selected: ~values.indexOf('' + item.key) ? 'selected' : '',
-            checked: ~values.indexOf('' + item.key) ? 'checked' : '',
+            value: item.value,
+            title: item.key !== '' && item.key || item.value,
+            selected: ~values.indexOf('' + item.value) ? 'selected' : '',
+            checked: ~values.indexOf('' + item.value) ? 'checked' : '',
           });
         });
       }
