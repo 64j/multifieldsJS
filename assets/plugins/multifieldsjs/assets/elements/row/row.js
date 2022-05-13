@@ -2,6 +2,9 @@
  * @version 1.0
  */
 MfJs.Elements['row'] = {
+  popup: null,
+  parent: null,
+
   templates: {
     wrapper: '' +
       '<div id="[+id+]" class="mfjs-row col [+class+]" [+attr+]>\n' +
@@ -34,6 +37,10 @@ MfJs.Elements['row'] = {
 
       if (data.templates) {
         data.class += ' mfjs-group'
+      }
+
+      if (data.popup) {
+        data.attr += ' data-mf-popup="' + MfJs.escape(JSON.stringify(data.popup)) + '"'
       }
 
       return data
@@ -83,11 +90,15 @@ MfJs.Elements['row'] = {
   Actions: {
     default: ['move', 'add', 'hide', 'expand', 'resize', 'del'],
     hidden: ['edit'],
-    item (action) {
+    item (action, data) {
       if (action === 'resize') {
         return '' +
           '<i class="mfjs-actions-' + action + '-offset fa" onmousedown="MfJs.Elements.row.Actions.actions.offset(event);"></i>' +
           '<i class="mfjs-actions-' + action + '-col fa" onmousedown="MfJs.Elements.row.Actions.actions.col(event);"></i>'
+      }
+
+      if (action === 'edit') {
+        data.attr += ' data-mf-expand="1"'
       }
 
       return MfJs.Actions.item(action)
@@ -109,8 +120,72 @@ MfJs.Elements['row'] = {
 
         }
       },
-      edit () {
-        alert('edit')
+      edit (t) {
+        let Row = this
+        let el = t.parentElement.parentElement
+        if (parent['modx']) {
+          let popup = el.dataset.mfPopup ? JSON.parse(el.dataset.mfPopup) : {}
+          Row.popup = parent['modx'].popup(Object.assign({
+            addclass: 'mfjs-popup',
+            title: el.querySelector('.mfjs-title') && el.querySelector('.mfjs-title').innerHTML || el.dataset.type,
+            content: '<div class="mfjs"><div class="mfjs-items"></div></div>',
+            icon: 'fa-layer-group',
+            delay: 0,
+            overlay: 1,
+            overlayclose: 0,
+            hide: 0,
+            hover: 0,
+            width: '80%',
+            maxheight: '99%',
+            position: 'top center',
+            onclose (e, el) {
+              el.classList.remove('show')
+              Row.popup = null
+            },
+          }, popup))
+
+          Row.clone = el.querySelector(':scope > .mfjs-items').cloneNode(true).children
+
+          Row.popup.el.querySelector('.mfjs .mfjs-items').append(...el.querySelector(':scope > .mfjs-items').children)
+
+          Row.popup.el.querySelector('.evo-popup-close').outerHTML = '<div id="actions" class="position-absolute"><span class="btn btn-sm btn-success mfjs-save"><i class="fa fa-floppy-o show no-events"></i></span><span class="btn btn-sm btn-danger mfjs-close"><i class="fa fa-times-circle show no-events"></i></span></div>'
+
+          Row.parent = el
+
+          Row.popup.el.addEventListener('click', function (e) {
+            if (e.target.classList.contains('mfjs-save')) {
+              this.classList.remove('show')
+              documentDirty = true
+              this.querySelectorAll('.mfjs-items [data-thumb]').forEach(el => {
+                let value = el.querySelector('input').value
+                if (el.dataset['thumb'] === Row.parent.dataset['name']) {
+                  Row.parent.querySelector(':scope > .mfjs-value input').value = value
+                  Row.parent.style.backgroundImage = 'url(\'../' + value + '\')'
+                } else {
+                  let thumbs = el.dataset['thumb'].toString().split(',')
+                  for (let k in thumbs) {
+                    if (thumbs.hasOwnProperty(k) && Row.parent.dataset['name'] === thumbs[k]) {
+                      Row.parent.style.backgroundImage = 'url(\'../' + value + '\')'
+                      let input = Row.parent.querySelector(':scope > .mfjs-value input')
+                      if (input) {
+                        input.value = value
+                      }
+                      break
+                    }
+                  }
+                }
+              })
+              Row.parent.querySelector('.mfjs-items').append(...this.querySelector('.mfjs-items').children)
+              this.close()
+            }
+            if (e.target.classList.contains('mfjs-close')) {
+              Row.parent.querySelector('.mfjs-items').append(...Row.clone)
+              this.close()
+            }
+          })
+        } else {
+          alert('Not found function parent.modx !')
+        }
       },
       offset (e) {
         if (e.button) {

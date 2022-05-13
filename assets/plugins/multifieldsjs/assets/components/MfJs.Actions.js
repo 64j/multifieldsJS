@@ -12,7 +12,7 @@ MfJs.Actions = {
 
   set (data) {
     let actions = MfJs.Elements[data.type]?.Actions?.default || MfJs.Actions.default
-    let actionsWithHidden = actions.concat(MfJs.Elements[data.type]?.Actions?.hidden || [])
+    let hidden = actions.concat(MfJs.Elements[data.type]?.Actions?.hidden || [])
     if (typeof data.actions === 'undefined') {
       data.actions = actions
     } else if (typeof data.actions === 'boolean') {
@@ -27,7 +27,7 @@ MfJs.Actions = {
       data.class += ' mfjs-draggable'
     }
 
-    data.actions = actions = actionsWithHidden.filter(n => {
+    data.actions = actions = hidden.filter(n => {
       return ~data.actions.indexOf(n)
     })
 

@@ -147,7 +147,7 @@
           for (let i in item) {
             let ii = i.replace(/([a-z])([A-Z])/g, '$1-$2').replace('mf-', 'mf.').toLowerCase()
             if (ii !== i) {
-              item[ii] = item[i]
+              item[ii] = item[i][0] === '{' ? JSON.parse(item[i]) : item[i]
               delete item[i]
             }
           }
