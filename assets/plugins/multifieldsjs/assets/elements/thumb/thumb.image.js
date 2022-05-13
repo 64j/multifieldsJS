@@ -8,85 +8,85 @@ MfJs.Elements['thumb:image'] = {
 
   templates: {
     wrapper: '' +
-        '<div id="[+id+]" class="mfjs-thumb col [+class+]" [+attr+]>\n' +
-        '    [+el.title+]\n' +
-        '    [+el.actions+]\n' +
-        '    <div class="mfjs-value" hidden>\n' +
-        '        <input type="text" id="[+id+]_value" class="form-control form-control-sm" value="[+value+]">\n' +
-        '    </div>' +
-        '</div>',
+      '<div id="[+id+]" class="mfjs-thumb col [+class+]" [+attr+]>\n' +
+      '    [+el.title+]\n' +
+      '    [+el.actions+]\n' +
+      '    <div class="mfjs-value" hidden>\n' +
+      '        <input type="text" id="[+id+]_value" class="form-control form-control-sm" value="[+value+]">\n' +
+      '    </div>' +
+      '</div>',
   },
 
   Render: {
-    data: function(data, config) {
-      let multi = typeof config['multi'] === 'boolean' && config['multi'] && data.name || config['multi'] || '';
-      let image = config['image'] || '';
+    data (data, config) {
+      let multi = typeof config['multi'] === 'boolean' && config['multi'] && data.name || config['multi'] || ''
+      let image = config['image'] || ''
 
       if (multi) {
-        data.attr += ' data-multi="' + multi + '"';
+        data.attr += ' data-multi="' + multi + '"'
       }
 
       if (image) {
-        data.attr += ' data-image="' + image + '"';
+        data.attr += ' data-image="' + image + '"'
       }
 
-      data.attr += ' style="background-image: url(../' + data.value + ');"';
+      data.attr += ' style="background-image: url(../' + data.value + ');"'
 
       if (data.items) {
-        delete data.items;
+        delete data.items
       }
 
-      return data;
-    }
+      return data
+    },
   },
 
   Actions: {
     default: ['move', 'add', 'hide', 'expand', 'edit', 'del'],
     actions: {
-      edit: function(t) {
-        let el = t.parentElement.parentElement;
-        let valueEl = el.querySelector(':scope > .mfjs-value input');
+      edit (t) {
+        let el = t.parentElement.parentElement
+        let valueEl = el.querySelector(':scope > .mfjs-value input')
         if (valueEl) {
-          BrowseServer(valueEl.id);
+          BrowseServer(valueEl.id)
           if (el.dataset['multi']) {
-            MfJs.Elements['thumb:image'].MultiBrowseServer(valueEl);
+            MfJs.Elements['thumb:image'].MultiBrowseServer(valueEl)
           }
-          valueEl.onchange = function(e) {
-            el.style.backgroundImage = 'url(\'../' + e.target.value + '\')';
+          valueEl.onchange = (e) => {
+            el.style.backgroundImage = 'url(\'../' + e.target.value + '\')'
             if (el.dataset.image) {
-              el.parentElement.querySelectorAll('[data-name="' + el.dataset.image + '"]').forEach(function(item) {
-                let input = item.querySelector('input[id][name]');
+              el.parentElement.querySelectorAll('[data-name="' + el.dataset.image + '"]').forEach(item => {
+                let input = item.querySelector('input[id][name]')
                 if (input) {
-                  input.value = e.target.value;
+                  input.value = e.target.value
                 }
-              });
+              })
             }
-          };
+          }
         }
       },
     },
   },
 
-  MultiBrowseServer: function(el) {
-    MfJs.Elements['thumb:image'].interval = setInterval(function() {
+  MultiBrowseServer (el) {
+    MfJs.Elements['thumb:image'].interval = setInterval(() => {
       if (window.KCFinder) {
-        clearInterval(MfJs.Elements['thumb:image'].interval);
-        window.KCFinder.callBackMultiple = function(files) {
-          window.KCFinder = null;
-          window.lastFileCtrl = el.id;
-          window.SetUrl(files[0]);
-          let parent = el.parentElement.parentElement;
+        clearInterval(MfJs.Elements['thumb:image'].interval)
+        window.KCFinder.callBackMultiple = (files) => {
+          window.KCFinder = null
+          window.lastFileCtrl = el.id
+          window.SetUrl(files[0])
+          let parent = el.parentElement.parentElement
           for (let k in files) {
             if (files.hasOwnProperty(k) && parseInt(k)) {
-              MfJs.Render.render([MfJs.Config.find(parent.dataset.name)], {}, parent, 2);
-              parent = parent.nextElementSibling;
-              parent.style.backgroundImage = 'url(\'../' + files[k] + '\')';
-              window.lastFileCtrl = parent.querySelector('.mfjs-value > input').id;
-              window.SetUrl(files[k]);
+              MfJs.Render.render([MfJs.Config.find(parent.dataset.name)], {}, parent, 2)
+              parent = parent.nextElementSibling
+              parent.style.backgroundImage = 'url(\'../' + files[k] + '\')'
+              window.lastFileCtrl = parent.querySelector('.mfjs-value > input').id
+              window.SetUrl(files[k])
             }
           }
-        };
+        }
       }
-    }, 100);
+    }, 100)
   },
-};
+}

@@ -3,172 +3,174 @@
  */
 MfJs.Actions = {
   default: ['move', 'add', 'hide', 'expand', 'del'],
+  hidden: [],
 
   templates: {
     wrapper: '<div class="mfjs-actions" data-actions="[+id+]">[+items+]</div>',
     item: '<i class="mfjs-actions-[+action+] fa" onclick="MfJs.Actions.action(\'[+action+]\', this);"></i>',
   },
 
-  set: function(data) {
-    let actions = MfJs.Elements[data.type]?.Actions?.default || MfJs.Actions.default;
+  set (data) {
+    let actions = MfJs.Elements[data.type]?.Actions?.default || MfJs.Actions.default
+    let actionsWithHidden = actions.concat(MfJs.Elements[data.type]?.Actions?.hidden || [])
     if (typeof data.actions === 'undefined') {
-      data.actions = actions;
+      data.actions = actions
     } else if (typeof data.actions === 'boolean') {
       if (data.actions) {
-        data.actions = actions;
+        data.actions = actions
       } else {
-        data.actions = actions = data.templates && ['template'] || [];
-        return MfJs.Actions.render(actions, data);
+        data.actions = actions = data.templates && ['template'] || []
+        return MfJs.Actions.render(actions, data)
       }
     }
     if (~data.actions.indexOf('move')) {
-      data.class += ' mfjs-draggable';
+      data.class += ' mfjs-draggable'
     }
 
-    data.actions = actions = actions.filter(function(n) {
-      return ~data.actions.indexOf(n);
-    });
+    data.actions = actions = actionsWithHidden.filter(n => {
+      return ~data.actions.indexOf(n)
+    })
 
     if (data.templates) {
-      actions.push('template');
-      data.actions.push('template');
+      actions.push('template')
+      data.actions.push('template')
     }
 
-    return MfJs.Actions.render(actions, data);
+    return MfJs.Actions.render(actions, data)
   },
 
-  render: function(actions, data) {
+  render (actions, data) {
     return actions.length && MfJs.Render.template(MfJs.Actions.templates.wrapper, {
       id: data.id,
-      items: actions.map(function(action) {
+      items: actions.map(action => {
         if (MfJs.Elements[data.type]?.Actions?.item) {
-          return MfJs.Elements[data.type].Actions.item(action, data);
+          return MfJs.Elements[data.type].Actions.item(action, data)
         }
-        return MfJs.Actions.item(action);
+        return MfJs.Actions.item(action)
       }).join(''),
-    }) || '';
+    }) || ''
   },
 
-  item: function(action) {
+  item (action) {
     return MfJs.Render.template(MfJs.Actions.templates.item, {
       action: action,
-    });
+    })
   },
 
-  action: function(action, el) {
-    let type = el.parentElement.parentElement.dataset['type'] || null;
+  action (action, el) {
+    let type = el.parentElement.parentElement.dataset['type'] || null
     if (MfJs.Elements[type]?.Actions?.actions?.[action]) {
-      MfJs.Elements[type].Actions.actions[action](el);
+      MfJs.Elements[type].Actions.actions[action](el)
     } else if (MfJs.Actions.actions?.[action]) {
-      MfJs.Actions.actions[action](el);
+      MfJs.Actions.actions[action](el)
     } else {
       MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.noAction, {
         action: action,
-      }));
+      }))
     }
   },
 
   actions: {
-    move: function(t) {},
-    add: function(t) {
+    move (t) {},
+    add (t) {
       let el = document.getElementById(t.parentElement.dataset.actions),
-          data = MfJs.Config.find(el.dataset.name, MfJs.parents(el, '[data-type]'));
+        data = MfJs.Config.find(el.dataset.name, MfJs.parents(el, '[data-type]'))
       if (Object.values(data).length && !el?.dataset?.clone) {
-        let config = {};
-        config[data.name] = Object.assign({}, el.dataset, data);
-        MfJs.Render.render([data], config, el, 2);
+        let config = {}
+        config[data.name] = Object.assign({}, el.dataset, data)
+        MfJs.Render.render([data], config, el, 2)
       } else {
-        let d = document.createElement('div');
-        d.innerHTML = el.cloneNode(true).outerHTML.replace(new RegExp(el.id, 'g'), MfJs.qid('mfjs'));
-        let item = d.firstElementChild;
-        item.querySelectorAll('[id][data-type][data-name]').forEach(function(el) {
-          let id = MfJs.qid('mfjs');
-          item.innerHTML = item.innerHTML.replace(new RegExp(el.id, 'g'), id);
-          item.querySelectorAll('input').forEach(function(input) {
-            input.value = '';
-          });
-          item.querySelectorAll('.mfjs-thumb').forEach(function(input) {
-            input.style.backgroundImage = '';
-          });
-          MfJs.Render.addInit(id, el.dataset.type);
-        });
+        let d = document.createElement('div')
+        d.innerHTML = el.cloneNode(true)['outerHTML'].replace(new RegExp(el.id, 'g'), MfJs.qid('mfjs'))
+        let item = d.firstElementChild
+        item.querySelectorAll('[id][data-type][data-name]').forEach(el => {
+          let id = MfJs.qid('mfjs')
+          item.innerHTML = item.innerHTML.replace(new RegExp(el.id, 'g'), id)
+          item.querySelectorAll('input').forEach(input => {
+            input.value = ''
+          })
+          item.querySelectorAll('.mfjs-thumb').forEach(input => {
+            input.style.backgroundImage = ''
+          })
+          MfJs.Render.addInit(id, el.dataset.type)
+        })
 
         if (el.parentElement.querySelectorAll('[data-name="' + el.dataset.name + '"]').length >= el.dataset.limit) {
           return MfJs.alert(MfJs.Render.template(MfJs.Settings.default.messages.limit, {
             limit: el.dataset.limit,
-          }));
+          }))
         }
 
         if (item.classList.contains('mfjs-thumb')) {
-          item.querySelectorAll('input').forEach(function(input) {
-            input.value = '';
-          });
-          item.style.backgroundImage = '';
+          item.querySelectorAll('input').forEach(input => {
+            input.value = ''
+          })
+          item.style.backgroundImage = ''
         }
 
-        el.insertAdjacentElement('afterend', item);
+        el.insertAdjacentElement('afterend', item)
 
         if (item?.dataset?.type && item.id) {
-          MfJs.Render.addInit(item.id, item.dataset.type);
+          MfJs.Render.addInit(item.id, item.dataset.type)
         }
       }
-      MfJs.Render.init();
+      MfJs.Render.init()
     },
-    hide: function(t) {
-      let target = t.parentElement.parentElement;
+    hide (t) {
+      let target = t.parentElement.parentElement
       if (target.dataset['mfHide']) {
-        target.removeAttribute('data-mf-hide');
+        target.removeAttribute('data-mf-hide')
       } else {
-        target.dataset['mfHide'] = '1';
+        target.dataset['mfHide'] = '1'
       }
     },
-    expand: function(t) {
-      let target = t.parentElement.parentElement;
+    expand (t) {
+      let target = t.parentElement.parentElement
       if (target.dataset['mfExpand']) {
-        target.removeAttribute('data-mf-expand');
+        target.removeAttribute('data-mf-expand')
       } else {
-        target.dataset['mfExpand'] = '1';
+        target.dataset['mfExpand'] = '1'
       }
     },
-    del: function(t) {
+    del (t) {
       let el = document.getElementById(t.parentElement.dataset.actions),
-          parent = el && el.parentElement.parentElement.querySelector('.mfjs-templates');
+        parent = el && el.parentElement.parentElement.querySelector('.mfjs-templates')
       if (el) {
         if ((parent && parent.querySelector('.mfjs-option[data-template-name="' + el.dataset.name + '"]')) || el.parentElement.querySelectorAll('[data-name="' + el.dataset.name + '"]').length > 1) {
-          el.parentElement.removeChild(el);
+          el.parentElement.removeChild(el)
         } else {
-          MfJs.Actions.actions.add(t);
-          el.parentElement.removeChild(el);
+          MfJs.Actions.actions.add(t)
+          el.parentElement.removeChild(el)
         }
       }
     },
-    template: function(t) {
-      let templates = t.parentElement.parentElement.querySelector('.mfjs-templates');
+    template (t) {
+      let templates = t.parentElement.parentElement.querySelector('.mfjs-templates')
       if (templates.children.length > 1) {
         if (templates.classList.contains('show')) {
-          templates.classList.remove('show');
+          templates.classList.remove('show')
         } else {
-          t.position = t.getBoundingClientRect();
-          templates.height = 0;
-          let style = getComputedStyle(templates);
+          t.position = t.getBoundingClientRect()
+          templates.height = 0
+          let style = getComputedStyle(templates)
           for (let i = 0; i < templates.children.length; i++) {
             if (templates.height + templates.children[i].offsetHeight > parseInt(style.maxHeight)) {
-              break;
+              break
             }
-            templates.height += templates.children[i].offsetHeight;
+            templates.height += templates.children[i].offsetHeight
           }
           if (templates.height / 2 > t.position.top - (t.offsetHeight / 2)) {
-            templates.style.marginBottom = Math.floor(t.position.top - (t.offsetHeight / 2) - (templates.height / 2)) + 'px';
+            templates.style.marginBottom = Math.floor(t.position.top - (t.offsetHeight / 2) - (templates.height / 2)) + 'px'
           } else if (t.position.top + (templates.height / 2) > window.innerHeight) {
-            templates.style.marginBottom = Math.ceil(t.position.top + (templates.height / 2) - window.innerHeight) + 'px';
+            templates.style.marginBottom = Math.ceil(t.position.top + (templates.height / 2) - window.innerHeight) + 'px'
           } else {
-            templates.style.marginBottom = '';
+            templates.style.marginBottom = ''
           }
-          templates.classList.add('show');
+          templates.classList.add('show')
         }
       } else {
-        templates.firstElementChild.click();
+        templates.firstElementChild.click()
       }
     },
   },
-};
+}

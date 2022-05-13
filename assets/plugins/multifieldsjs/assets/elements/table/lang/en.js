@@ -20,4 +20,4 @@ MfJs.Elements.table.Lang = {
       file: 'File',
     },
   },
-};
+}

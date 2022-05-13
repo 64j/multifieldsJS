@@ -1,8 +1,8 @@
 /**
  * @version 1.0
  */
-MfJs.Config = new function() {
-  let Config = function() {};
+MfJs.Config = new function () {
+  let Config = function () {}
 
   Config.prototype.add = function(config) {
     this[MfJs.Container.id] = config;
@@ -12,56 +12,53 @@ MfJs.Config = new function() {
     return this?.[MfJs.Container.id]?.[key] || this[MfJs.Container.id] || null;
   };
 
-  Config.prototype.find = function(name, parents) {
-    let templates = MfJs.Config.get('templates'),
-        config = {};
+  Config.prototype.find = (name, parents) => {
+    let templates = MfJs.Config.get('templates'), config = {}
     if (parents && parents.length > 1 && !templates[name]) {
-      parents = parents.map(function(el) {
-        return el.dataset.name;
-      });
-      config = MfJs.Config.findChildren(templates, parents);
-      config.name = name;
+      parents = parents.map(el => el.dataset.name)
+      config = MfJs.Config.findChildren(templates, parents)
+      config.name = name
     } else {
       if (templates[name]) {
-        templates[name].name = name;
-        config = templates[name];
+        templates[name].name = name
+        config = templates[name]
       } else if (name === null) {
-        config = MfJs.Config.get();
+        config = MfJs.Config.get()
       }
     }
 
-    return config;
-  };
+    return config
+  }
 
-  Config.prototype.findChildren = function(data, parents) {
-    let a = {};
-    let key = parents.pop();
+  Config.prototype.findChildren = (data, parents) => {
+    let a = {}
+    let key = parents.pop()
     for (let k in data) {
       if (k === key) {
-        let item = data[k];
-        a = item;
+        let item = data[k]
+        a = item
         if (parents.length) {
           if (item.items) {
             if (MfJs.Elements[item.type]?.Config?.findChildren) {
-              item.items = MfJs.Elements[item.type].Config.findChildren(item.items);
+              item.items = MfJs.Elements[item.type].Config.findChildren(item.items)
             }
-            a = MfJs.Config.findChildren(item.items, parents);
+            a = MfJs.Config.findChildren(item.items, parents)
           } else if (item.templates) {
-            a = MfJs.Config.findChildren(Object.keys(item.templates).reduce(function(obj, key) {
-              obj[item.templates[key]] = MfJs.Config.get('templates')[item.templates[key]] || {};
-              return obj;
-            }, {}), parents);
+            a = MfJs.Config.findChildren(Object.keys(item.templates).reduce((obj, key) => {
+              obj[item.templates[key]] = MfJs.Config.get('templates')[item.templates[key]] || {}
+              return obj
+            }, {}), parents)
           } else {
-            break;
+            break
           }
         } else {
-          break;
+          break
         }
       }
     }
 
-    return a;
-  };
+    return a
+  }
 
-  return new Config();
-};
+  return new Config()
+}

@@ -82,15 +82,15 @@ class MfJsBack
                 continue;
             }
             $version = $docBlock['version'] ?? filemtime($item);
-            $pathinfo = pathinfo($item);
+            $pathInfo = pathinfo($item);
             $item = str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $item);
-            if ($pathinfo['extension'] == 'css') {
+            if ($pathInfo['extension'] == 'css') {
                 $out[] = '<link rel="stylesheet" type="text/css" href="..' . $item . '?v=' . $version . '"/>';
-            } elseif ($pathinfo['extension'] == 'js') {
+            } elseif ($pathInfo['extension'] == 'js') {
                 $out[] = '<script src="..' . $item . '?v=' . $version . '"></script>';
-                if (is_file($file = $pathinfo['dirname'] . '/lang/' . $evo->getConfig('manager_language') . '.js')) {
+                if (is_file($file = $pathInfo['dirname'] . '/lang/' . $evo->getConfig('manager_language') . '.js')) {
                     $out[] = '<script src="..' . str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $file) . '?v=' . $version . '"></script>';
-                } elseif (is_file($file = $pathinfo['dirname'] . '/lang/en.js')) {
+                } elseif (is_file($file = $pathInfo['dirname'] . '/lang/en.js')) {
                     $out[] = '<script src="..' . str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $file) . '?v=' . $version . '"></script>';
                 }
             }
@@ -108,12 +108,13 @@ class MfJsBack
         $id = $row['id'] ?? 0;
         $name = $row['name'] ?? $id;
         $value = $row['value'] ?? '';
+        $default = $row['elements'] ?? null;
 
         if (!$id) {
             return '';
         }
 
-        if ($config = $this->getConfig($name)) {
+        if ($config = $this->getConfig($name, $default)) {
             return '
                 <div id="' . $name . '" class="mfjs"></div>
                 <textarea name="tv' . $id . '" rows="10" hidden>' . $value . '</textarea>
@@ -125,9 +126,10 @@ class MfJsBack
 
     /**
      * @param string $name
+     * @param string|null $default
      * @return string|null
      */
-    protected function getConfig(string $name): ?string
+    protected function getConfig(string $name, string $default = null): ?string
     {
         $configName = $this->getBasePath() . '/config/' . $name;
 
@@ -139,6 +141,6 @@ class MfJsBack
             return file_get_contents($file);
         }
 
-        return null;
+        return $default;
     }
 }
