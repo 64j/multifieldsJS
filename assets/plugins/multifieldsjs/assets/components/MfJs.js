@@ -50,17 +50,20 @@
       },
 
       load () {
-        (document['mutate'] || document['settings']).addEventListener('submit', () => {
-          document.querySelectorAll('.mfjs').forEach(el => {
-            MfJs.Container = el
-            if (!el.disabled) {
-              MfJs.save()
-            }
+        let form = document['mutate'] || document['settings']
+        if (form) {
+          form.addEventListener('submit', () => {
+            document.querySelectorAll('.mfjs').forEach(el => {
+              MfJs.Container = el
+              if (!el.disabled) {
+                MfJs.save()
+              }
+            })
+            document.querySelectorAll('.mfjs [name]').forEach(el => {
+              el.disabled = !0
+            })
           })
-          document.querySelectorAll('.mfjs [name]').forEach(el => {
-            el.disabled = !0
-          })
-        })
+        }
 
         document.addEventListener('click', e => {
           let menu = e.target.parentElement && e.target.parentElement.classList.contains('mfjs-actions') && e.target.parentElement.parentElement.querySelector('.mfjs-context-menu') || (e.target.parentElement && typeof e.target.parentElement.dataset['mfjsActions'] !== 'undefined') && e.target.parentElement.querySelector('.mfjs-context-menu') || null
