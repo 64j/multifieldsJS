@@ -138,7 +138,7 @@ MfJs.Settings = {
             title: breakpoint.label,
             class: active,
             attr: 'data-breakpoint-key="' + breakpoint.value + '" data-breakpoint-name="' + breakpoint.name + '"',
-            icon: breakpoint.icon || '<i class="fa ' + breakpoint.class + '"></i>',
+            icon: breakpoint.icon || `<i class="fa ${breakpoint.class}"></i>`,
           })
         }
 
@@ -153,7 +153,7 @@ MfJs.Settings = {
         htmlToolbar += MfJs.Render.template(MfJs.Settings.templates.action, {
           action: 'export',
           title: 'Export',
-          icon: '<i class="fa fa-upload"></i>',
+          icon: `<i class="fa fa-upload"></i>`,
         })
       }
 
@@ -161,7 +161,7 @@ MfJs.Settings = {
         htmlToolbar += MfJs.Render.template(MfJs.Settings.templates.action, {
           action: 'import',
           title: 'Import',
-          icon: '<i class="fa fa-download"></i>',
+          icon: `<i class="fa fa-download"></i>`,
         })
       }
 
@@ -169,7 +169,7 @@ MfJs.Settings = {
         htmlToolbar += MfJs.Render.template(MfJs.Settings.templates.action, {
           action: 'save',
           title: 'Save',
-          icon: '<i class="fa fa-floppy-o"></i>',
+          icon: `<i class="fa fa-floppy-o"></i>`,
         })
       }
 
@@ -185,7 +185,7 @@ MfJs.Settings = {
           action: 'fullscreen',
           title: 'Fullscreen',
           class: active,
-          icon: '<i class="fa fa-expand-arrows-alt"></i>',
+          icon: `<i class="fa fa-expand-arrows-alt"></i>`,
         })
       }
 
@@ -202,7 +202,7 @@ MfJs.Settings = {
       }
 
       if (css) {
-        document.write('<style>' + css + '</style>')
+        document.write(`<style>${css}</style>`)
       }
     }
 

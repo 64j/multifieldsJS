@@ -132,7 +132,7 @@ MfJs.Render = {
     if (typeof title === 'boolean') {
       title = title ? '' : undefined
     }
-    return typeof title !== 'undefined' ? '<div class="mfjs-title">' + title + '</div>' : ''
+    return typeof title !== 'undefined' ? `<div class="mfjs-title">${title}</div>` : ''
   },
 
   addInit (id, type) {

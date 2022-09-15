@@ -34,7 +34,7 @@
             }))
           }
 
-          MfJs.Container.insertAdjacentHTML('beforeend', '<div class="mfjs-items"></div>')
+          MfJs.Container.insertAdjacentHTML('beforeend', `<div class="mfjs-items"></div>`)
 
           if (config.settings) {
             MfJs.Container.insertAdjacentHTML('afterbegin', MfJs.Settings.render(config.settings))
@@ -44,7 +44,7 @@
           MfJs.Render.addInit(MfJs.Container.id, 'mfjs')
           MfJs.Render.init()
         } else {
-          MfJs.Container.insertAdjacentHTML('beforeend', 'Config not found for tv: <strong>' + MfJs.Container.id + '</strong>')
+          MfJs.Container.insertAdjacentHTML('beforeend', `Config not found for tv: <strong>${MfJs.Container.id}</strong>`)
         }
         MfJs.Container.isLoaded = true
       },
