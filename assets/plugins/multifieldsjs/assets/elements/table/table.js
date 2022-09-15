@@ -4,52 +4,52 @@
 MfJs.Elements['table'] = {
   templates: {
     wrapper: '' +
-      '<div id="[+id+]" class="mfjs-row col [+class+]" [+attr+]>\n' +
-      '    [+el.title+]\n' +
-      '    [+el.templates+]\n' +
-      '    [+el.actions+]\n' +
-      '    [+el.value+]\n' +
-      '    [+el.columns+]\n' +
-      '    <div class="mfjs-items [+items.class+]"></div>\n' +
+      '<div id="{{ id }}" class="mfjs-row col {{ class }}" {{ attr }}>\n' +
+      '    {{ el.title }}\n' +
+      '    {{ el.templates }}\n' +
+      '    {{ el.actions }}\n' +
+      '    {{ el.value }}\n' +
+      '    {{ el.columns }}\n' +
+      '    <div class="mfjs-items {{ items.class }}"></div>\n' +
       '</div>',
     value: '' +
-      '<div class="mfjs-value" [+hidden+]>\n' +
-      '    <input type="[+type+]" class="form-control form-control-sm" value="[+value+]" placeholder="[+placeholder+]" oninput="MfJs.Elements.table.Actions.actions.title(this);" [+hidden+]>\n' +
+      '<div class="mfjs-value" {{ hidden }}>\n' +
+      '    <input type="{{ type }}" class="form-control form-control-sm" value="{{ value }}" placeholder="{{ placeholder }}" oninput="MfJs.Elements.table.Actions.actions.title(this);" {{ hidden }}>\n' +
       '</div>',
-    columns: '<div class="mfjs-table-columns row">[+items+]</div>',
+    columns: '<div class="mfjs-table-columns row">{{ items }}</div>',
     column: '' +
-      '<div id="[+id+]" class="col [+class+]" data-type="[+type+]" data-name="[+name+]" [+attr+]>\n' +
-      '    <input type="text" id="tv[+id+]" class="form-control [+item.class+]" name="tv[+id+]" value="[+value+]" placeholder="[+placeholder+]" onchange="documentDirty=true;" [+item.attr+]>\n' +
+      '<div id="{{ id }}" class="col {{ class }}" data-type="{{ type }}" data-name="{{ name }}" {{ attr }}>\n' +
+      '    <input type="text" id="tv{{ id }}" class="form-control {{ item.class }}" name="tv{{ id }}" value="{{ value }}" placeholder="{{ placeholder }}" onchange="documentDirty=true;" {{ item.attr }}>\n' +
       '    <div data-mfjs-actions>' +
-      '      [+menu+]\n' +
+      '      {{ menu }}\n' +
       '      <i class="mfjs-column-menu-toggle fas fa-angle-down" onclick="MfJs.Elements.table.Actions.actions.columns.menu(this)"></i>\n' +
       '    </div>' +
       '</div>',
     menu: '' +
       '<div class="mfjs-column-menu mfjs-context-menu contextMenu">\n' +
-      '    <div class="separator cntxMnuSeparator">[+lang.actionsHeader+]</div>\n' +
+      '    <div class="separator cntxMnuSeparator">{{ lang.actionsHeader }}</div>\n' +
       '    <div onclick="MfJs.Elements.table.Actions.actions.columns.addAfter(this);">\n' +
-      '        <i class="fa fa-share fa-fw"></i> [+lang.actions.addAfter+]\n' +
+      '        <i class="fa fa-share fa-fw"></i> {{ lang.actions.addAfter }}\n' +
       '    </div>\n' +
       '    <div onclick="MfJs.Elements.table.Actions.actions.columns.addBefore(this);">\n' +
-      '        <i class="fa fa-reply fa-fw"></i> [+lang.actions.addBefore+]\n' +
+      '        <i class="fa fa-reply fa-fw"></i> {{ lang.actions.addBefore }}\n' +
       '    </div>\n' +
       '    <div onclick="MfJs.Elements.table.Actions.actions.columns.moveRight(this);">\n' +
-      '        <i class="fa fa-arrow-right fa-fw"></i> [+lang.actions.moveRight+]\n' +
+      '        <i class="fa fa-arrow-right fa-fw"></i> {{ lang.actions.moveRight }}\n' +
       '    </div>\n' +
       '    <div onclick="MfJs.Elements.table.Actions.actions.columns.moveLeft(this);">\n' +
-      '        <i class="fa fa-arrow-left fa-fw"></i> [+lang.actions.moveLeft+]\n' +
+      '        <i class="fa fa-arrow-left fa-fw"></i> {{ lang.actions.moveLeft }}\n' +
       '    </div>\n' +
       '    <div onclick="MfJs.Elements.table.Actions.actions.columns.clear(this);">\n' +
-      '        <i class="fa fa-eraser fa-fw"></i> [+lang.actions.clear+]\n' +
+      '        <i class="fa fa-eraser fa-fw"></i> {{ lang.actions.clear }}\n' +
       '    </div>\n' +
       '    <div onclick="MfJs.Elements.table.Actions.actions.columns.del(this);">\n' +
-      '        <i class="fa fa-minus-circle fa-fw text-danger"></i> [+lang.actions.del+]\n' +
+      '        <i class="fa fa-minus-circle fa-fw text-danger"></i> {{ lang.actions.del }}\n' +
       '    </div>\n' +
-      '    <div class="separator cntxMnuSeparator">[+lang.typesHeader+]</div>\n' +
-      '    [+types+]\n' +
+      '    <div class="separator cntxMnuSeparator">{{ lang.typesHeader }}</div>\n' +
+      '    {{ types }}\n' +
       '</div>',
-    menuItem: '<div class="[+selected+]" onclick="MfJs.Elements.table.Actions.actions.columns.type(this, \'[+type+]\', \'[+elements+]\');" data-type="[+type+]">[+label+]</div>',
+    menuItem: '<div class="{{ selected }}" onclick="MfJs.Elements.table.Actions.actions.columns.type(this, \'{{ type }}\', \'{{ elements }}\');" data-type="{{ type }}">{{ label }}</div>',
   },
 
   values (data, el, i) {

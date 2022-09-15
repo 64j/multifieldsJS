@@ -3,16 +3,16 @@
  */
 MfJs.Elements['checkbox'] = {
   templates: {
-    wrapper: '' +
-      '<div id="[+id+]" class="col [+class+]" [+attr+]>\n' +
-      ' [+el.actions+]\n' +
-      ' [+el.title+]\n' +
-      ' [+el.elements+]\n' +
-      '</div>',
-    element: '' +
-      '<label class="checkbox">\n' +
-      '    <input type="[+type+]" value="[+value+]" id="[+id+]" name="[+name+][]" placeholder="[+placeholder+]" [+checked+] onchange="documentDirty=true;"/>[+title+]</label>\n' +
-      '<br/>',
+    wrapper: `
+<div id="{{ id }}" class="col {{ class }}" {{ attr }}>
+    {{ el.actions }}
+    {{ el.title }}
+    {{ el.elements }}
+</div>`,
+    element: `
+<label class="checkbox">
+    <input type="{{ type }}" value="{{ value }}" id="{{ id }}" name="{{ name }}[]" placeholder="{{ placeholder }}" {{ checked }} onchange="documentDirty=true;"/>{{ title }}</label>
+<br/>`,
   },
 
   Render: {

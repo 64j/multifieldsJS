@@ -168,7 +168,7 @@ MfJs.Render = {
     data = MfJs.Render.flatData(data || {})
     isDom = isDom || null
     cleanKeys = !(cleanKeys || null)
-    html = html.replace(/\[\+([\w\.]*)\+\]/g, (str, key) => {
+    html = html.replace(/{{ ([\w.]+) }}/g, (str, key) => {
       let value = typeof data[key] !== 'undefined' ? data[key] : ''
       return (value === null || value === undefined) ? (cleanKeys ? '' : str) : value
     })

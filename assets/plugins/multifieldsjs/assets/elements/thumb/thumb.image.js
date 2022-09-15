@@ -8,11 +8,11 @@ MfJs.Elements['thumb:image'] = {
 
   templates: {
     wrapper: '' +
-      '<div id="[+id+]" class="mfjs-thumb col [+class+]" [+attr+]>\n' +
-      '    [+el.title+]\n' +
-      '    [+el.actions+]\n' +
+      '<div id="{{ id }}" class="mfjs-thumb col {{ class }}" {{ attr }}>\n' +
+      '    {{ el.title }}\n' +
+      '    {{ el.actions }}\n' +
       '    <div class="mfjs-value" hidden>\n' +
-      '        <input type="text" id="[+id+]_value" class="form-control form-control-sm" value="[+value+]">\n' +
+      '        <input type="text" id="{{ id }}_value" class="form-control form-control-sm" value="{{ value }}">\n' +
       '    </div>' +
       '</div>',
   },

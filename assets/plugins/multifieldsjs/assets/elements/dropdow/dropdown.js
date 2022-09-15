@@ -4,12 +4,12 @@
 MfJs.Elements['dropdown'] = {
   templates: {
     wrapper: '' +
-      '<div id="[+id+]" class="col [+class+]" [+attr+]>\n' +
-      '    [+el.actions+]\n' +
-      '    [+el.title+]\n' +
-      '    <select id="tv[+id+]" name="[+name+]" placeholder="[+placeholder+]" size="1" onchange="documentDirty=true;">[+el.elements+]</select>\n' +
+      '<div id="{{ id }}" class="col {{ class }}" {{ attr }}>\n' +
+      '    {{ el.actions }}\n' +
+      '    {{ el.title }}\n' +
+      '    <select id="tv{{ id }}" name="{{ name }}" placeholder="{{ placeholder }}" size="1" onchange="documentDirty=true;">{{ el.elements }}</select>\n' +
       '</div>',
-    element: '<option value="[+value+]" [+selected+]>[+title+]</option>',
+    element: '<option value="{{ value }}" {{ selected }}>{{ title }}</option>',
   },
 
   Render: {

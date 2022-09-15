@@ -3,8 +3,8 @@
  */
 MfJs.Templates = {
   templates: {
-    wrapper: '<div class="mfjs-templates mfjs-context-menu contextMenu">[+items+]</div>',
-    item: '<div class="mfjs-option" onclick="MfJs.Templates.get(\'[+name+]\', this);" data-template-name="[+name+]">[+label+]</div>',
+    wrapper: `<div class="mfjs-templates mfjs-context-menu contextMenu">{{ items }}</div>`,
+    item: `<div class="mfjs-option" onclick="MfJs.Templates.get('{{ name }}', this);" data-template-name="{{ name }}">{{ label }}</div>`,
   },
 
   get (name, el) {

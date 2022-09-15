@@ -49,21 +49,21 @@ MfJs.Settings = {
       save: true,
     },
     messages: {
-      limit: 'The limit ([+limit+]) for adding elements of this name has been exceeded.',
-      elementNotFound: 'Element [+type+] not found.',
-      noAction: 'Action [+action+] not found.',
+      limit: `The limit ({{ limit }}) for adding elements of this name has been exceeded.`,
+      elementNotFound: `Element {{ type }} not found.`,
+      noAction: `Action {{ action }} not found.`,
     },
   },
 
   templates: {
-    grid: '<div class="mfjs-grid">[+items+]</div>',
-    gridItem: '<div style="max-width: [+width+]px;"></div>',
-    toolbar: '<div class="mfjs-toolbar">[+items+]</div>',
-    breakpoints: '<div class="mfjs-breakpoints">[+items+]</div>',
-    action: '' +
-      '<a href="javascript:;" class="mfjs-btn mfjs-btn-toolbar-[+action+] [+class+]" title="[+title+]" onclick="MfJs.Settings.actions.[+action+](this);" [+attr+]>\n' +
-      '    [+icon+]\n' +
-      '</a>',
+    grid: `<div class="mfjs-grid">{{ items }}</div>`,
+    gridItem: `<div style="max-width: {{ width }}px;"></div>`,
+    toolbar: `<div class="mfjs-toolbar">{{ items }}</div>`,
+    breakpoints: `<div class="mfjs-breakpoints">{{ items }}</div>`,
+    action: `
+<a href="javascript:;" class="mfjs-btn mfjs-btn-toolbar-{{ action }} {{ class }}" title="{{ title }}" onclick="MfJs.Settings.actions.{{ action }}(this);" {{ attr }}>
+    {{ icon }}
+</a>`,
   },
 
   render (settings) {

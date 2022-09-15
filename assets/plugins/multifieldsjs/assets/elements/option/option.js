@@ -4,13 +4,13 @@
 MfJs.Elements['option'] = {
   templates: {
     wrapper: '' +
-      '<div id="[+id+]" class="col [+class+]" [+attr+]>\n' +
-      ' [+el.actions+]\n' +
-      ' [+el.title+]\n' +
-      ' [+el.elements+]\n' +
+      '<div id="{{ id }}" class="col {{ class }}" {{ attr }}>\n' +
+      ' {{ el.actions }}\n' +
+      ' {{ el.title }}\n' +
+      ' {{ el.elements }}\n' +
       '</div>',
 
-    element: '<input type="radio" value="[+value+]" id="[+id+]" name="[+name+]" placeholder="[+placeholder+]" [+checked+] onchange="documentDirty=true;" /><label for="[+id+]" class="radio">[+title+]</label>',
+    element: '<input type="radio" value="{{ value }}" id="{{ id }}" name="{{ name }}" placeholder="{{ placeholder }}" {{ checked }} onchange="documentDirty=true;" /><label for="{{ id }}" class="radio">{{ title }}</label>',
   },
 
   Render: {

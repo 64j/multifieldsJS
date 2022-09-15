@@ -6,8 +6,8 @@ MfJs.Actions = {
   hidden: [],
 
   templates: {
-    wrapper: '<div class="mfjs-actions" data-actions="[+id+]">[+items+]</div>',
-    item: '<i class="mfjs-actions-[+action+] fa" onclick="MfJs.Actions.action(\'[+action+]\', this);"></i>',
+    wrapper: `<div class="mfjs-actions" data-actions="{{ id }}">{{ items }}</div>`,
+    item: `<i class="mfjs-actions-{{ action }} fa" onclick="MfJs.Actions.action('{{ action }}', this);"></i>`,
   },
 
   set (data) {

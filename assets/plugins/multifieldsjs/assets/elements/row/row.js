@@ -6,15 +6,15 @@ MfJs.Elements['row'] = {
   parent: null,
 
   templates: {
-    wrapper: '' +
-      '<div id="[+id+]" class="mfjs-row col [+class+]" [+attr+]>\n' +
-      '    [+el.title+]\n' +
-      '    [+el.templates+]\n' +
-      '    [+el.actions+]\n' +
-      '    [+el.info+]\n' +
-      '    [+el.value+]\n' +
-      '    <div class="mfjs-items [+items.class+]"></div>\n' +
-      '</div>',
+    wrapper: `
+<div id="{{ id }}" class="mfjs-row col {{ class }}" {{ attr }}>
+    {{ el.title }}
+    {{ el.templates }}
+    {{ el.actions }}
+    {{ el.info }}
+    {{ el.value }}
+    <div class="mfjs-items {{ items.class }}"></div>
+</div>`
   },
 
   Render: {
@@ -57,10 +57,14 @@ MfJs.Elements['row'] = {
         data.value = ''
       }
 
-      return '' +
-        '<div class="mfjs-value" ' + hidden + '>' +
-        ' <input type="' + type + '" class="form-control form-control-sm" value="' + MfJs.escape(data.value) + '" placeholder="' + (data.placeholder || '') + '" ' + hidden + '>' +
-        '</div>'
+      return `
+<div class="mfjs-value" ${hidden}>
+    <input type="${type}" 
+           class="form-control form-control-sm" 
+           value="${MfJs.escape(data.value)}" 
+           placeholder="${(data.placeholder || ``)}"
+           ${hidden}>
+</div>`
     },
     info (data) {
       let info = '', a
@@ -69,21 +73,21 @@ MfJs.Elements['row'] = {
       for (let k in data) {
         if (k.substring(0, 9) === 'mf.offset') {
           let n = k.substring(9) || ''
-          a += data[k] && '<div class="mfjs-info-offset' + n + ' mfjs-show-breakpoint' + n + '">offset' + n + ':' + data[k] + '</div>' || ''
+          a += data[k] && `<div class="mfjs-info-offset${n} mfjs-show-breakpoint${n}">offset${n}:${data[k]}</div>` || ''
         }
       }
-      info += '<div class="mfjs-info-offsets">' + a + '</div>'
+      info += `<div class="mfjs-info-offsets">${a}</div>`
 
       a = ''
       for (let k in data) {
         if (k.substring(0, 6) === 'mf.col') {
           let n = k.substring(6) || ''
-          a += data[k] && '<div class="mfjs-info-col' + n + ' mfjs-show-breakpoint' + n + '">col' + n + ':' + data[k] + '</div>' || ''
+          a += data[k] && `<div class="mfjs-info-col${n} mfjs-show-breakpoint${n}">col${n}:${data[k]}</div>` || ''
         }
       }
-      info += '<div class="mfjs-info-cols">' + a + '</div>'
+      info += `<div class="mfjs-info-cols">${a}</div>`
 
-      return '<div class="mfjs-info">' + info + '</div>'
+      return `<div class="mfjs-info">${info}</div>`
     },
   },
 
@@ -92,9 +96,9 @@ MfJs.Elements['row'] = {
     hidden: ['edit'],
     item (action, data) {
       if (action === 'resize') {
-        return '' +
-          '<i class="mfjs-actions-' + action + '-offset fa" onmousedown="MfJs.Elements.row.Actions.actions.offset(event);"></i>' +
-          '<i class="mfjs-actions-' + action + '-col fa" onmousedown="MfJs.Elements.row.Actions.actions.col(event);"></i>'
+        return `
+          <i class="mfjs-actions-${action}-offset fa" onmousedown="MfJs.Elements.row.Actions.actions.offset(event);"></i>
+          <i class="mfjs-actions-${action}-col fa" onmousedown="MfJs.Elements.row.Actions.actions.col(event);"></i>`
       }
 
       if (action === 'edit') {
@@ -128,7 +132,7 @@ MfJs.Elements['row'] = {
           Row.popup = parent['modx'].popup(Object.assign({
             addclass: 'mfjs-popup',
             title: el.querySelector('.mfjs-title') && el.querySelector('.mfjs-title').innerHTML || el.dataset.type,
-            content: '<div class="mfjs"><div class="mfjs-items"></div></div>',
+            content: `<div class="mfjs"><div class="mfjs-items"></div></div>`,
             icon: 'fa-layer-group',
             delay: 0,
             overlay: 1,
@@ -141,15 +145,22 @@ MfJs.Elements['row'] = {
             onclose (e, el) {
               el.classList.remove('show')
               Row.popup = null
-            },
+            }
           }, popup))
 
           Row.clone = el.querySelector(':scope > .mfjs-items').cloneNode(true).children
 
           Row.popup.el.querySelector('.mfjs .mfjs-items').append(...el.querySelector(':scope > .mfjs-items').children)
 
-          Row.popup.el.querySelector('.evo-popup-close').outerHTML = '<div id="actions" class="position-absolute"><span class="btn btn-sm btn-success mfjs-save"><i class="fa fa-floppy-o show no-events"></i></span><span class="btn btn-sm btn-danger mfjs-close"><i class="fa fa-times-circle show no-events"></i></span></div>'
-
+          Row.popup.el.querySelector('.evo-popup-close').outerHTML = `
+<div id="actions" class="position-absolute">
+    <span class="btn btn-sm btn-success mfjs-save">
+        <i class="fa fa-floppy-o show no-events"></i>
+    </span>
+    <span class="btn btn-sm btn-danger mfjs-close">
+        <i class="fa fa-times-circle show no-events"></i>
+    </span>
+</div>`
           Row.parent = el
 
           Row.popup.el.addEventListener('click', function (e) {
@@ -217,7 +228,8 @@ MfJs.Elements['row'] = {
           if (breakpoint) {
             if (offset) {
               if (!info.querySelector('.mfjs-info-offset' + breakpoint)) {
-                info.insertAdjacentHTML('beforeend', '<div class="mfjs-info-offset' + breakpoint + ' mfjs-show-breakpoint' + breakpoint + '"></div>')
+                info.insertAdjacentHTML('beforeend',
+                  `<div class="mfjs-info-offset${breakpoint} mfjs-show-breakpoint${breakpoint}"></div>`)
               }
               info.querySelector('.mfjs-info-offset' + breakpoint).innerHTML = 'offset' + breakpoint + ':' + offset
             } else if (info.querySelector('.mfjs-info-offset' + breakpoint)) {
@@ -226,7 +238,9 @@ MfJs.Elements['row'] = {
           } else {
             if (offset) {
               if (!info.querySelector('.mfjs-info-offset' + breakpoint)) {
-                info.insertAdjacentHTML('beforeend', '<div class="mfjs-info-offset' + breakpoint + ' mfjs-show-breakpoint' + breakpoint + '"></div>')
+                info.insertAdjacentHTML('beforeend',
+                  `<div class="mfjs-info-offset${breakpoint} mfjs-show-breakpoint${breakpoint}"></div>`
+                )
               }
               info.querySelector('.mfjs-info-offset').innerHTML = 'offset:' + offset
             } else if (info.querySelector('.mfjs-info-offset')) {
@@ -251,7 +265,8 @@ MfJs.Elements['row'] = {
             parent.classList.add('offset-' + offset)
             parent.setAttribute('data-mf-offset' + breakpoint, offset || '')
             if (!info.querySelector('.mfjs-info-offset' + breakpoint)) {
-              info.insertAdjacentHTML('beforeend', '<div class="mfjs-info-offset' + breakpoint + ' mfjs-show-breakpoint' + breakpoint + '"></div>')
+              info.insertAdjacentHTML('beforeend',
+                `<div class="mfjs-info-offset${breakpoint} mfjs-show-breakpoint${breakpoint}"></div>`)
             }
             info.querySelector('.mfjs-info-offset' + breakpoint).innerHTML = 'offset' + breakpoint + ':' + offset
           } else {
@@ -303,7 +318,8 @@ MfJs.Elements['row'] = {
           if (breakpoint) {
             if (col) {
               if (!info.querySelector('.mfjs-info-col' + breakpoint)) {
-                info.insertAdjacentHTML('beforeend', '<div class="mfjs-info-col' + breakpoint + ' mfjs-show-breakpoint' + breakpoint + '"></div>')
+                info.insertAdjacentHTML('beforeend',
+                  `<div class="mfjs-info-col${breakpoint} mfjs-show-breakpoint${breakpoint}"></div>`)
               }
               info.querySelector('.mfjs-info-col' + breakpoint).innerHTML = 'col' + breakpoint + ':' + col
             } else if (info.querySelector('.mfjs-info-col' + breakpoint)) {
@@ -312,7 +328,8 @@ MfJs.Elements['row'] = {
           } else {
             if (col) {
               if (!info.querySelector('.mfjs-info-col' + breakpoint)) {
-                info.insertAdjacentHTML('beforeend', '<div class="mfjs-info-col' + breakpoint + ' mfjs-show-breakpoint' + breakpoint + '"></div>')
+                info.insertAdjacentHTML('beforeend',
+                  `<div class="mfjs-info-col${breakpoint} mfjs-show-breakpoint${breakpoint}"></div>`)
               }
               info.querySelector('.mfjs-info-col').innerHTML = 'col:' + col
             } else if (info.querySelector('.mfjs-info-col')) {
@@ -338,7 +355,8 @@ MfJs.Elements['row'] = {
           parent.setAttribute('data-mf-col' + breakpoint, col || '')
           if (col) {
             if (!info.querySelector('.mfjs-info-col' + breakpoint)) {
-              info.insertAdjacentHTML('beforeend', '<div class="mfjs-info-col' + breakpoint + ' mfjs-show-breakpoint' + breakpoint + '"></div>')
+              info.insertAdjacentHTML('beforeend',
+                `<div class="mfjs-info-col${breakpoint} mfjs-show-breakpoint${breakpoint}"></div>`)
             }
             info.querySelector('.mfjs-info-col' + breakpoint).innerHTML = 'col' + breakpoint + ':' + col
           }
