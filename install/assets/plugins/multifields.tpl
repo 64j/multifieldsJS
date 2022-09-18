@@ -8,7 +8,7 @@
  * @version     1.0
  * @package     evo
  * @internal    @properties
- * @internal    @events OnManagerMainFrameHeaderHTMLBlock,OnWebPageInit
+ * @internal    @events OnManagerMainFrameHeaderHTMLBlock
  * @internal    @modx_category Manager and Admin
  * @internal    @installset base,sample
  * @author      64j
