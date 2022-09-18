@@ -172,6 +172,8 @@ MfJs.Elements['row'] = {
                 popup.close()
               }
             })
+
+            MfJs.sortable(el.querySelectorAll('.mfjs .mfjs-items'))
           },
           onclose () {
             let items = Row.parent.querySelector('.mfjs-items')

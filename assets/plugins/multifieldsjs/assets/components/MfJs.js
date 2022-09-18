@@ -201,6 +201,26 @@
 
       escape: (s) => ('' + s).replace(/&/g, '&amp;').replace(/'/g, '&apos;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g, '').trim(),
 
+      sortable (els) {
+        els.forEach(el => {
+          Sortable.create(el, {
+            animation: 0,
+            draggable: '.mfjs-draggable',
+            dragClass: 'mfjs-drag',
+            ghostClass: 'mfjs-active',
+            selectedClass: 'mfjs-selected',
+            handle: '.mfjs-actions-move',
+            onEnd: (s) => {
+              console.log(s)
+              el = s.item.querySelector(':scope > .mfjs-items .mfjs-items > [data-type="id"]')
+              if (el && MfJs.Elements?.id?.Render?.init) {
+                MfJs.Elements.id.Render.init(el.id)
+              }
+            },
+          })
+        })
+      },
+
       alert (message, type) {
         type = type || 'warning'
         if (window.parent['modx']) {

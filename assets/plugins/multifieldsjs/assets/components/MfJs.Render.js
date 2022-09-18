@@ -144,22 +144,7 @@ MfJs.Render = {
       if (MfJs.Elements?.[type]?.Render?.init) {
         MfJs.Elements[type].Render.init(id)
       }
-      document.querySelectorAll('#' + id + ' > .mfjs-items').forEach(el => {
-        Sortable.create(el, {
-          animation: 0,
-          draggable: '.mfjs-draggable',
-          dragClass: 'mfjs-drag',
-          ghostClass: 'mfjs-active',
-          selectedClass: 'mfjs-selected',
-          handle: '.mfjs-actions-move',
-          onEnd: () => {
-            el = document.getElementById(id).querySelector(':scope > .mfjs-items .mfjs-items > [data-type="id"]')
-            if (el && MfJs.Elements?.id?.Render?.init) {
-              MfJs.Elements.id.Render.init(el.id)
-            }
-          },
-        })
-      })
+      MfJs.sortable(document.querySelectorAll('#' + id + ' > .mfjs-items'))
     })
     MfJs.Render.initElements = {}
   },

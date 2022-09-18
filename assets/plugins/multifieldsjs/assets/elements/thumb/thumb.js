@@ -84,6 +84,8 @@ MfJs.Elements['thumb'] = {
                   popup.close()
                 }
               })
+
+              MfJs.sortable(el.querySelectorAll('.mfjs .mfjs-items'))
             },
             onclose () {
               let items = Thumb.parent.querySelector('.mfjs-items')
