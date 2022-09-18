@@ -97,7 +97,7 @@ MfJs.Elements['row'] = {
   },
 
   Actions: {
-    default: ['move', 'add', 'hide', 'expand', 'resize', 'del'],
+    default: ['move', 'add', 'hide', 'expand', 'resize', 'edit', 'del'],
     hidden: ['edit'],
     item (action, data) {
       if (action === 'resize') {

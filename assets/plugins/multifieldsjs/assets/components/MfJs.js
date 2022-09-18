@@ -28,7 +28,7 @@
         if (config) {
           if (config.templates) {
             MfJs.Container.insertAdjacentHTML('beforeend', MfJs.Templates.render(true))
-            MfJs.Container.insertAdjacentHTML('beforeend', MfJs.Actions.render(['template'], {
+            MfJs.Container.insertAdjacentHTML('beforeend', MfJs.Actions.render(['template'], [], {
               id: MfJs.Container.id,
               type: 'mfjs',
             }))
@@ -289,9 +289,14 @@ ${settings.actions || ''}
 </div>
 <div class="evo-popup-body">${settings.content}</div>`
 
-          popup.o = document.createElement('div')
-          popup.o.className = 'evo-popup-overlay'
-          popup.o.style.zIndex = '10500'
+          popup.o = popup.wrap.querySelector('.evo-popup-overlay')
+
+          if (!popup.o) {
+            popup.o = document.createElement('div')
+            popup.o.className = 'evo-popup-overlay'
+            popup.o.style.zIndex = '10500'
+            popup.wrap.appendChild(popup.o)
+          }
 
           popup.close = function () {
             settings.onclose()
@@ -300,7 +305,7 @@ ${settings.actions || ''}
             popup.wrap.removeChild(popup.el)
           }
 
-          popup.wrap.append(...[popup.o, popup.el])
+          popup.wrap.appendChild(popup.el)
 
           settings.onload(popup, popup.el)
         }

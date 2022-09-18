@@ -12,22 +12,25 @@ MfJs.Actions = {
 
   set (data) {
     let actions = MfJs.Elements[data.type]?.Actions?.default || MfJs.Actions.default
-    let hidden = actions.concat(MfJs.Elements[data.type]?.Actions?.hidden || [])
+    //let hidden = actions.concat(MfJs.Elements[data.type]?.Actions?.hidden || [])
+    let hidden = MfJs.Elements[data.type]?.Actions?.hidden || []
     if (typeof data.actions === 'undefined') {
-      data.actions = actions
+      data.actions = actions.filter(n => {
+        return !~hidden.indexOf(n)
+      })
     } else if (typeof data.actions === 'boolean') {
       if (data.actions) {
         data.actions = actions
       } else {
         data.actions = actions = data.templates && ['template'] || []
-        return MfJs.Actions.render(actions, data)
+        return MfJs.Actions.render(actions, hidden, data)
       }
     }
     if (~data.actions.indexOf('move')) {
       data.class += ' mfjs-draggable'
     }
 
-    data.actions = actions = hidden.filter(n => {
+    actions = actions.filter(n => {
       return ~data.actions.indexOf(n)
     })
 
@@ -36,13 +39,16 @@ MfJs.Actions = {
       data.actions.push('template')
     }
 
-    return MfJs.Actions.render(actions, data)
+    return MfJs.Actions.render(actions, hidden, data)
   },
 
-  render (actions, data) {
+  render (actions, hidden, data) {
     return actions.length && MfJs.Render.template(MfJs.Actions.templates.wrapper, {
       id: data.id,
       items: actions.map(action => {
+        if (~hidden.indexOf(action) && !~data.actions.indexOf(action)) {
+          return
+        }
         if (MfJs.Elements[data.type]?.Actions?.item) {
           return MfJs.Elements[data.type].Actions.item(action, data)
         }
