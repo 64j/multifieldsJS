@@ -1,18 +1,18 @@
 /**
  * @version 1.0
  */
-MfJs.Config = new function () {
-  let Config = function () {}
+MfJs.Config = {
+  items: {},
 
-  Config.prototype.add = function(config) {
-    this[MfJs.Container.id] = config;
-  };
+  add (config) {
+    MfJs.Config.items[MfJs.Container.id] = config
+  },
 
-  Config.prototype.get = function(key) {
-    return this?.[MfJs.Container.id]?.[key] || this[MfJs.Container.id] || null;
-  };
+  get (key) {
+    return MfJs.Config.items?.[MfJs.Container.id]?.[key] || MfJs.Config.items[MfJs.Container.id] || null
+  },
 
-  Config.prototype.find = (name, parents) => {
+  find (name, parents) {
     let templates = MfJs.Config.get('templates'), config = {}
     if (parents && parents.length > 1 && !templates[name]) {
       parents = parents.map(el => el.dataset.name)
@@ -28,9 +28,9 @@ MfJs.Config = new function () {
     }
 
     return config
-  }
+  },
 
-  Config.prototype.findChildren = (data, parents) => {
+  findChildren (data, parents) {
     let a = {}
     let key = parents.pop()
     for (let k in data) {
@@ -59,6 +59,4 @@ MfJs.Config = new function () {
 
     return a
   }
-
-  return new Config()
 }
