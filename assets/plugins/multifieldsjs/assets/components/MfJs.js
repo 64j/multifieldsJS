@@ -254,8 +254,8 @@
         } else {
           popup.wrap = document.body
           popup.el = document.createElement('div')
-          popup.el.id = 'evo-popup-' + Date.now()
-          popup.el.classList = 'evo-popup alert alert-default animation fade in show m-2 ' + (settings.addclass || '')
+          popup.el.id = 'evo-popup-' + MfJs.qid()
+          popup.el.className = 'evo-popup alert alert-default animation fade in show m-2 ' + settings.addclass
           popup.el.style.overflow = 'auto'
           popup.el.style.width = settings.width
           popup.el.style.height = 'auto'
@@ -270,7 +270,7 @@ ${settings.actions || ''}
 <div class="evo-popup-body">${settings.content}</div>`
 
           popup.o = document.createElement('div')
-          popup.o.classList = 'evo-popup-overlay'
+          popup.o.className = 'evo-popup-overlay'
           popup.o.style.zIndex = '10500'
 
           popup.close = function () {
