@@ -209,12 +209,82 @@
             title: 'MultifieldsJS',
             position: 'top center alertMultifieldsJS',
             content: message,
-            wrap: 'body',
+            wrap: 'body'
           })
         } else {
           alert(message)
         }
       },
+
+      popup (settings) {
+        let popup = {}
+        settings = Object.assign({
+          addclass: 'mfjs-popup',
+          title: 'MfJS',
+          icon: 'fa-layer-group',
+          delay: 0,
+          overlay: 1,
+          overlayclose: 0,
+          hide: 0,
+          hover: 0,
+          width: '80%',
+          maxheight: '99%',
+          position: 'top center',
+          actions: `
+<div id="actions">
+    <span class="btn btn-sm btn-success mfjs-save">
+        <i class="fa fa-floppy-o show no-events"></i>
+    </span>
+    <span class="btn btn-sm btn-danger mfjs-close">
+        <i class="fa fa-times-circle show no-events"></i>
+    </span>
+</div>`
+        }, settings || {})
+
+        if (parent['modx']) {
+          let popup = parent['modx'].popup(settings)
+
+          settings.onload && settings.onload(popup, popup.el)
+
+          if (settings.actions) {
+            popup.el.querySelector('.evo-popup-close').outerHTML = settings.actions
+          }
+        } else {
+          popup.el = document.createElement('div')
+          popup.el.classList = 'evo-popup alert alert-default animation fade in show m-2 ' + (settings.addclass || '')
+          popup.el.style.overflow = 'auto'
+          popup.el.style.width = settings.width
+          popup.el.style.height = 'auto'
+          popup.el.style.maxHeight = settings.maxheight
+          popup.el.style.top = '0'
+          popup.el.style.left = ((100 - parseInt(settings.width)) / 2) + '%'
+          popup.el.innerHTML = `
+${settings.actions || ''}
+<div class="evo-popup-header">
+    <i class="fa fa-fw ${settings.icon}"></i>${settings.title}
+</div>
+<div class="evo-popup-body">${settings.content}</div>`
+
+          popup.overlay = document.createElement('div')
+          popup.overlay.classList = 'evo-popup-overlay'
+          popup.overlay.style.zIndex = '10500'
+
+          popup.close = function () {
+            if (settings.onclose) {
+              settings.onclose()
+            }
+            document.body.style.overflow = ''
+            document.body.removeChild(popup.overlay)
+            document.body.removeChild(popup.el)
+          }
+
+          document.body.append(...[popup.overlay, popup.el])
+
+          settings.onload && settings.onload(popup, popup.el)
+        }
+
+        return popup
+      }
     }
   }
 })

@@ -8,6 +8,7 @@
 .mfjs > .mfjs-items { margin: 0 -.15rem; padding: 0; flex: 0 0 calc(100% + .3rem); max-width: calc(100% + .3rem); background: #f9f9f9; transition: max-width .25s; }
 .mfjs .mfjs-items > .col { padding: .125rem; }
 .mfjs-popup.alert { background: #f9f9f9; }
+.mfjs-popup #actions { position: absolute; right: 0 }
 /* elements */
 .mfjs textarea { display: block }
 .mfjs .form-control { float: none }
@@ -86,7 +87,7 @@
 .mfjs [data-mf-hide] > .mfjs-actions .mfjs-actions-hide::before { content: "\f070"; }
 .mfjs [data-mf-expand] > .mfjs-actions .mfjs-actions-expand::before { content: "\f078"; }
 /* info */
-.mfjs-info { display: flex; flex-wrap: nowrap; flex-direction: row; position: absolute; opacity: 0; overflow: hidden; z-index: 8; left: auto; right: .125rem; bottom: 100%; margin-bottom: -.125rem; padding: 0 .125rem; transition: 0s; background: #1976d2; color: #fff; font-size: .75rem; }
+.mfjs-info { display: flex; flex-wrap: nowrap; flex-direction: row; position: absolute; opacity: 0; overflow: hidden; z-index: 9; left: auto; right: .125rem; bottom: 100%; margin-bottom: -.125rem; padding: 0 .125rem; transition: 0s; background: #1976d2; color: #fff; font-size: .75rem; }
 .mfjs [data-name]:hover > .mfjs-info, .mfjs [data-name].mfjs-active > .mfjs-info { opacity: 1; overflow: visible; transition-duration: .3s; }
 /* input */
 .mfjs [data-type="image"], .mfjs [data-type="file"], .mfjs [data-type="date"] { display: flex; flex-wrap: wrap; }

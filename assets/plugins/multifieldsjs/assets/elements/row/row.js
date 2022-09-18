@@ -2,7 +2,6 @@
  * @version 1.0
  */
 MfJs.Elements['row'] = {
-  popup: null,
   parent: null,
 
   templates: {
@@ -88,7 +87,7 @@ MfJs.Elements['row'] = {
       info += `<div class="mfjs-info-cols">${a}</div>`
 
       return `<div class="mfjs-info">${info}</div>`
-    },
+    }
   },
 
   Actions: {
@@ -111,7 +110,8 @@ MfJs.Elements['row'] = {
       del (t) {
         let el = document.getElementById(t.parentElement.dataset.actions),
           parent = el && el.parentElement.parentElement.querySelector('.mfjs-templates')
-        if ((parent && parent.querySelector('.mfjs-option[data-template-name="' + el.dataset.name + '"]')) || el.parentElement.querySelectorAll('[data-name="' + el.dataset.name + '"]').length > 1) {
+        if ((parent && parent.querySelector('.mfjs-option[data-template-name="' + el.dataset.name + '"]')) ||
+          el.parentElement.querySelectorAll('[data-name="' + el.dataset.name + '"]').length > 1) {
           if (el) {
             parent = el.parentElement
             parent.removeChild(el)
@@ -126,77 +126,54 @@ MfJs.Elements['row'] = {
       },
       edit (t) {
         let Row = this
-        let el = t.parentElement.parentElement
-        if (parent['modx']) {
-          let popup = el.dataset.mfPopup ? JSON.parse(el.dataset.mfPopup) : {}
-          Row.popup = parent['modx'].popup(Object.assign({
-            addclass: 'mfjs-popup',
-            title: el.querySelector('.mfjs-title') && el.querySelector('.mfjs-title').innerHTML || el.dataset.type,
-            content: `<div class="mfjs"><div class="mfjs-items"></div></div>`,
-            icon: 'fa-layer-group',
-            delay: 0,
-            overlay: 1,
-            overlayclose: 0,
-            hide: 0,
-            hover: 0,
-            width: '80%',
-            maxheight: '99%',
-            position: 'top center',
-            onclose (e, el) {
-              el.classList.remove('show')
-              Row.popup = null
-            }
-          }, popup))
+        Row.parent = t.parentElement.parentElement
+        Row.clone = Row.parent.querySelector(':scope > .mfjs-items').cloneNode(true)
 
-          Row.clone = el.querySelector(':scope > .mfjs-items').cloneNode(true).children
+        MfJs.popup(Object.assign({
+          title: Row.parent.querySelector('.mfjs-title') && Row.parent.querySelector('.mfjs-title').innerHTML ||
+            Row.parent.dataset.type,
+          content: `<div class="mfjs"><div class="mfjs-items"></div></div>`,
+          onload (popup, el) {
+            el.querySelector('.mfjs .mfjs-items').append(...Row.parent.querySelector(':scope > .mfjs-items').children)
 
-          Row.popup.el.querySelector('.mfjs .mfjs-items').append(...el.querySelector(':scope > .mfjs-items').children)
-
-          Row.popup.el.querySelector('.evo-popup-close').outerHTML = `
-<div id="actions" class="position-absolute">
-    <span class="btn btn-sm btn-success mfjs-save">
-        <i class="fa fa-floppy-o show no-events"></i>
-    </span>
-    <span class="btn btn-sm btn-danger mfjs-close">
-        <i class="fa fa-times-circle show no-events"></i>
-    </span>
-</div>`
-          Row.parent = el
-
-          Row.popup.el.addEventListener('click', function (e) {
-            if (e.target.classList.contains('mfjs-save')) {
-              this.classList.remove('show')
-              documentDirty = true
-              this.querySelectorAll('.mfjs-items [data-thumb]').forEach(el => {
-                let value = el.querySelector('input').value
-                if (el.dataset['thumb'] === Row.parent.dataset['name']) {
-                  Row.parent.querySelector(':scope > .mfjs-value input').value = value
-                  Row.parent.style.backgroundImage = 'url(\'../' + value + '\')'
-                } else {
-                  let thumbs = el.dataset['thumb'].toString().split(',')
-                  for (let k in thumbs) {
-                    if (thumbs.hasOwnProperty(k) && Row.parent.dataset['name'] === thumbs[k]) {
-                      Row.parent.style.backgroundImage = 'url(\'../' + value + '\')'
-                      let input = Row.parent.querySelector(':scope > .mfjs-value input')
-                      if (input) {
-                        input.value = value
+            el.addEventListener('click', function (e) {
+              if (e.target.classList.contains('mfjs-save')) {
+                this.classList.remove('show')
+                documentDirty = true
+                this.querySelectorAll('.mfjs-items [data-thumb]').forEach(el => {
+                  let value = el.querySelector('input').value
+                  if (el.dataset['thumb'] === Row.parent.dataset['name']) {
+                    Row.parent.querySelector(':scope > .mfjs-value input').value = value
+                    Row.parent.style.backgroundImage = 'url(\'../' + value + '\')'
+                  } else {
+                    let thumbs = el.dataset['thumb'].toString().split(',')
+                    for (let k in thumbs) {
+                      if (thumbs.hasOwnProperty(k) && Row.parent.dataset['name'] === thumbs[k]) {
+                        Row.parent.style.backgroundImage = 'url(\'../' + value + '\')'
+                        let input = Row.parent.querySelector(':scope > .mfjs-value input')
+                        if (input) {
+                          input.value = value
+                        }
+                        break
                       }
-                      break
                     }
                   }
-                }
-              })
-              Row.parent.querySelector('.mfjs-items').append(...this.querySelector('.mfjs-items').children)
-              this.close()
+                })
+                Row.parent.querySelector('.mfjs-items').append(...this.querySelector('.mfjs-items').children)
+                popup.close()
+              }
+              if (e.target.classList.contains('mfjs-close')) {
+                popup.close()
+              }
+            })
+          },
+          onclose () {
+            let items = Row.parent.querySelector('.mfjs-items')
+            if (!items.childElementCount) {
+              items.append(...Row.clone.children)
             }
-            if (e.target.classList.contains('mfjs-close')) {
-              Row.parent.querySelector('.mfjs-items').append(...Row.clone)
-              this.close()
-            }
-          })
-        } else {
-          alert('Not found function parent.modx !')
-        }
+          }
+        }, Row.parent.dataset.mfPopup ? JSON.parse(Row.parent.dataset.mfPopup) : {}))
       },
       offset (e) {
         if (e.button) {
@@ -206,7 +183,8 @@ MfJs.Elements['row'] = {
         let parent = e.target.parentElement.parentElement,
           widthCol = parent.parentElement.offsetWidth / 12,
           offset = Math.round(parent.offsetLeft / widthCol),
-          className = parent.className = parent.className.replace(/offset-[\d]+/g, '').trim() + (offset && ' offset-' + offset || '') + ' mfjs-active',
+          className = parent.className = parent.className.replace(/offset-\d+/g, '').trim() +
+            (offset && ' offset-' + offset || '') + ' mfjs-active',
           x = e.clientX - parent.offsetLeft,
           info = parent.querySelector(':scope > .mfjs-info .mfjs-info-offsets') || document.createElement('div'),
           breakpoint = MfJs.Container.dataset['mfjsBreakpoint'] || ''
@@ -254,12 +232,12 @@ MfJs.Elements['row'] = {
             } else if (offset < 1) {
               offset = 0
             }
-            parent.className = className.replace(/offset-[\d]+/g, '').trim() + (offset && ' offset-' + offset || '')
+            parent.className = className.replace(/offset-\d+/g, '').trim() + (offset && ' offset-' + offset || '')
           }
         }
 
         document.onmouseup = (e) => {
-          parent.className = className.replace(/offset-[\d]+/g, '')
+          parent.className = className.replace(/offset-\d+/g, '')
           parent.classList.remove('mfjs-active')
           if (offset) {
             parent.classList.add('offset-' + offset)
@@ -278,7 +256,8 @@ MfJs.Elements['row'] = {
                 parent.removeAttribute(attr.name)
               }
             }
-            if (attr.name.substring(0, 15) === 'data-mf-offset-' && !MfJs.Config.get('settings')?.toolbar?.breakpoints[attr.name.substring(15)]) {
+            if (attr.name.substring(0, 15) === 'data-mf-offset-' &&
+              !MfJs.Config.get('settings')?.toolbar?.breakpoints[attr.name.substring(15)]) {
               parent.removeAttribute(attr.name)
             }
           })
@@ -296,7 +275,8 @@ MfJs.Elements['row'] = {
         let parent = e.target.parentElement.parentElement,
           widthCol = parent.parentElement.offsetWidth / 12,
           col = Math.round(parent.offsetWidth / widthCol),
-          className = parent.className = parent.className.replace(/col-[\d|auto]+/g, '').trim() + (col && ' col-' + col || '') + ' mfjs-active',
+          className = parent.className = parent.className.replace(/col-[\d|auto]+/g, '').trim() +
+            (col && ' col-' + col || '') + ' mfjs-active',
           x = e.clientX - parent.offsetWidth,
           info = parent.querySelector(':scope > .mfjs-info .mfjs-info-cols') || document.createElement('div'),
           breakpoint = MfJs.Container.dataset['mfjsBreakpoint'] || ''
@@ -366,7 +346,8 @@ MfJs.Elements['row'] = {
                 parent.removeAttribute(attr.name)
               }
             }
-            if (attr.name.substring(0, 12) === 'data-mf-col-' && !MfJs.Config.get('settings')?.toolbar?.breakpoints[attr.name.substring(12)]) {
+            if (attr.name.substring(0, 12) === 'data-mf-col-' &&
+              !MfJs.Config.get('settings')?.toolbar?.breakpoints[attr.name.substring(12)]) {
               parent.removeAttribute(attr.name)
             }
           })
@@ -375,7 +356,7 @@ MfJs.Elements['row'] = {
           e.preventDefault()
           e.stopPropagation()
         }
-      },
-    },
-  },
+      }
+    }
+  }
 }

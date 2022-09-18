@@ -18,8 +18,19 @@ spl_autoload_register(function ($class) {
 $evo = evolutionCMS();
 
 if ($evo->event->name == 'OnManagerMainFrameHeaderHTMLBlock') {
-    if (in_array($evo->getManagerApi()->action, [3, 4, 17, 27, 72])) {
-        $evo->event->addOutput(MfJsBack::getInstance()
-            ->render());
+    if (in_array($evo->getManagerApi()->action, [2, 3, 4, 17, 27, 72])) {
+        $data = MfJsBack::getInstance()
+            ->render();
+
+        if (isset($_REQUEST['mfjs-action'])) {
+            echo $data . '</head><body></body></html>';
+            exit;
+        } else {
+            $evo->event->addOutput($data);
+        }
     }
+}
+
+if ($evo->event->name = 'OnManagerFrameLoader') {
+    //MfJsBack::getInstance()->managerPageInit();
 }
