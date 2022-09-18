@@ -7,16 +7,16 @@ MfJs.Elements['thumb'] = {
   interval: null,
 
   templates: {
-    wrapper: '' +
-      '<div id="{{ id }}" class="mfjs-thumb col {{ class }}" {{ attr }}>\n' +
-      '    {{ el.title }}\n' +
-      '    {{ el.actions }}\n' +
-      '    {{ el.value }}\n' +
-      '    <div class="mfjs-value" hidden>\n' +
-      '        <input type="text" id="{{ id }}_value" class="form-control form-control-sm" value="{{ value }}">\n' +
-      '    </div>' +
-      '    <div class="mfjs-items {{ items.class }}"></div>\n' +
-      '</div>',
+    wrapper: `
+<div id="{{ id }}" class="mfjs-thumb col {{ class }}" {{ attr }}>
+    {{ el.title }}
+    {{ el.actions }}
+    {{ el.value }}
+    <div class="mfjs-value" hidden>
+        <input type="text" id="{{ id }}_value" class="form-control form-control-sm" value="{{ value }}">
+    </div>
+    <div class="mfjs-items {{ items.class }}"></div>
+</div>`,
   },
 
   Render: {

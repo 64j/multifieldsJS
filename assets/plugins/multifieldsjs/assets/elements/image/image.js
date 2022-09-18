@@ -3,13 +3,13 @@
  */
 MfJs.Elements['image'] = {
   templates: {
-    wrapper: '' +
-      '<div id="{{ id }}" class="col {{ class }}" {{ attr }}>\n' +
-      '    {{ el.actions }}\n' +
-      '    {{ el.title }}\n' +
-      '    <input type="text" id="tv{{ id }}" class="form-control {{ item.class }}" name="{{ name }}" placeholder="{{ placeholder }}" value="{{ value }}" onchange="documentDirty=true;MfJs.Elements.image.Actions.actions.edit(this);" {{ item.attr }}>\n' +
-      '    <i class="{{ icon }}" onclick="BrowseServer(\'tv{{ id }}\');{{ onclick }}"></i>\n' +
-      '</div>',
+    wrapper: `
+<div id="{{ id }}" class="col {{ class }}" {{ attr }}>
+    {{ el.actions }}
+    {{ el.title }}
+    <input type="text" id="tv{{ id }}" class="form-control {{ item.class }}" name="{{ name }}" placeholder="{{ placeholder }}" value="{{ value }}" onchange="documentDirty=true;MfJs.Elements.image.Actions.actions.edit(this);" {{ item.attr }}>
+    <i class="{{ icon }}" onclick="BrowseServer('tv{{ id }}');{{ onclick }}"></i>
+</div>`,
   },
 
   interval: null,

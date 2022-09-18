@@ -3,13 +3,13 @@
  */
 MfJs.Elements['date'] = {
   templates: {
-    wrapper: '' +
-      '<div id="{{ id }}" class="col {{ class }}" {{ attr }}>\n' +
-      '    {{ el.actions }}\n' +
-      '    {{ el.title }}\n' +
-      '    <input type="text" id="tv{{ id }}" name="tv{{ id }}" class="form-control DatePicker unstyled {{ item.class }}" value="{{ value }}" placeholder="{{ placeholder }}" onblur="documentDirty=true;" autocomplete="off" {{ item.attr }}>\n' +
-      '    <i class="fa fa-calendar-times-o" onclick="this.previousElementSibling.value=\'\';"></i>\n' +
-      '</div>',
+    wrapper: `
+<div id="{{ id }}" class="col {{ class }}" {{ attr }}>
+    {{ el.actions }}
+    {{ el.title }}
+    <input type="text" id="tv{{ id }}" name="tv{{ id }}" class="form-control DatePicker unstyled {{ item.class }}" value="{{ value }}" placeholder="{{ placeholder }}" onblur="documentDirty=true;" autocomplete="off" {{ item.attr }}>
+    <i class="fa fa-calendar-times-o" onclick="this.previousElementSibling.value='';"></i>
+</div>`,
   },
 
   Render: {

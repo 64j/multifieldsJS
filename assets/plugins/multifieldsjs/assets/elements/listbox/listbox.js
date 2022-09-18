@@ -3,13 +3,13 @@
  */
 MfJs.Elements['listbox'] = {
   templates: {
-    wrapper: '' +
-      '<div id="{{ id }}" class="col {{ class }}" {{ attr }}>\n' +
-      '    {{ el.actions }}\n' +
-      '    {{ el.title }}\n' +
-      '    <select id="tv{{ id }}" name="{{ name }}" placeholder="{{ placeholder }}" onchange="documentDirty=true;" size="8">{{ el.elements }}</select>\n' +
-      '</div>',
-    element: '<option value="{{ value }}" {{ selected }}>{{ title }}</option>',
+    wrapper: `
+<div id="{{ id }}" class="col {{ class }}" {{ attr }}>
+    {{ el.actions }}
+    {{ el.title }}
+    <select id="tv{{ id }}" name="{{ name }}" placeholder="{{ placeholder }}" onchange="documentDirty=true;" size="8">{{ el.elements }}</select>
+</div>`,
+    element: `<option value="{{ value }}" {{ selected }}>{{ title }}</option>`,
   },
 
   Render: {
