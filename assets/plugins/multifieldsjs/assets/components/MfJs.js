@@ -238,19 +238,23 @@
     <span class="btn btn-sm btn-danger mfjs-close">
         <i class="fa fa-times-circle show no-events"></i>
     </span>
-</div>`
+</div>`,
+          onload: function () {},
+          onclose: function () {}
         }, settings || {})
 
         if (parent['modx']) {
-          let popup = parent['modx'].popup(settings)
-
-          settings.onload && settings.onload(popup, popup.el)
-
-          if (settings.actions) {
-            popup.el.querySelector('.evo-popup-close').outerHTML = settings.actions
+          popup = parent['modx'].popup(settings)
+          popup.el.querySelector('.evo-popup-close').outerHTML = settings.actions
+          popup.onclose = function () {
+            settings.onclose()
+            popup.el.classList.remove('show')
           }
+          settings.onload(popup, popup.el)
         } else {
+          popup.wrap = document.body
           popup.el = document.createElement('div')
+          popup.el.id = 'evo-popup-' + Date.now()
           popup.el.classList = 'evo-popup alert alert-default animation fade in show m-2 ' + (settings.addclass || '')
           popup.el.style.overflow = 'auto'
           popup.el.style.width = settings.width
@@ -265,22 +269,20 @@ ${settings.actions || ''}
 </div>
 <div class="evo-popup-body">${settings.content}</div>`
 
-          popup.overlay = document.createElement('div')
-          popup.overlay.classList = 'evo-popup-overlay'
-          popup.overlay.style.zIndex = '10500'
+          popup.o = document.createElement('div')
+          popup.o.classList = 'evo-popup-overlay'
+          popup.o.style.zIndex = '10500'
 
           popup.close = function () {
-            if (settings.onclose) {
-              settings.onclose()
-            }
-            document.body.style.overflow = ''
-            document.body.removeChild(popup.overlay)
-            document.body.removeChild(popup.el)
+            settings.onclose()
+            popup.wrap.style.overflow = ''
+            popup.wrap.removeChild(popup.o)
+            popup.wrap.removeChild(popup.el)
           }
 
-          document.body.append(...[popup.overlay, popup.el])
+          popup.wrap.append(...[popup.o, popup.el])
 
-          settings.onload && settings.onload(popup, popup.el)
+          settings.onload(popup, popup.el)
         }
 
         return popup
