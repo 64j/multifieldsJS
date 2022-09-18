@@ -149,7 +149,7 @@ MfJs.Elements['table'] = {
             if (col.type === item.type && col.width) {
               item.attr = ' style="max-width:' + col.width + '"'
             }
-            types += MfJs.Render.template(MfJs.Elements.table.templates.menuItem, {
+            types += MfJs.Render.template(['table', 'menuItem'], {
               type: col.type || 'text',
               label: col.label || col.type,
               selected: col.type === item.type ? 'selected' : '',
@@ -157,16 +157,16 @@ MfJs.Elements['table'] = {
             })
           })
 
-          item.menu = MfJs.Render.template(MfJs.Elements.table.templates.menu, {
+          item.menu = MfJs.Render.template(['table', 'menu'], {
             types: types,
             lang: MfJs.Elements.table.Lang.menu,
           })
 
-          data.el.columns += MfJs.Render.template(MfJs.Elements.table.templates.column, item)
+          data.el.columns += MfJs.Render.template(['table', 'column'], item)
         })
 
         if (data.el.columns) {
-          data.el.columns = MfJs.Render.template(MfJs.Elements.table.templates.columns, {
+          data.el.columns = MfJs.Render.template(['table', 'columns'], {
             items: data.el.columns,
           })
         }
@@ -266,7 +266,7 @@ MfJs.Elements['table'] = {
         data.value = ''
       }
 
-      return MfJs.Render.template(MfJs.Elements.table.templates.value, {
+      return MfJs.Render.template(['table', 'value'], {
         type: type,
         value: MfJs.escape(data.value),
         placeholder: data.placeholder || '',

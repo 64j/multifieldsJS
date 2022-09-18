@@ -22,7 +22,7 @@ MfJs.Render = {
         items = data.items
         data.items = ''
       }
-      let item = MfJs.Render.template(MfJs.Elements[data.type].templates.wrapper, data, true)
+      let item = MfJs.Render.template([data.type, 'wrapper'], data, true)
       if (replace === 1) {
         parent.parentElement.replaceChild(item, parent)
       } else if (replace === 2) {
@@ -168,6 +168,13 @@ MfJs.Render = {
     data = MfJs.Render.flatData(data || {})
     isDom = isDom || null
     cleanKeys = !(cleanKeys || null)
+    if (typeof html === 'object') {
+      if (Object.prototype.toString.call(html) === '[object Array]') {
+        html = MfJs.Elements[html[0]].templates[html[1]]
+      } else {
+        html = MfJs.Elements[html.element].templates[html.template]
+      }
+    }
     html = html.replace(/{{ ([\w.]+) }}/g, (str, key) => {
       let value = typeof data[key] !== 'undefined' ? data[key] : ''
       return (value === null || value === undefined) ? (cleanKeys ? '' : str) : value

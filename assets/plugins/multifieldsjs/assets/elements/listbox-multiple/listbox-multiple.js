@@ -18,7 +18,7 @@ MfJs.Elements['listbox-multiple'] = {
         let values = data.value.split('||')
         data.el.elements = ''
         data.elements.forEach((item, index) => {
-          data.el.elements += MfJs.Render.template(MfJs.Elements[data.type].templates.element, {
+          data.el.elements += MfJs.Render.template([data.type, 'element'], {
             id: data.id + '_' + index,
             type: data.type,
             name: data.id,

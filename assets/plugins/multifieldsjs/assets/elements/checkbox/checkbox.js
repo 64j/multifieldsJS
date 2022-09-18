@@ -21,14 +21,14 @@ MfJs.Elements['checkbox'] = {
         let values = data.value.split('||')
         data.el.elements = ''
         data.elements.forEach((item, index) => {
-          data.el.elements += MfJs.Render.template(MfJs.Elements[data.type].templates.element, {
+          data.el.elements += MfJs.Render.template([data.type, 'element'], {
             id: data.id + '_' + index,
             type: data.type,
             name: data.id,
             value: item.value,
             title: item.key !== '' && item.key || item.value,
             selected: ~values.indexOf('' + item.value) ? 'selected' : '',
-            checked: ~values.indexOf('' + item.value) ? 'checked' : '',
+            checked: ~values.indexOf('' + item.value) ? 'checked' : ''
           })
         })
       }

@@ -13,6 +13,14 @@ MfJs.Elements['row'] = {
     {{ el.info }}
     {{ el.value }}
     <div class="mfjs-items {{ items.class }}"></div>
+</div>`,
+    value: `
+<div class="mfjs-value" {{ hidden }}>
+    <input type="{{ type }}" 
+           class="form-control form-control-sm" 
+           value="{{ value }}" 
+           placeholder="{{ placeholder }}"
+           {{ hidden }}>
 </div>`
   },
 
@@ -56,14 +64,12 @@ MfJs.Elements['row'] = {
         data.value = ''
       }
 
-      return `
-<div class="mfjs-value" ${hidden}>
-    <input type="${type}" 
-           class="form-control form-control-sm" 
-           value="${MfJs.escape(data.value)}" 
-           placeholder="${(data.placeholder || ``)}"
-           ${hidden}>
-</div>`
+      return MfJs.Render.template([data.type, 'value'], {
+        type: type,
+        value: MfJs.escape(data.value),
+        hidden: hidden,
+        placeholder: data.placeholder || ''
+      })
     },
     info (data) {
       let info = '', a
