@@ -27,6 +27,9 @@ class MfJsBack
         return dirname(__DIR__);
     }
 
+    /**
+     * @return string
+     */
     protected function getAssetsPath(): string
     {
         return $this->getBasePath() . '/assets';
@@ -34,6 +37,7 @@ class MfJsBack
 
     /**
      * @param string $filename
+     *
      * @return array
      */
     protected function mfJsParseDocBlock(string $filename): array
@@ -65,42 +69,93 @@ class MfJsBack
     }
 
     /**
+     * @param array|null $assets
+     *
      * @return string
      */
-    public function render(): string
+    protected function getAssets(?array $assets = []): string
     {
-        $evo = evolutionCMS();
         $out = [];
-        $items = array_merge(
-            array_unique(array_merge([$this->getAssetsPath() . '/components/MfJs.js'], glob($this->getAssetsPath() . '/components/*.{css,js}', GLOB_BRACE))),
-            glob($this->getAssetsPath() . '/elements/*/*.{css,js}', GLOB_BRACE)
-        );
+        $lang = evolutionCMS()->getConfig('manager_language');
 
-        foreach ($items as $item) {
+        foreach ($assets as $item) {
+            if (!file_exists($item)) {
+                continue;
+            }
+
             $docBlock = $this->mfJsParseDocBlock($item);
+
             if (!empty($docBlock['disabled'])) {
                 continue;
             }
+
             $version = $docBlock['version'] ?? filemtime($item);
             $pathInfo = pathinfo($item);
             $item = str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $item);
+
             if ($pathInfo['extension'] == 'css') {
                 $out[] = '<link rel="stylesheet" type="text/css" href="..' . $item . '?v=' . $version . '"/>';
             } elseif ($pathInfo['extension'] == 'js') {
                 $out[] = '<script src="..' . $item . '?v=' . $version . '"></script>';
-                if (is_file($file = $pathInfo['dirname'] . '/lang/' . $evo->getConfig('manager_language') . '.js')) {
-                    $out[] = '<script src="..' . str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $file) . '?v=' . $version . '"></script>';
-                } elseif (is_file($file = $pathInfo['dirname'] . '/lang/en.js')) {
-                    $out[] = '<script src="..' . str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $file) . '?v=' . $version . '"></script>';
+
+                if (!is_file($file = $pathInfo['dirname'] . '/lang/' . $lang . '.js')) {
+                    if (!is_file($file = $pathInfo['dirname'] . '/lang/en.js')) {
+                        $file = null;
+                    }
+                }
+
+                if ($file) {
+                    $item = str_replace([DIRECTORY_SEPARATOR, MODX_BASE_PATH], '/', $file);
+                    $out[] = '<script src="..' . $item . '?v=' . $version . '"></script>';
                 }
             }
         }
 
-        return implode("\n", $out);
+        return implode(PHP_EOL, $out);
+    }
+
+    /**
+     * @param string $name
+     * @param string|null $default
+     *
+     * @return string|null
+     */
+    protected function getConfig(string $name, string $default = null): ?string
+    {
+        $configName = $this->getBasePath() . '/config/' . $name;
+
+        if (is_file($file = $configName . '.php')) {
+            $config = require $file;
+
+            return json_encode($config, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        } elseif (is_file($file = $configName . '.json')) {
+            return file_get_contents($file);
+        }
+
+        return $default;
+    }
+
+    /**
+     * @return string
+     */
+    public function render(): string
+    {
+        return $this->getAssets(
+            array_merge(
+                array_unique(
+                    array_merge(
+                        [$this->getAssetsPath() . '/components/MfJs.js'],
+                        glob($this->getAssetsPath() . '/components/*.{css,js}', GLOB_BRACE)
+                    )
+                ),
+                glob($this->getAssetsPath() . '/elements/*/*.{css,js}', GLOB_BRACE)
+            )
+        );
     }
 
     /**
      * @param array $row
+     *
      * @return string
      */
     public function renderCustomTv(array $row): string
@@ -125,22 +180,15 @@ class MfJsBack
     }
 
     /**
-     * @param string $name
-     * @param string|null $default
-     * @return string|null
+     * @return string
      */
-    protected function getConfig(string $name, string $default = null): ?string
+    public function renderBuilder(): string
     {
-        $configName = $this->getBasePath() . '/config/' . $name;
-
-        if (is_file($file = $configName . '.php')) {
-            $config = require $file;
-
-            return json_encode($config, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
-        } elseif (is_file($file = $configName . '.json')) {
-            return file_get_contents($file);
-        }
-
-        return $default;
+        return $this->getAssets(
+            array_merge(
+                [$this->getAssetsPath() . '/builder/MfJs.js', $this->getAssetsPath() . '/components/MfJs.css'],
+                glob($this->getAssetsPath() . '/elements/*/*.{css,js}', GLOB_BRACE)
+            )
+        );
     }
 }
